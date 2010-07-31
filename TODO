@@ -1,0 +1,42 @@
+* Style orientation http://demo.jimbarraud.com/manifest/
+
+* Next/prev links on all Pages
+
+* Tag and Category support
+
+* Markdown (python-markdown) Support! Therefor add field 'html' to entries
+  and anpasse blog.py
+
+* http://blog.disqus.net/2007/03/11/a-django-primer/
+* http://blog.jeffhui.net/2009/03/django-blog-tutorial/
+
+* Write Test Suite (with mock objects n shit)
+** create subfolder test (be inspired by hatta, look at that)
+
+* Page creation
+** Composing pages
+** Have no comments
+** Order Pages by `place` field
+
+* Ordering of Blog posts, e.g. (Archive Page creation)
+** max 5 Entries Home Page ordererd by date
+** Monghtly/Yearly archive
+** Filter by Tag
+** Filter by Category
+** Search
+
+* Code Highlighting Support
+
+* Look for Blog Tutorials
+
+* Pingback/Traceback (or does Disqus already do that?)
+
+* Images / File Attachments
+** How to store them?
+
+* Comments (Disqus)
+
+* Create README
+* Document
+* Polish
+

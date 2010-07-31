@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>{{ 'Title' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='blog.css') }}" type="text/css"/>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="header">
+        <a href="/"><h1>{{ 'Title' }}</h1></a>
+      </div>
+      <div id="navigation">
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Archives</a></li>
+          <li><a href="#">Projects</a></li>
+          <li><a href="#">Impressum</a></li>
+        </ul>
+      </div>
+      <div id="content">
+        {% block body %}{% endblock %}
+        <div id="search">
+          <input id="search-field" name="search" type="text"/> <a id="search-button" href='#'>Search</a>
+        </div>
+      </div>
+    </div>
+    {% block bottom %}{% endblock %}
+  </body>
+</html>

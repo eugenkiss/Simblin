@@ -1,0 +1,121 @@
+html {
+    min-width: 400px;
+}
+
+body {
+    margin: 0;
+    font-family: Calibri, sans-serif;
+    font-family: Georgia, serif;
+    font-size: 0.85em;
+    /*background-color: #F8F8FF;*/
+}
+
+img {
+    /*margin: 0.2em 1em;*/
+}
+
+a {
+    text-decoration: none;
+    color: #009999;
+}
+
+#wrapper {
+    max-width: 650px;
+    /*min-width: 400px;*/
+    margin: 0 auto; /* So that it is centered */
+    padding: 1em;
+    padding-top: 0;
+}
+
+#header h1 {
+    text-align: center;
+    /*font-family: Times New Roman, Palatino, serif;*/
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: 0.05em;
+    font-size: 3em;
+    color: #666;
+}
+
+#navigation {
+    margin-bottom: 3em;
+}
+
+#navigation a {
+    color: grey;
+    color: #080000;
+    /*font-variant: small-caps;*/
+}
+
+#navigation ul {
+    margin: 0;
+    padding-bottom: 0.5em;
+    padding-left: 0;
+    border-bottom: 1px dotted #080000;
+    text-align: center;
+}
+
+#navigation li {
+    display: inline;
+    list-style-type: none;
+    padding-right: 1em;
+    padding-left: 1em;
+    text-transform: uppercase;
+    /*font-family: Times New Roman, Palatino, serif;*/
+}
+
+#navigation li:first-child {
+    padding-left: 0;
+}
+
+#search {
+    text-align: center;
+}
+
+#search-field {
+    border: 1px solid #AAA;
+    padding: 1px 0px;
+}
+
+#search-button {
+    border: 1px solid #AAA;
+    padding: 1px 6px;
+    color: #080000;
+    background-color: #DDD;
+}
+
+.entry h1.entry-title {
+    text-align: left;
+    /*border-bottom: 1px dotted grey;*/
+    /*padding-bottom: 0.5em;*/
+}
+
+.entry h1.entry-title a {
+    /*font-variant: small-caps;*/
+    color: #AA2C8C;
+    color: #080000;
+    font-weight: normal;
+    font-size: 80%;
+}
+
+.entry .body {
+    font-family: Georgia;
+    font-size: 110%;
+    color: #333;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.entry .info {
+    margin-bottom: 2em;
+    color: grey;
+    font-size: small;
+    font-variant: small-caps;
+}
+
+.entry .date {
+}
+
+.entry .admin {
+}
+
