@@ -1,16 +1,15 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-    "http://www.w3.org/TR/html4/strict.dtd">
+<!doctype html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>{{ 'Title' }}</title>
+    <title>{{ config['BLOG_TITLE'] }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='blog.css') }}" type="text/css"/>
     {% block head %}{% endblock %}
   </head>
   <body>
     <div id="wrapper">
       <div id="header">
-        <a href="/"><h1>{{ 'Title' }}</h1></a>
+        <a href="{{ url_for('show_entries') }}"><h1>{{ config['BLOG_TITLE'] }}</h1></a>
       </div>
       <div id="navigation">
         <ul>
@@ -20,10 +19,22 @@
           <li><a href="#">Impressum</a></li>
         </ul>
       </div>
+      <div id="metanav">
+      {% if not session.logged_in %}
+        <a href="{{ url_for('login') }}">log in</a>
+      {% else %}
+        <a href="{{ url_for('add_entry') }}">compose</a>
+        <a href="{{ url_for('logout') }}">log out</a>
+      {% endif %}
+      </div>
+      {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
+      {% endfor %}
       <div id="content">
         {% block body %}{% endblock %}
         <div id="search">
-          <input id="search-field" name="search" type="text"/> <a id="search-button" href='#'>Search</a>
+          <input id="search-field" name="search" type="text"/> 
+          <a id="search-button" class="submit" href='#'>Search</a>
         </div>
       </div>
     </div>

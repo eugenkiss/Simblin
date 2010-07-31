@@ -1,17 +1,24 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Next/prev links on all Pages
+* Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
 
-* Tag and Category support
+* Tag support
 
 * Markdown (python-markdown) Support! Therefor add field 'html' to entries
   and anpasse blog.py
 
-* http://blog.disqus.net/2007/03/11/a-django-primer/
-* http://blog.jeffhui.net/2009/03/django-blog-tutorial/
-
 * Write Test Suite (with mock objects n shit)
 ** create subfolder test (be inspired by hatta, look at that)
+
+-> v0.1
+
+----------------
+
+* http://blog.disqus.net/2007/03/11/a-django-primer/
+* http://blog.jeffhui.net/2009/03/django-blog-tutorial/
+* Look for other Blog Tutorials
+
+* Category Support
 
 * Page creation
 ** Composing pages
@@ -23,16 +30,20 @@
 ** Monghtly/Yearly archive
 ** Filter by Tag
 ** Filter by Category
-** Search
+* Search
 
 * Code Highlighting Support
 
-* Look for Blog Tutorials
+-> v0.2
+-> Deployment http://clemesha.org/blog/2009/jul/05/modern-python-hacker-tools-virtualenv-fabric-pip/
+
+----------------
 
 * Pingback/Traceback (or does Disqus already do that?)
 
 * Images / File Attachments
 ** How to store them?
+*** maybe create a subvie /files, where one can upload and be able to link to them in the blog post
 
 * Comments (Disqus)
 
@@ -40,3 +51,6 @@
 * Document
 * Polish
 
+-> v0.3
+
+----------------

@@ -4,7 +4,6 @@ html {
 
 body {
     margin: 0;
-    font-family: Calibri, sans-serif;
     font-family: Georgia, serif;
     font-size: 0.85em;
     /*background-color: #F8F8FF;*/
@@ -19,8 +18,43 @@ a {
     color: #009999;
 }
 
+h1,h2,h3,h4,h5,h6 {
+    font-weight: normal;
+}
+
+/* Forms */
+
+input, textarea, select {
+    border: 1px solid #AAA;
+    padding: 1px 0px;
+}
+
+.submit {
+    border: 1px solid #AAA;
+    padding: 1px 6px;
+    color: #080000;
+    background-color: #DDD;
+    font-family: Georgia, serif;
+}
+
+label {
+    float: left;
+    width: 6em;
+}
+
+.flash {
+    text-align: center;
+    font-style: italic;
+}
+
+.error {
+    text-align: center;
+    font-style: italic;
+    background-color: #FFD2D2;
+}
+
 #wrapper {
-    max-width: 650px;
+    max-width: 680px;
     /*min-width: 400px;*/
     margin: 0 auto; /* So that it is centered */
     padding: 1em;
@@ -38,7 +72,6 @@ a {
 }
 
 #navigation {
-    margin-bottom: 3em;
 }
 
 #navigation a {
@@ -68,20 +101,23 @@ a {
     padding-left: 0;
 }
 
+#metanav {
+    text-align: right;
+}
+
+#content {
+    margin-top: 3em;
+}
+
 #search {
+    margin-top: 5em;
     text-align: center;
 }
 
 #search-field {
-    border: 1px solid #AAA;
-    padding: 1px 0px;
 }
 
 #search-button {
-    border: 1px solid #AAA;
-    padding: 1px 6px;
-    color: #080000;
-    background-color: #DDD;
 }
 
 .entry h1.entry-title {

@@ -1,0 +1,9 @@
+v0.1
+====
+* registering (only one user)
+** secure password storing
+* login/logout
+* blog post creation
+* view all blog posts
+* view one blog post
+* simple design

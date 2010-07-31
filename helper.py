@@ -21,7 +21,11 @@ def check_password(raw_password, enc_password):
 
 def connect_db():
     from blog import app
-    return sqlite3.connect(app.config['DATABASE'])
+    # TODO: Explain why Parse_DEcltypes and row factory
+    db = sqlite3.connect(app.config['DATABASE'], 
+                         detect_types=sqlite3.PARSE_DECLTYPES)
+    db.row_factory = sqlite3.Row
+    return db
 
 
 def init_db():

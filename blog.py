@@ -1,6 +1,7 @@
 #!/bin/env python
 from __future__ import with_statement
 import sqlite3
+import datetime
 import settings
 
 from flask import Flask, request, session, g, redirect, url_for, \
@@ -26,7 +27,7 @@ def after_request(response):
 
 @app.route('/')
 def show_entries():
-    entries = query_db('select title, html from entries order by id desc')
+    entries = query_db('select * from entries order by id desc')
     if not entries:
         return redirect(url_for('add_entry'))
     else:
@@ -42,13 +43,27 @@ def show_entry(slug):
 def add_entry():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
+    # TODO: Use: request.args.get('q', '')
+    #       To learn if an id is given. if it is the case, load the specific
+    #       entry from the database (if possible) and fill the forms with
+    #       its contents.
+    #       In the POST request, update the entry instead of inserting another
+    #       row.
     if request.method == 'GET':
         # TODO: Add id argument to be able to edit specific post
         return render_template('compose.html')
     if request.method == 'POST':
-        # TODO: Convert markdown to html here
-        g.db.execute('insert into entries (title, html) values (?, ?)',
-                     [request.form['title'], request.form['markdown']])
+        # TODO: * Convert markdown to html here
+        #       * Create slug (tornado) and normalize and unique it (-2)
+        #       * Normalize tagss
+        g.db.execute(
+            'insert into entries (slug, title, markdown, html, published)' 
+            'values (?, ?, ?, ?, ?)',
+                     [request.form['title'],
+                      request.form['title'], 
+                      request.form['markdown'],
+                      request.form['markdown'],
+                      datetime.datetime.now()])
         g.db.commit()
         flash('New entry was successfully posted')
         return redirect(url_for('show_entries'))
@@ -84,6 +99,8 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    # TODO: Add a field "reenter pw" and only let register if pw is both times
+    #       right
     # There can only be one ...admin!
     admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
     if admin:

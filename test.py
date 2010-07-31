@@ -4,6 +4,8 @@ import blog
 import unittest
 import tempfile
 
+# TODO: Add Test Cases
+#       * Expect error (flash) if user tries to register with empty forms
 
 class PasswordTestCase(unittest.TestCase):
     

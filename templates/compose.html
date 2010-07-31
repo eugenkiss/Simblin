@@ -1,29 +1,33 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block body %}
-  <h2>Compose</h2>
+  <h3>Compose</h3>
   <form action="{{ url_for('add_entry') }}" method="post" class="compose">
+  <div>
     <div style="margin-bottom:5px">
-      <input name="title" type="text" class="title" value="{{ entry['title'] if entry else '' }}"/>
+      <input name="title" size=50 type="text" class="title" value="{{ entry.title if entry else '' }}"/>
     </div>
     <div style="margin-bottom:5px">
-      <textarea name="markdown" rows="30" cols="40" class="markdown">
-        {{ entry['markdown']|safe if entry else "" }}
-      </textarea>
+      <textarea name="markdown" rows="30" style="width:100%;" class="markdown">{{ entry.markdown|safe if entry else "" }}</textarea>
     </div>
     <div>
-      Tags: <input name="tags" type="text" value="{{ ','.join(tags) if tags else '' }}"/>
+      <label for=tags>Tags:</label> 
+      <input name="tags" type="text" size=50 value="{{ ','.join(tags) if tags else '' }}"/>
     </div>
+    <div style="margin-top: 0.5em"></div>
     <div>
       <!-- TODO: This should rather be some kind of checkbox/list and one should be able to create/delete  
                  categories here -->
-      Categories: <input name="categories" type="text" value="{{ ','.join(categories) if categories else '' }}"/>
+      <label for=tags>Categories:</label>
+      <input name="categories" size=50 type="text" value="{{ ','.join(categories) if categories else '' }}"/>
     </div>
-    <div>
-      <input type="submit" value="{{ 'Save changes' if entry else 'Publish post' }}" class="submit"/>
-      &nbsp;<a href="{{ url_for('show_entry', slug=entry['slug']) if entry else '/' }}">Cancel</a>
+    <div style="margin-top:1em; text-align:right;">
+      <input type="submit" value="{{ 'Update' if entry else 'Publish' }}" class="submit"/>&nbsp;
+      <a class="submit" href="{{ url_for('show_entry', slug=entry.slug) if entry else '/' }}">Preview</a>&nbsp;
+      <a class="submit" href="{{ url_for('show_entry', slug=entry.slug) if entry else '/' }}">Cancel</a>
     </div>
     {% if entry %}
-      <input type="hidden" name="id" value="{{ entry['id'] }}"/>
+      <input type="hidden" name="id" value="{{ entry.id }}"/>
     {% endif %}
+  </div>
   </form>
 {% endblock %}

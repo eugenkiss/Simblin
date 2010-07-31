@@ -1,21 +1,19 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block body %}
+{% for entry in entries %}
+<div class="entry">
+  <h1 class="entry-title"><a href="{{ url_for('show_entry', slug=entry.slug) }}">{{ entry.title }}</a></h1>
+  <div class="body">{{ entry.html|safe }}</div>
+  <div class="info">
+    <div class="date">{{ entry.published.strftime("%A %d. %B %Y") }}</div>
+    <div class="tags">{{ ', '.join(tags) }}</div>
   {% if session.logged_in %}
-    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
-      <dl>
-        <dt>Title:
-        <dd><input type=text size=30 name=title>
-        <dt>Text:
-        <dd><textarea name=text rows=5 cols=40></textarea>
-        <dd><input type=submit value=Share>
-      </dl>
-    </form>
+                               <!-- TODO -->
+    <div class="admin"><a href="/compose?id={{ entry.id }}">Edit</a></div>
   {% endif %}
-  <ul class=entries>
-  {% for entry in entries %}
-    <li><h2>{{ entry.title }}</h2>{{ entry.html|safe }}
-  {% else %}
-    <li><em>Unbelievable.  No entries here so far</em>
-  {% endfor %}
-  </ul>
+  </div>
+</div>
+{% else %}
+<em>No entries here so far</em>
+{% endfor %}
 {% endblock %}
