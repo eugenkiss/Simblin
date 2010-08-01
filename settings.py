@@ -1,6 +1,6 @@
 import os
 
-BLOG_TITLE = 'Thuogths'
+BLOG_TITLE = 'Thoughts'
 SECRET_KEY = 'abc'
 DATABASE = os.path.join(os.path.dirname(__file__), 'blog.db')
 DEBUG = True

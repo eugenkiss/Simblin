@@ -8,7 +8,7 @@
     <div class="date">{{ entry.published.strftime("%A %d. %B %Y") }}</div>
     <div class="tags">{{ ', '.join(tags) }}</div>
   {% if session.logged_in %}
-                               <!-- TODO -->
+                               <!-- TODO: make id work -->
     <div class="admin"><a href="/compose?id={{ entry.id }}">Edit</a></div>
   {% endif %}
   </div>

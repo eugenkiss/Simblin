@@ -1,6 +1,25 @@
-<html><body><form action="{{ url_for('register') }}" method="post">
-Register, sir! <br/>
-username: <input type="text" name="username"><br/>
-password: <input type="password" name="password"><br/>
-<input type="submit" value="Register">
-</form></body></html>
+{% extends "base.html" %}
+{% block body %}
+<h3>Register</h3>
+<p>
+Congratulations! You, sir, are the first to find this blog. It is therefore your 
+duty to choose a username and a password.
+</p>
+<p> 
+Since you will be the sole author of this blog these credentials' only purpose 
+is to keep away other, potentially sinister people from submitting here.
+</p>
+<form action="{{ url_for('register') }}" method="post">
+  <div style="margin: 0 auto;">
+    <label for=username>Username:</label> 
+    <input type="text" name="username"><br/>
+    <label for=password>Password:</label> 
+    <input type="password" name="password"><br/>
+    <label for=password2>Again:</label> 
+    <input type="password" name="password2">
+    <div style="margin-top: 1em"></div>
+    <input style="text-align:right;" class=submit type="submit" value="Register">
+  </div>
+</form>
+{% endblock %}
+{% block search %}{% endblock %}

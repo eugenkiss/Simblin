@@ -7,11 +7,37 @@ import settings
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 from contextlib import closing
-from helper import set_password, check_password, connect_db, query_db
+from helper import set_password, check_password
 
 
 app = Flask(__name__)
 app.config.from_object(settings)
+
+
+# Helper
+
+def connect_db():
+    # TODO: Explain why Parse_DEcltypes and row factory
+    db = sqlite3.connect(app.config['DATABASE'], 
+                         detect_types=sqlite3.PARSE_DECLTYPES)
+    db.row_factory = sqlite3.Row
+    return db
+
+
+def init_db():
+    with closing(connect_db()) as db:
+        with app.open_resource('schema.sql') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
+
+def query_db(query, args=(), one=False):
+    cur = g.db.execute(query, args)
+    rv = [dict((cur.description[idx][0], value)
+               for idx, value in enumerate(row)) for row in cur.fetchall()]
+    return (rv[0] if rv else None) if one else rv
+
+# End Helper
 
 
 @app.before_request
@@ -31,7 +57,7 @@ def show_entries():
     if not entries:
         return redirect(url_for('add_entry'))
     else:
-        return render_template('show_entries.html', entries=entries)
+        return render_template('home.html', entries=entries)
 
 
 @app.route('/entry/<slug>')
@@ -84,7 +110,7 @@ def login():
             error = 'Invalid password'
         else:
             session['logged_in'] = True
-            flash('You were successfully logged in')
+            flash('You have been successfully logged in')
             # TODO: Redirect to page the admin was coming from
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
@@ -93,28 +119,39 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
-    flash('You were logged out')
+    flash('You have been successfully logged out')
     return redirect(url_for('show_entries'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    # TODO: Add a field "reenter pw" and only let register if pw is both times
-    #       right
-    # There can only be one ...admin!
     admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
     if admin:
-        # TODO: Redirect to last page and show flash error message
-        return 'There can only be one...'
+        # TODO: Redirect to *last* page and show flash error message
+        error = 'There can only be one admin'
+        return render_template('register.html', error=error)
     if request.method == 'GET':
         return render_template('register.html')
+    error = None
     if request.method == 'POST':
-        g.db.execute('insert into admin (username, password) values (?, ?)',
-            [request.form['username'], set_password(request.form['password'])])
-        g.db.commit()
-        flash('You are the new master of this blog')
-        # TODO: Automatically login
-        return redirect(url_for('show_entries'))
+        if request.form['username'] == '':
+            error = 'You have to enter a username'
+        elif request.form['password'] == '':
+            error = 'You have to enter a password'
+        elif not request.form['password'] == request.form['password2']:
+            error = "Passwords must match"
+        else:
+            g.db.execute('insert into admin (username, password) values (?, ?)',
+                [request.form['username'], 
+                 set_password(request.form['password'])])
+            g.db.commit()
+            # TODO: Automatic login after registration
+#            app.post(url_for('login'), data=dict(
+#                username=request.form['username'],
+#                password=request.form['password']))
+            flash('You are the new master of this blog')
+            return redirect(url_for('login'))
+    return render_template('register.html', error=error)
 
 
 if __name__ == '__main__':

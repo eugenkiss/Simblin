@@ -27,15 +27,18 @@
         <a href="{{ url_for('logout') }}">log out</a>
       {% endif %}
       </div>
+      {% if error %}<p class=error>{{ error }}</p>{% endif %}
       {% for message in get_flashed_messages() %}
       <div class=flash>{{ message }}</div>
       {% endfor %}
       <div id="content">
         {% block body %}{% endblock %}
+        {% block search %}
         <div id="search">
           <input id="search-field" name="search" type="text"/> 
           <a id="search-button" class="submit" href='#'>Search</a>
         </div>
+        {% endblock %}
       </div>
     </div>
     {% block bottom %}{% endblock %}

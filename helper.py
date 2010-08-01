@@ -1,6 +1,5 @@
 #!/bin/env python
 import sqlite3
-#import blog
 
 from os import urandom
 from hashlib import sha512
@@ -18,28 +17,7 @@ def check_password(raw_password, enc_password):
     salt, hsh = enc_password.split('$')
     return hsh == sha512('%s%s' % (salt, raw_password)).hexdigest()
 
-
-def connect_db():
-    from blog import app
-    # TODO: Explain why Parse_DEcltypes and row factory
-    db = sqlite3.connect(app.config['DATABASE'], 
-                         detect_types=sqlite3.PARSE_DECLTYPES)
-    db.row_factory = sqlite3.Row
-    return db
+# TODO: put connect_db, init_db and query_db here
+#       Maybe refactoring as package helps with circular imports?
 
 
-def init_db():
-    from blog import app
-    from contextlib import closing
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-
-def query_db(query, args=(), one=False):
-    from blog import g
-    cur = g.db.execute(query, args)
-    rv = [dict((cur.description[idx][0], value)
-               for idx, value in enumerate(row)) for row in cur.fetchall()]
-    return (rv[0] if rv else None) if one else rv
