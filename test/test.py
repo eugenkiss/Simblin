@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    simblin.test
+    test
     ~~~~~~~~~~~~~~
     
     This module tests the correctness of utility functions and the behaviour
@@ -68,12 +68,10 @@ class BlogTestCase(unittest.TestCase):
     
     def setUp(self):
         """Before each test, set up a blank database"""
-        self.db_fd, blog.app.config['DATABASE'] = tempfile.mkstemp()
-        self.app = blog.app.test_client()
+        config = dict()
+        self.db_fd, config['DATABASE'] = tempfile.mkstemp()
+        self.app = blog.create_app(config)
         # If I don't do this there is an error because g is not available?
-        def query_db(query, args=(), one=False):
-            return blog.query_db(query, args, one, blog.connect_db())
-        #self.query_db = query_db
         self.query_db = blog.query_db
         blog.init_db()
         #self._ctx = self.app.test_request_context()
@@ -82,7 +80,7 @@ class BlogTestCase(unittest.TestCase):
     def tearDown(self):
         """Get rid of the database again after each test."""
         os.close(self.db_fd)
-        os.unlink(blog.app.config['DATABASE'])
+        os.unlink(self.app.config['DATABASE'])
         #self._ctx.pop()
     
     # helper functions

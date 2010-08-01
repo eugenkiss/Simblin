@@ -16,6 +16,9 @@
 ** Could I theoretically put it in before request? -> test it
 ] -> Maybe write mail to Mailinglist (Some Questions)
 
+* Style headers of entry
+* Add smarty pants ``''
+
 * use authenticated decorator (for example for add_entry)
 
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
@@ -85,3 +88,4 @@
 future:
 * Put hardcoded Messages in config file
 * statistics
+* own comments
