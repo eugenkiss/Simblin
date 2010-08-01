@@ -3,95 +3,101 @@
     test
     ~~~~~~~~~~~~~~
     
-    This module tests the correctness of utility functions and the behaviour
+    This package tests the correctness of utility functions and the behaviour
     of the blog to certain requests.
     
     :copyright: (c) 2010 by Eugen Kiss.
     :license: LICENSE_NAME, see LICENSE_FILE for more details.
 """
 from __future__ import with_statement
-import os
 import unittest
-import tempfile
 import datetime
-import blog
+import tempfile
+import os
 
-# TODO: Test entry view
+from flask import g
+
+from simblin import create_app, helpers
+
 
 class PasswordTestCase(unittest.TestCase):
     
     def test_password_functions(self):
         """Check the integrity of the password functions"""
         raw_password = 'passworD546$!!.,.'
-        hash = blog.set_password(raw_password)
-        self.assertTrue(blog.check_password(raw_password, hash))
-        self.assertFalse(blog.check_password('abc', hash))
+        hash = helpers.set_password(raw_password)
+        self.assertTrue(helpers.check_password(raw_password, hash))
+        self.assertFalse(helpers.check_password('abc', hash))
         
         
 class NormalizeTestCase(unittest.TestCase):
     
     def test_slug_normalizing(self):
-        self.assertEqual(blog.normalize(''), '')
-        self.assertEqual(blog.normalize('dadada'), 'dadada')
-        self.assertEqual(blog.normalize('DaDaDa'), 'dadada')
-        self.assertEqual(blog.normalize('The house'), 'the-house')
-        self.assertEqual(blog.normalize('The  house'), 'the-house')
-        self.assertEqual(blog.normalize(' 123-name '), '123-name')
+        self.assertEqual(helpers.normalize(''), '')
+        self.assertEqual(helpers.normalize('dadada'), 'dadada')
+        self.assertEqual(helpers.normalize('DaDaDa'), 'dadada')
+        self.assertEqual(helpers.normalize('The house'), 'the-house')
+        self.assertEqual(helpers.normalize('The  house'), 'the-house')
+        self.assertEqual(helpers.normalize(' 123-name '), '123-name')
         # TODO: test special symbols like ? & = <> /
     
     def test_tags_normalizing(self):
         """
         Test the correct interpretation of a string of comma separated tags
         """
-        self.assertEqual(blog.normalize_tags(''), [])
-        self.assertEqual(blog.normalize_tags(','), [])
-        self.assertEqual(blog.normalize_tags('cool'), ['cool'])
-        self.assertEqual(blog.normalize_tags('cool,cool'), ['cool'])
+        self.assertEqual(helpers.normalize_tags(''), [])
+        self.assertEqual(helpers.normalize_tags(','), [])
+        self.assertEqual(helpers.normalize_tags('cool'), ['cool'])
+        self.assertEqual(helpers.normalize_tags('cool,cool'), ['cool'])
         self.assertEqual(
-            blog.normalize_tags('cool, cooler'), ['cool', 'cooler'])
+            helpers.normalize_tags('cool, cooler'), ['cool', 'cooler'])
         self.assertEqual(
-            blog.normalize_tags('cool, cooler '), ['cool', 'cooler'])
+            helpers.normalize_tags('cool, cooler '), ['cool', 'cooler'])
         self.assertEqual(
-            blog.normalize_tags('cool, cooler ,'), ['cool', 'cooler'])
+            helpers.normalize_tags('cool, cooler ,'), ['cool', 'cooler'])
         self.assertEqual(
-            blog.normalize_tags('cool, cooler ,  '), ['cool', 'cooler'])
+            helpers.normalize_tags('cool, cooler ,  '), ['cool', 'cooler'])
         self.assertEqual(
-            blog.normalize_tags(',cool, cooler ,  '), ['cool', 'cooler'])
+            helpers.normalize_tags(',cool, cooler ,  '), ['cool', 'cooler'])
         self.assertEqual(
-            blog.normalize_tags(' ,cool, cooler ,,  '), ['cool', 'cooler'])
+            helpers.normalize_tags(' ,cool, cooler ,,  '), ['cool', 'cooler'])
         self.assertEqual(
-            blog.normalize_tags("django, franz und bertha,vil/bil"),
+            helpers.normalize_tags("django, franz und bertha,vil/bil"),
             ['django','franz-und-bertha','vil-bil'])
-
+            
 
 class BlogTestCase(unittest.TestCase):
     
     def setUp(self):
         """Before each test, set up a blank database"""
-        config = dict()
-        self.db_fd, config['DATABASE'] = tempfile.mkstemp()
-        self.app = blog.create_app(config)
-        # If I don't do this there is an error because g is not available?
-        self.query_db = blog.query_db
-        blog.init_db()
-        #self._ctx = self.app.test_request_context()
-        #self._ctx.push()
+        class config:
+            DATABASE = ''
+        self.db_fd, config.DATABASE = tempfile.mkstemp()
+        self.app = create_app(config)
+        self.client = self.app.test_client()
+        helpers.init_db(self.app.config['DATABASE'])
+        self.db = helpers.connect_db(self.app.config['DATABASE'])
+        self._ctx = self.app.test_request_context()
+        self._ctx.push()
 
     def tearDown(self):
         """Get rid of the database again after each test."""
         os.close(self.db_fd)
         os.unlink(self.app.config['DATABASE'])
-        #self._ctx.pop()
+        self._ctx.pop()
     
     # helper functions
     
+    def query_db(self, query, args=(), one=False):
+        return helpers.query_db(query, args, one, db=self.db)
+    
     def cleardb(self):
         """Remove all rows inside the database"""
-        blog.init_db()
+        helpers.init_db(self.app.config['DATABASE'])
     
     def register(self, username, password, password2=None):
         """Helper function to register a user"""
-        return self.app.post('/register', data=dict(
+        return self.client.post('/register', data=dict(
             username=username,
             password=password,
             password2=password2
@@ -99,7 +105,7 @@ class BlogTestCase(unittest.TestCase):
     
     def login(self, username, password):
         """Helper function to login"""
-        return self.app.post('/login', data=dict(
+        return self.client.post('/login', data=dict(
             username=username,
             password=password
         ), follow_redirects=True)
@@ -111,11 +117,11 @@ class BlogTestCase(unittest.TestCase):
 
     def logout(self):
         """Helper function to logout"""
-        return self.app.get('/logout', follow_redirects=True)
+        return self.client.get('/logout', follow_redirects=True)
     
     def add_entry(self, title, markdown, tags):
         """Helper functions to create a blog post"""
-        return self.app.post('/compose', data=dict(
+        return self.client.post('/compose', data=dict(
             title=title,
             markdown=markdown,
             tags=tags,
@@ -124,14 +130,15 @@ class BlogTestCase(unittest.TestCase):
     
     def update_entry(self, title, markdown, tags, id):
         """Helper functions to create a blog post"""
-        return self.app.post('/compose', data=dict(
+        return self.client.post('/compose', data=dict(
             title=title,
             markdown=markdown,
             tags=tags,
             id=id
         ), follow_redirects=True)
-    
-    
+        
+# TODO: Test entry view
+
 class RegisterTestCase(BlogTestCase):
     
     def test_redirect(self):
@@ -139,7 +146,7 @@ class RegisterTestCase(BlogTestCase):
         If there is no admin yet the visitor shall be redirected 
         to the register page.
         """
-        rv = self.app.get('/', follow_redirects=True)
+        rv = self.client.get('/', follow_redirects=True)
         assert 'Register' in rv.data
     
     def test_registering(self):
@@ -182,7 +189,7 @@ class ComposingTestCase(BlogTestCase):
         assert 'New entry was successfully posted' in rv.data
         rv = self.update_entry(title='a', markdown='', tags='', id=999)
         assert 'Invalid id' in rv.data
-        rv = self.app.get('/compose?id=999')
+        rv = self.client.get('/compose?id=999')
         assert 'Invalid id' in rv.data
         
     def test_conversion(self):
@@ -211,7 +218,7 @@ class ComposingTestCase(BlogTestCase):
         self.assertEqual(entry['slug'], expected_slug)
         self.assertEqual(entry['html'], expected_html)
         self.assertEqual(entry['published'].date(), expected_date)
-        tags = blog.get_tags(entry['id'])
+        tags = helpers.get_tags(entry['id'], db=self.db)
         #with blog.app.test_request_context('/'):
         #    tags = blog.get_tags(entry['id'])
         self.assertEqual(tags, expected_tags)
@@ -257,7 +264,7 @@ class ComposingTestCase(BlogTestCase):
         self.assertEqual(entry['slug'], expected_slug)
         self.assertEqual(entry['html'], expected_html)
         self.assertEqual(entry['published'].date(), expected_date)
-        tags = blog.get_tags(id=entry['id'])
+        tags = blog.get_tags(id=entry['id'], db=self.db)
         self.assertEqual(tags, expected_tags)
         
         # Expect three rows in the entries table because three entries where
@@ -273,7 +280,7 @@ class ComposingTestCase(BlogTestCase):
         
         entries = self.query_db('SELECT * FROM entries')
         tags = self.query_db('SELECT * FROM tags')
-        entry_tag_mappings = blog.query_db('SELECT * FROM entry_tag')
+        entry_tag_mappings = self.query_db('SELECT * FROM entry_tag')
         self.assertEqual(len(entries), 3)
         self.assertEqual(len(tags), 2)
         self.assertEqual(len(entry_tag_mappings), 4)

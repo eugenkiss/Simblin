@@ -1,5 +1,8 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
+* I want to fucking put the fucking test cases inside their motherfucking
+  own fucking folder, why does it not work!!!!
+
 * Got through Todo's inside Source
 * Look at tornado blog, what forgot
 * Look at minitwit example, what forgot
@@ -15,6 +18,8 @@
 * Redirection to last visited page (IRC) (Cookie? last-visited='/blabla')?
 ** Could I theoretically put it in before request? -> test it
 ] -> Maybe write mail to Mailinglist (Some Questions)
+
+* Delete Entries
 
 * Style headers of entry
 * Add smarty pants ``''

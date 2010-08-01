@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>{{ config['BLOG_TITLE'] }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='blog.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ url_for('.static', filename='blog.css') }}" type="text/css"/>
     {% block head %}{% endblock %}
   </head>
   <body>
