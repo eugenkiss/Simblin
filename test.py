@@ -233,7 +233,7 @@ class ComposingTestCase(BlogTestCase):
         entry = self.query_db('SELECT * FROM entries WHERE id=2', one=True)
         self.assertEqual(entry['title'], expected_title) 
         self.assertEqual(entry['slug'], expected_slug2)
-        all_tags = blog.query_db('SELECT * FROM tags')
+        all_tags = self.query_db('SELECT * FROM tags')
         self.assertEqual(len(all_tags), 3)    
         
         # Add yet another entry with the same title and expect a different slug
@@ -249,11 +249,11 @@ class ComposingTestCase(BlogTestCase):
         updated_title = 'cool'
         updated_markdown = '## Title'
         updated_tags = ''
-        expected_title = title
-        expected_markdown = markdown
+        expected_title = updated_title
+        expected_markdown = updated_markdown
         expected_tags = []
         expected_slug = 'cool'
-        expected_html = '<h2>Title</h2>'
+        expected_html = u'<h2>Title</h2>\n'
         expected_date = datetime.date.today()
         self.update_entry(title=updated_title, markdown=updated_markdown, 
                           tags=updated_tags, id=1)
@@ -264,7 +264,7 @@ class ComposingTestCase(BlogTestCase):
         self.assertEqual(entry['slug'], expected_slug)
         self.assertEqual(entry['html'], expected_html)
         self.assertEqual(entry['published'].date(), expected_date)
-        tags = blog.get_tags(id=entry['id'], db=self.db)
+        tags = helpers.get_tags(entry_id=entry['id'], db=self.db)
         self.assertEqual(tags, expected_tags)
         
         # Expect three rows in the entries table because three entries where

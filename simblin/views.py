@@ -6,7 +6,7 @@ from flask import Module, g, current_app, render_template, session, request, \
 
 from helpers import set_password, check_password, normalize, normalize_tags, \
     convert_markdown, connect_db, init_db, query_db, get_tags, create_tags, \
-    associate_tags, unassociate_tags
+    associate_tags, unassociate_tags, tidy_tags
 
 view = Module(__name__)
 
@@ -63,8 +63,13 @@ def add_entry():
         id = request.form['id']
         title = request.form['title']
         markdown = request.form['markdown']
-        # TODO: Make slug unique (see tornado blog)
         slug = normalize(title)
+        # In order to make slug unique
+        while True:
+            entry = query_db('SELECT * FROM entries WHERE slug=?', [slug],
+                one=True)
+            if not entry: break
+            slug += "-2"
         html = convert_markdown(markdown)
         now = datetime.datetime.now()
         tags = normalize_tags(request.form['tags'])
@@ -94,8 +99,8 @@ def add_entry():
                 flash('Entry was successfully updated')
                 unassociate_tags(id)
                 associate_tags(id, tags)
+            tidy_tags()
             g.db.commit()
-            #return redirect(url_for('show_entry'), slug=slug)
             return redirect(url_for('show_entries'))
     return render_template('compose.html', error=error)
 

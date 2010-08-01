@@ -100,7 +100,19 @@ def create_tags(tag_names, db=None):
         if not tag:
             db.execute("INSERT INTO tags (name) VALUES (?)", [tag_name])
     db.commit()
+    
 
+def tidy_tags(db=None):
+    """Delete tags that are not associated to at least one entry"""
+    if hasattr(g, 'db'): db = g.db
+    associated_tag_ids = query_db('SELECT tag_id FROM entry_tag', db=db)
+    associated_tag_ids = [x['tag_id'] for x in associated_tag_ids]
+    tags = query_db('SELECT id FROM tags', db=db)
+    for tag in tags:
+        if tag['id'] not in associated_tag_ids:
+            db.execute('DELETE FROM tags WHERE id=?', [tag['id']])
+    db.commit()
+    
 
 def associate_tags(entry_id, tag_names, db=None):
     """Create new associations between tags and a specific entry"""
