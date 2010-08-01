@@ -1,0 +1,18 @@
+{% macro entry_macro(id, slug, title, html, published, tags) %}
+<div class="entry">
+  <h1 class="entry-title"><a href="{{ url_for('show_entry', slug=slug) }}">{{ title }}</a></h1>
+  <div class="body">{{ html|safe }}</div>
+  <div class="info">
+    <div class="date">{{ published.strftime("%A %d. %B %Y") }}</div>
+    <div class="tags">Tags: 
+    {% for tag in tags %}
+      <a href='/'>{{ tag }}</a>{% if not loop.last %}, {% endif %} 
+    {% endfor %}
+    </div>
+  {% if session.logged_in %}
+    <div class="admin"><a href="/compose?id={{ id }}">Edit</a></div>
+  {% endif %}
+  </div>
+</div>
+{% endmacro %}
+

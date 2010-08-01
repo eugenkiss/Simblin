@@ -1,0 +1,9 @@
+Simflabeng
+==========
+
+first run `python initdb.py` then run `python blog.py`
+
+put your real settings in a file called `settings.cfg`. You can look at
+`default-settings.cfg` to get an idea.
+
+Markdown: http://code.google.com/p/python-markdown2/

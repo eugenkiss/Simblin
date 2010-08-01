@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% from 'macros.html' import entry_macro with context %}
+{% block body %}
+{% if entry %}
+{{ entry_macro(id=entry.id, slug=entry.slug, title=entry.title, html=entry.html, published=entry.published, tags=entry.tags) }}
+{% else %}
+<em>No entry here so far</em>
+{% endif %}
+{% endblock %}

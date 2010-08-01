@@ -1,4 +1,14 @@
-#!/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    simblin.test
+    ~~~~~~~~~~~~~~
+    
+    This module tests the correctness of utility functions and the behaviour
+    of the blog to certain requests.
+    
+    :copyright: (c) 2010 by Eugen Kiss.
+    :license: LICENSE_NAME, see LICENSE_FILE for more details.
+"""
 from __future__ import with_statement
 import os
 import unittest
@@ -6,9 +16,10 @@ import tempfile
 import datetime
 import blog
 
+# TODO: Test entry view
 
 class PasswordTestCase(unittest.TestCase):
-
+    
     def test_password_functions(self):
         """Check the integrity of the password functions"""
         raw_password = 'passworD546$!!.,.'
@@ -20,6 +31,7 @@ class PasswordTestCase(unittest.TestCase):
 class NormalizeTestCase(unittest.TestCase):
     
     def test_slug_normalizing(self):
+        self.assertEqual(blog.normalize(''), '')
         self.assertEqual(blog.normalize('dadada'), 'dadada')
         self.assertEqual(blog.normalize('DaDaDa'), 'dadada')
         self.assertEqual(blog.normalize('The house'), 'the-house')
@@ -28,6 +40,11 @@ class NormalizeTestCase(unittest.TestCase):
         # TODO: test special symbols like ? & = <> /
     
     def test_tags_normalizing(self):
+        """
+        Test the correct interpretation of a string of comma separated tags
+        """
+        self.assertEqual(blog.normalize_tags(''), [])
+        self.assertEqual(blog.normalize_tags(','), [])
         self.assertEqual(blog.normalize_tags('cool'), ['cool'])
         self.assertEqual(blog.normalize_tags('cool,cool'), ['cool'])
         self.assertEqual(
@@ -43,23 +60,30 @@ class NormalizeTestCase(unittest.TestCase):
         self.assertEqual(
             blog.normalize_tags(' ,cool, cooler ,,  '), ['cool', 'cooler'])
         self.assertEqual(
-            blog.normalize("django, franz und bertha,vil/bil"),
-            ['django','franz-und-bertha','vil/bil'])
+            blog.normalize_tags("django, franz und bertha,vil/bil"),
+            ['django','franz-und-bertha','vil-bil'])
 
 
 class BlogTestCase(unittest.TestCase):
-
+    
     def setUp(self):
         """Before each test, set up a blank database"""
-        #self.db_fd, blog.DATABASE = tempfile.mkstemp()
         self.db_fd, blog.app.config['DATABASE'] = tempfile.mkstemp()
         self.app = blog.app.test_client()
+        # If I don't do this there is an error because g is not available?
+        def query_db(query, args=(), one=False):
+            return blog.query_db(query, args, one, blog.connect_db())
+        #self.query_db = query_db
+        self.query_db = blog.query_db
         blog.init_db()
+        #self._ctx = self.app.test_request_context()
+        #self._ctx.push()
 
     def tearDown(self):
         """Get rid of the database again after each test."""
         os.close(self.db_fd)
         os.unlink(blog.app.config['DATABASE'])
+        #self._ctx.pop()
     
     # helper functions
     
@@ -84,7 +108,7 @@ class BlogTestCase(unittest.TestCase):
         
     def register_and_login(self, username, password):
         """Registers and logs in in one go"""
-        self.register(username, password)
+        self.register(username, password, password)
         self.login(username, password)
 
     def logout(self):
@@ -96,15 +120,17 @@ class BlogTestCase(unittest.TestCase):
         return self.app.post('/compose', data=dict(
             title=title,
             markdown=markdown,
-            tags=tags
+            tags=tags,
+            id=''
         ), follow_redirects=True)
     
     def update_entry(self, title, markdown, tags, id):
         """Helper functions to create a blog post"""
-        return self.app.post('/compose?id=%d' % id, data=dict(
+        return self.app.post('/compose', data=dict(
             title=title,
             markdown=markdown,
-            tags=tags
+            tags=tags,
+            id=id
         ), follow_redirects=True)
     
     
@@ -141,18 +167,25 @@ class LoginTestCase(BlogTestCase):
         assert 'Invalid password' in rv.data
         rv = self.login('barney', 'abc')
         assert 'You have been successfully logged in' in rv.data
+        # TODO: Test if session.logged_in has been set
         rv = self.logout()
         assert 'You have been successfully logged out' in rv.data
         
         
 class ComposingTestCase(BlogTestCase):
     
-    def test_formvalidation(self):
+    def test_validation(self):
+        """Check if form validation and validation in general works"""
+        self.cleardb();
         self.register_and_login('barney', 'abc')
         rv = self.add_entry(title='', markdown='a', tags='b')
         assert 'You must provide a title' in rv.data
         rv = self.add_entry(title='a', markdown='', tags='')
-        assert 'Post has been successfully created'
+        assert 'New entry was successfully posted' in rv.data
+        rv = self.update_entry(title='a', markdown='', tags='', id=999)
+        assert 'Invalid id' in rv.data
+        rv = self.app.get('/compose?id=999')
+        assert 'Invalid id' in rv.data
         
     def test_conversion(self):
         """
@@ -167,20 +200,22 @@ class ComposingTestCase(BlogTestCase):
         expected_id = 1
         expected_title = title
         expected_markdown = markdown
-        expected_tags = ['django','franz-und-bertha','vil/bil']
+        expected_tags = ['django','franz-und-bertha','vil-bil']
         expected_slug = "my-entry"
-        expected_html = "<h1>Title</h1>"
+        expected_html = u"<h1>Title</h1>\n"
         expected_date = datetime.date.today()
-        self.add_entry(title=title, markdown=markdown, tags=tags)
-
-        entry = blog.querydb('SELECT * FROM entries LIMIT 1', one=True)
+        rv = self.add_entry(title=title, markdown=markdown, tags=tags)
+        
+        entry = self.query_db('SELECT * FROM entries', one=True)
         self.assertEqual(entry['id'], expected_id)
         self.assertEqual(entry['title'], expected_title)
         self.assertEqual(entry['markdown'], expected_markdown)
         self.assertEqual(entry['slug'], expected_slug)
         self.assertEqual(entry['html'], expected_html)
         self.assertEqual(entry['published'].date(), expected_date)
-        tags = blog.get_tags(id=entry['id'])
+        tags = blog.get_tags(entry['id'])
+        #with blog.app.test_request_context('/'):
+        #    tags = blog.get_tags(entry['id'])
         self.assertEqual(tags, expected_tags)
         
         # Add another entry with the same fields but expect a different slug
@@ -190,10 +225,10 @@ class ComposingTestCase(BlogTestCase):
         tags2 = "django, franz und bertha"
         self.add_entry(title=title, markdown=markdown, tags=tags2)
 
-        entry = blog.querydb('SELECT * FROM entries WHERE id=2', one=True)
+        entry = self.query_db('SELECT * FROM entries WHERE id=2', one=True)
         self.assertEqual(entry['title'], expected_title) 
         self.assertEqual(entry['slug'], expected_slug2)
-        all_tags = blog.querydb('SELECT * FROM tags')
+        all_tags = blog.query_db('SELECT * FROM tags')
         self.assertEqual(len(all_tags), 3)    
         
         # Add yet another entry with the same title and expect a different slug
@@ -201,7 +236,7 @@ class ComposingTestCase(BlogTestCase):
         expected_slug3 = expected_slug2 + '-2'
         self.add_entry(title=title, markdown=markdown, tags=tags2)
         
-        entry = blog.querydb('SELECT * FROM entries WHERE id=3', one=True)
+        entry = self.query_db('SELECT * FROM entries WHERE id=3', one=True)
         self.assertEqual(entry['slug'], expected_slug3)
         
         # Now test updating an entry
@@ -218,7 +253,7 @@ class ComposingTestCase(BlogTestCase):
         self.update_entry(title=updated_title, markdown=updated_markdown, 
                           tags=updated_tags, id=1)
 
-        entry = blog.querydb('SELECT * FROM entries WHERE id=1', one=True)
+        entry = self.query_db('SELECT * FROM entries WHERE id=1', one=True)
         self.assertEqual(entry['title'], expected_title)
         self.assertEqual(entry['markdown'], expected_markdown)
         self.assertEqual(entry['slug'], expected_slug)
@@ -238,9 +273,9 @@ class ComposingTestCase(BlogTestCase):
         # 3          1
         # 3          2
         
-        entries = blog.querydb('SELECT * FROM entries')
-        tags = blog.querydb('SELECT * FROM tags')
-        entry_tag_mappings = blog.querydb('SELECT * FROM entry_tag')
+        entries = self.query_db('SELECT * FROM entries')
+        tags = self.query_db('SELECT * FROM tags')
+        entry_tag_mappings = blog.query_db('SELECT * FROM entry_tag')
         self.assertEqual(len(entries), 3)
         self.assertEqual(len(tags), 2)
         self.assertEqual(len(entry_tag_mappings), 4)

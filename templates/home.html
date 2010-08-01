@@ -1,19 +1,9 @@
 {% extends "base.html" %}
+{% from 'macros.html' import entry_macro with context %}
 {% block body %}
-{% for entry in entries %}
-<div class="entry">
-  <h1 class="entry-title"><a href="{{ url_for('show_entry', slug=entry.slug) }}">{{ entry.title }}</a></h1>
-  <div class="body">{{ entry.html|safe }}</div>
-  <div class="info">
-    <div class="date">{{ entry.published.strftime("%A %d. %B %Y") }}</div>
-    <div class="tags">{{ ', '.join(tags) }}</div>
-  {% if session.logged_in %}
-                               <!-- TODO: make id work -->
-    <div class="admin"><a href="/compose?id={{ entry.id }}">Edit</a></div>
-  {% endif %}
-  </div>
-</div>
-{% else %}
-<em>No entries here so far</em>
-{% endfor %}
+  {% for entry in entries %}
+  {{ entry_macro(id=entry.id, slug=entry.slug, title=entry.title, html=entry.html, published=entry.published, tags=entry.tags) }}
+  {% else %}
+  <em>No entries here so far</em>
+  {% endfor %}
 {% endblock %}

@@ -3,22 +3,31 @@
 * Got through Todo's inside Source
 * Look at tornado blog, what forgot
 * Look at minitwit example, what forgot
-* Automatic login after registration (IRC)
-* Redirection to last visited page (IRC) (Cookie? last-visited='/blabla')
+* Look at: http://bitbucket.org/danjac/newsmeme/src/
+  and look what you can use, e.g.
+  from werkzeug import generate_password_hash, check_password_hash,
+  instead of own methods
+[
+* Ask if someone could have a look at my unit tests
+* Ask if there is something like modules in tornado (IRC)?
+* Test if a session cooke was set in test (IRC)?
+* Automatic login after registration (IRC)?
+* Redirection to last visited page (IRC) (Cookie? last-visited='/blabla')?
+** Could I theoretically put it in before request? -> test it
+] -> Maybe write mail to Mailinglist (Some Questions)
+
+* use authenticated decorator (for example for add_entry)
 
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
 
 * Tag support
-
-* Markdown (python-markdown) Support! Therefor add field 'html' to entries
-  and anpasse blog.py
 
 * Write Test Suite (with mock objects n shit)
 ** create subfolder test (be inspired by hatta, look at that)
 
 * Preview
 
-* Refactor as Package (as mentionend in flusk docs)
+* Refactor as Package (as mentionend in flask docs)
 
 * Refactor/Document/Readme/Changelog
 

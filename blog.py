@@ -1,8 +1,19 @@
-#!/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    simblin.blog
+    ~~~~~~~~~~~~~~
+
+    Simple Blog Engine
+
+    :copyright: (c) 2010 by Eugen Kiss.
+    :license: LICENSE_NAME, see LICENSE_FILE for more details.
+"""
 from __future__ import with_statement
 import sqlite3
 import datetime
-import settings
+import re
+import unicodedata
+import markdown2
 
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
@@ -11,7 +22,11 @@ from helper import set_password, check_password
 
 
 app = Flask(__name__)
-app.config.from_object(settings)
+app.config.from_pyfile('default-settings.cfg')
+try:
+    app.config.from_pyfile('settings.cfg')
+except IOError:
+    pass
 
 
 # Helper
@@ -31,11 +46,73 @@ def init_db():
         db.commit()
 
 
-def query_db(query, args=(), one=False):
-    cur = g.db.execute(query, args)
+def query_db(query, args=(), one=False, db=None):
+    cur = g.db.execute(query, args) if not db else db.execute(query, args)
     rv = [dict((cur.description[idx][0], value)
                for idx, value in enumerate(row)) for row in cur.fetchall()]
     return (rv[0] if rv else None) if one else rv
+
+
+def normalize(string):
+    """Give a string a unified form"""
+    string = unicodedata.normalize("NFKD", unicode(string)).encode(
+        "ascii", "ignore")
+    string = re.sub(r"[^\w]+", " ", string)
+    string = "-".join(string.lower().strip().split())
+    return string
+
+
+def normalize_tags(string):
+    tags = string.split(',')
+    result = []
+    for tag in tags:
+        normalized = normalize(tag)
+        if normalized and not normalized in result: 
+            result.append(normalized)
+    return result
+
+
+def convert_markdown(string):
+    return markdown2.markdown(string)
+
+
+def get_tags(entry_id):
+    """Get a list of all Tags associated with this specific entry"""
+    tags = query_db(
+        'SELECT * FROM tags, entry_tag '
+        'WHERE entry_tag.entry_id=? AND entry_tag.tag_id=tags.id', [entry_id])
+    tag_names = [tag['name'] for tag in tags]
+    return tag_names
+
+
+def create_tags(tag_names):
+    """Create new unique tags inside the database (if necessary)"""
+    for tag_name in tag_names:
+        tag = query_db("SELECT * FROM tags WHERE name=? LIMIT 1", 
+            [tag_name], one=True)
+        # Don't create duplicate tags
+        if not tag:
+            g.db.execute("INSERT INTO tags (name) VALUES (?)", [tag_name])
+    g.db.commit()
+
+
+def associate_tags(entry_id, tag_names):
+    """Inserts new rows in the table that maps tags to entries"""
+    for tag_name in tag_names:
+        tag = query_db("SELECT * FROM tags WHERE name=? LIMIT 1", 
+            [tag_name], one=True)
+        # Only associate existing tags
+        if tag:
+            g.db.execute(
+                "INSERT INTO entry_tag (entry_id, tag_id) VALUES (?, ?)", 
+                [entry_id, tag['id']])
+    g.db.commit()
+    
+    
+def unassociate_tags(entry_id):
+    """Delete all entry-tag associations"""
+    g.db.execute("DELETE FROM entry_tag WHERE entry_id=?", [entry_id])
+    g.db.commit()
 
 # End Helper
 
@@ -53,7 +130,9 @@ def after_request(response):
 
 @app.route('/')
 def show_entries():
-    entries = query_db('select * from entries order by id desc')
+    entries = query_db('SELECT * FROM entries ORDER BY id DESC')
+    for entry in entries:
+        entry['tags'] = get_tags(entry['id'])
     if not entries:
         return redirect(url_for('add_entry'))
     else:
@@ -62,7 +141,13 @@ def show_entries():
 
 @app.route('/entry/<slug>')
 def show_entry(slug):
-    return "TODO"
+    entry = query_db('SELECT * FROM entries WHERE slug=?', [slug], one=True)
+    if not entry:
+        flash("No such entry")
+        return redirect(url_for('show_entries'))
+    else:
+        entry['tags'] = get_tags(entry['id'])
+        return render_template('entry.html', entry=entry)
 
 
 @app.route('/compose', methods=['GET', 'POST'])
@@ -75,24 +160,61 @@ def add_entry():
     #       its contents.
     #       In the POST request, update the entry instead of inserting another
     #       row.
+    error = None
     if request.method == 'GET':
-        # TODO: Add id argument to be able to edit specific post
-        return render_template('compose.html')
+        id = request.args.get('id', '')
+        if id:
+            entry = query_db('SELECT * FROM entries WHERE id=?', [id], one=True)
+            if not entry:
+                error = 'Invalid id'
+            else:
+                tags = get_tags(entry_id=id)
+                return render_template('compose.html', entry=entry, tags=tags)
+        else:
+            return render_template('compose.html', entry=None, tags=None)
+    
+    # TODO: 
+    #       * Create slug (tornado) and normalize and unique it (-2)
+    #       
     if request.method == 'POST':
-        # TODO: * Convert markdown to html here
-        #       * Create slug (tornado) and normalize and unique it (-2)
-        #       * Normalize tagss
-        g.db.execute(
-            'insert into entries (slug, title, markdown, html, published)' 
-            'values (?, ?, ?, ?, ?)',
-                     [request.form['title'],
-                      request.form['title'], 
-                      request.form['markdown'],
-                      request.form['markdown'],
-                      datetime.datetime.now()])
-        g.db.commit()
-        flash('New entry was successfully posted')
-        return redirect(url_for('show_entries'))
+        id = request.form['id']
+        title = request.form['title']
+        markdown = request.form['markdown']
+        # TODO: Make slug unique (see tornado blog)
+        slug = normalize(title)
+        html = convert_markdown(markdown)
+        now = datetime.datetime.now()
+        tags = normalize_tags(request.form['tags'])
+        create_tags(tags)
+        if request.form['title'] == '':
+            error = 'You must provide a title'
+        elif id and \
+            not query_db('SELECT * FROM entries WHERE id=?', [id], one=True):
+            error = 'Invalid id'
+        else:
+            if not id:
+                g.db.execute(
+                    'INSERT INTO entries ' 
+                    '(slug, title, markdown, html, published) ' 
+                    'VALUES (?, ?, ?, ?, ?)',
+                    [slug, title, markdown, html, now])
+                id = query_db('SELECT id FROM entries WHERE slug=?', 
+                    [slug], one=True)['id']
+                associate_tags(id, tags)
+                flash('New entry was successfully posted')
+            else:
+                g.db.execute(
+                    'UPDATE entries SET ' 
+                    'slug=?, title=?, markdown=?, html=? ' 
+                    'WHERE id=?',
+                    [slug, title, markdown, html, id])
+                flash('Entry was successfully updated')
+                unassociate_tags(id)
+                associate_tags(id, tags)
+            g.db.commit()
+            #return redirect(url_for('show_entry'), slug=slug)
+            return redirect(url_for('show_entries'))
+    return render_template('compose.html', error=error)
 
 
 @app.route('/login', methods=['GET', 'POST'])
