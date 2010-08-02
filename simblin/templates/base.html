@@ -4,21 +4,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>{{ config['BLOG_TITLE'] }}</title>
     <link rel="stylesheet" href="{{ url_for('.static', filename='blog.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ url_for('.static', filename='codehilite.css') }}" type="text/css"/>
     {% block head %}{% endblock %}
   </head>
   <body>
     <div id="wrapper">
-      <div id="header">
-        <a href="{{ url_for('show_entries') }}"><h1>{{ config['BLOG_TITLE'] }}</h1></a>
-      </div>
+      
       <div id="navigation">
         <ul>
+          <li id="header"><a href="{{ url_for('show_entries') }}">{{ config['BLOG_TITLE'] }}</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Archives</a></li>
           <li><a href="#">Projects</a></li>
           <li><a href="#">Impressum</a></li>
         </ul>
       </div>
+      
       <div id="metanav">
       {% if not session.logged_in %}
         <a href="{{ url_for('login') }}">log in</a>
@@ -27,6 +28,9 @@
         <a href="{{ url_for('logout') }}">log out</a>
       {% endif %}
       </div>
+      
+      
+      
       {% if error %}<p class=error>{{ error }}</p>{% endif %}
       {% for message in get_flashed_messages() %}
       <div class=flash>{{ message }}</div>

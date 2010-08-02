@@ -52,7 +52,8 @@ def normalize_tags(string):
 
 def convert_markdown(string):
     """Convert the argument from markdown to html"""
-    return markdown2.markdown(string)
+    return markdown2.markdown(string, 
+        extras=["code-friendly", "code-color", "footnotes"])
 
 
 def connect_db(db_path):

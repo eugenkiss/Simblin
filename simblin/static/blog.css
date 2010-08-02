@@ -61,21 +61,19 @@ label {
     padding-top: 0;
 }
 
-#header h1 {
-    text-align: center;
-    /*font-family: Times New Roman, Palatino, serif;*/
+#header {
     text-transform: uppercase;
-    font-weight: normal;
-    letter-spacing: 0.05em;
-    font-size: 3em;
-    color: #666;
+    font-weight: bold;
+    letter-spacing: 0.3em;
+    /*font-size: 3em;*/
+    /*color: #666;*/
 }
 
 #navigation {
 }
 
 #navigation a {
-    color: grey;
+    color: gray;
     color: #080000;
     /*font-variant: small-caps;*/
 }
@@ -85,7 +83,7 @@ label {
     padding-bottom: 0.5em;
     padding-left: 0;
     border-bottom: 1px dotted #080000;
-    text-align: center;
+    text-align: left;
 }
 
 #navigation li {
@@ -99,10 +97,19 @@ label {
 
 #navigation li:first-child {
     padding-left: 0;
+    text-align: left;
 }
 
 #metanav {
     text-align: right;
+    padding-right: 1px;
+    font-size: small;
+}
+
+#metanav a {
+    padding-left: 0.5em;
+    font-size: small;
+    color: gray;
 }
 
 #content {
@@ -122,7 +129,7 @@ label {
 
 .entry h1.entry-title {
     text-align: left;
-    /*border-bottom: 1px dotted grey;*/
+    /*border-bottom: 1px dotted gray;*/
     /*padding-bottom: 0.5em;*/
 }
 
@@ -131,12 +138,15 @@ label {
     color: #AA2C8C;
     color: #080000;
     font-weight: normal;
-    font-size: 80%;
+    /*font-size: 90%;*/
+}
+
+.entry h1.entry-title a:hover {
+    border-bottom: 1px dotted gray;
 }
 
 .entry .body {
     font-family: Georgia;
-    font-size: 110%;
     color: #333;
     margin-top: 1em;
     margin-bottom: 1em;
@@ -144,9 +154,8 @@ label {
 
 .entry .info {
     margin-bottom: 2em;
-    color: grey;
+    color: gray;
     font-size: small;
-    font-variant: small-caps;
 }
 
 .entry .date {
@@ -155,3 +164,12 @@ label {
 .entry .admin {
 }
 
+.entry .body h2 {
+    /*font-size: 120%;*/
+    /*color: #666;*/
+}
+
+.codehilite {
+    background: ghostwhite;
+    padding: 0.25em 0.5em;
+}

@@ -15,7 +15,7 @@
 ** Could I theoretically put it in before request? -> test it
 ] -> Maybe write mail to Mailinglist (Some Questions)
 
-* Delete Entries
+* Delete Entries (but with confirmation)
 
 * Style headers of entry
 * Add smarty pants ``''
@@ -90,3 +90,4 @@ future:
 * statistics
 * own comments
 * search
+* feeds
