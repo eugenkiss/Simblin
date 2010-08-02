@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+    Simblin Test Views
+    ~~~~~~~~~~~~~~~~~~
+
+    Test the different views of the blogging application.
+
+    :copyright: (c) 2010 by Eugen Kiss.
+    :license: BSD, see LICENSE for more details.
+"""
 from __future__ import with_statement
 import datetime
 import tempfile
@@ -73,7 +82,7 @@ def login(username, password):
     
     
 def register_and_login(username, password):
-    """Registers and logs in in one go"""
+    """Register and login in one go"""
     register(username, password, password)
     login(username, password)
 

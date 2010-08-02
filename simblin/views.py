@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+    Simblin Views
+    ~~~~~~~~~~~~~
+
+    The different views of the blogging application.
+
+    :copyright: (c) 2010 by Eugen Kiss.
+    :license: BSD, see LICENSE for more details.
+"""
 import datetime
 
 from flask import Module, g, current_app, render_template, session, request, \
@@ -13,6 +22,7 @@ view = Module(__name__)
 
 @view.route('/')
 def show_entries():
+    """Show the latest x blog posts"""
     entries = query_db('SELECT * FROM entries ORDER BY id DESC')
     for entry in entries:
         entry['tags'] = get_tags(entry['id'])
@@ -24,6 +34,7 @@ def show_entries():
 
 @view.route('/entry/<slug>')
 def show_entry(slug):
+    """Show a specific blog post alone"""
     entry = query_db('SELECT * FROM entries WHERE slug=?', [slug], one=True)
     if not entry:
         flash("No such entry")
@@ -36,6 +47,7 @@ def show_entry(slug):
 @view.route('/compose', methods=['GET', 'POST'])
 @login_required
 def add_entry():
+    """Create a new blog post"""
     error = None
     if request.method == 'GET':
         id = request.args.get('id', '')
@@ -101,6 +113,7 @@ def add_entry():
 
 @view.route('/login', methods=['GET', 'POST'])
 def login():
+    """Log the admin in"""
     # The first visitor shall become the admin
     admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
     if not admin:
@@ -125,14 +138,18 @@ def login():
 
 @view.route('/logout')
 def logout():
+    """Log the admin out"""
     session.pop('logged_in', None)
     flash('You have been successfully logged out')
     #: For automatic redirection to the last visited page before login
     next = request.values.get('next', '')
     return redirect(next if next else url_for('show_entries'))
 
+
 @view.route('/register', methods=['GET', 'POST'])
 def register():
+    """Register the first visitor of the page. After that don't allow any
+    registrations anymore"""
     admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
     if admin:
         flash('There can only be one admin', 'error')

@@ -28,7 +28,7 @@ def login_required(f):
 
 # TODO: Replace with Werkzeug pw hash??
 def set_password(raw_password):
-    """Returns a secure representation of a password"""
+    """Return a secure representation of a password"""
     salt = sha512(urandom(8)).hexdigest()
     hsh = sha512('%s%s' % (salt, raw_password)).hexdigest()
     return '%s$%s' % (salt, hsh)
@@ -36,13 +36,13 @@ def set_password(raw_password):
 
 # TODO: Replace with Werkzeug pw hash??
 def check_password(raw_password, enc_password):
-    """Returns a boolean of whether the raw_password was correct"""
+    """Return a boolean of whether the raw_password was correct"""
     salt, hsh = enc_password.split('$')
     return hsh == sha512('%s%s' % (salt, raw_password)).hexdigest()
 
 
 def normalize(string):
-    """Give a string a unified form"""
+    """Unify string"""
     string = unicodedata.normalize("NFKD", unicode(string)).encode(
         "ascii", "ignore")
     string = re.sub(r"[^\w]+", " ", string)
@@ -51,7 +51,7 @@ def normalize(string):
 
 
 def normalize_tags(string):
-    """Returns a list of normalized tags from a string with comma separated
+    """Return a list of normalized tags from a string with comma separated
     tags"""
     tags = string.split(',')
     result = []
@@ -77,6 +77,7 @@ def connect_db(db_path):
 
 
 def init_db(db_path, app=None):
+    """Create the database tables."""
     if not app: app = current_app
     with closing(connect_db(db_path)) as db:
         with app.open_resource('schema.sql') as f:
@@ -85,7 +86,7 @@ def init_db(db_path, app=None):
 
 
 def query_db(query, args=(), one=False, db=None):
-    """Simplifies interfacing with sqlite3"""
+    """Simplify interfacing with sqlite3"""
     if hasattr(g, 'db'): db = g.db
     cur = db.execute(query, args)
     rv = [dict((cur.description[idx][0], value)

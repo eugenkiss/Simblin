@@ -24,6 +24,10 @@
 
 * Pylint
 
+* Add possiblity to load real settings.cfg
+
+* Add License (BSD)
+
 * Refactor/Document/Readme/Changelog
 
 * Test looks on firefox/opera and ggf. improve (buttons)

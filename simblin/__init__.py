@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-    simblin
-    ~~~~~~~~~~~~~~
+    Simblin
+    ~~~~~~~
 
-    Simblin - Simple Blog Engine
+    Simblin - **Sim**ple **B**log Eng**in**e. A blog engine written with Flask
+    and Sqlite3.
 
     :copyright: (c) 2010 by Eugen Kiss.
-    :license: LICENSE_NAME, see LICENSE_FILE for more details.
+    :license: BSD, see LICENSE for more details.
 """
 from flask import Flask, g
 
