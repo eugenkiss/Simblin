@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 from __future__ import with_statement
 import datetime
 import tempfile
 import os
+import flask
 
 from nose.tools import assert_equal, assert_true, assert_false, with_setup
 from simblin import create_app, helpers
@@ -109,8 +111,8 @@ class TestRegister:
         to the register page.
         """
         clear_db()
+        logout()
         rv = client.get('/', follow_redirects=True)
-        print rv.data
         assert 'Register' in rv.data
     
     def test_registering(self):
@@ -122,8 +124,10 @@ class TestRegister:
         assert 'You have to enter a password' in rv.data
         rv = register('barney', 'abv', 'abc')
         assert 'Passwords must match' in rv.data
-        rv = register('barney', 'abc', 'abc')
-        assert 'You are the new master of this blog' in rv.data
+        with client:
+            rv = register('barney', 'abc', 'abc')
+            assert 'You are the new master of this blog' in rv.data
+            assert flask.session['logged_in']
         rv = register('barney', 'abc', 'abc')
         assert 'There can only be one admin' in rv.data
         
@@ -137,11 +141,14 @@ class TestLogin:
         assert 'Invalid username' in rv.data
         rv = login('barney', 'abd')
         assert 'Invalid password' in rv.data
-        rv = login('barney', 'abc')
-        assert 'You have been successfully logged in' in rv.data
-        # TODO: Test if session.logged_in has been set
-        rv = logout()
-        assert 'You have been successfully logged out' in rv.data
+        # In order to keep the context around (whatever that means)
+        with client:   
+            rv = login('barney', 'abc')
+            assert 'You have been successfully logged in' in rv.data
+            assert flask.session['logged_in']
+            rv = logout()
+            assert 'You have been successfully logged out' in rv.data
+            assert 'logged_in' not in flask.session
         
         
 class TestComposing:

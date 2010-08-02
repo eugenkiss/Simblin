@@ -1,24 +1,18 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Test if a session cooke was set in test
-* Got through Todo's inside Source
-* Look at tornado blog, what forgot
 * Look at minitwit example, what forgot
 * Look at: http://bitbucket.org/danjac/newsmeme/src/
   and look what you can use, e.g.
   from werkzeug import generate_password_hash, check_password_hash,
   instead of own methods
+* Learn about python's with statement
 [
-* Ask if someone could have a look at my unit tests
 * Automatic login after registration (IRC)?
 * Redirection to last visited page (IRC) (Cookie? last-visited='/blabla')?
 ** Could I theoretically put it in before request? -> test it
 ] -> Maybe write mail to Mailinglist (Some Questions)
 
 * Delete Entries (but with confirmation)
-
-* Style headers of entry
-* Add smarty pants ``''
 
 * use authenticated decorator (for example for add_entry)
 
@@ -38,11 +32,18 @@
 
 -> v0.1
 -> github
+
 ----------------
 
 * http://blog.disqus.net/2007/03/11/a-django-primer/
 * http://blog.jeffhui.net/2009/03/django-blog-tutorial/
 * Look for other Blog Tutorials
+
+* Only show login/compose on mouseover
+
+* Tab key does indent in compose editor
+
+* DB Design: http://www.bkent.net/Doc/simple5.htm
 
 * Category Support
 
@@ -56,9 +57,10 @@
 ** Monghtly/Yearly archive
 ** Filter by Tag
 ** Filter by Category
+** Show all tags and number of posts for a tag
 * Search
 
-* Code Highlighting Support
+* Proper Logging (read flask logging docs)
 
 * Add Tests
 
@@ -68,6 +70,8 @@
 -> Deployment http://clemesha.org/blog/2009/jul/05/modern-python-hacker-tools-virtualenv-fabric-pip/
 
 ----------------
+
+* Add smarty pants ``''
 
 * Pingback/Traceback (or does Disqus already do that?)
 

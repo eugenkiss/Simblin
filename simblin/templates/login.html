@@ -8,6 +8,7 @@
   <input type=password name=password>
   <div style="margin-top: 1em"></div>
   <input type=submit class=submit value=Login>
+  <input type=hidden name=next value="{{ request.values.next or '' }}">
   </form>
 {% endblock %}
 {% block search %}{% endblock %}

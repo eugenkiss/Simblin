@@ -10,8 +10,20 @@ import os
 from os import urandom
 from hashlib import sha512
 from contextlib import closing
+from functools import wraps
 
-from flask import current_app, g
+from flask import current_app, g, session, url_for, redirect, request, flash
+
+
+def login_required(f):
+    """Redirect to login page if user not logged in"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            flash('Login required', 'error')
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # TODO: Replace with Werkzeug pw hash??
@@ -70,13 +82,6 @@ def init_db(db_path, app=None):
         with app.open_resource('schema.sql') as f:
             db.cursor().executescript(f.read())
         db.commit()
-
-#def init_db(db_path):
-#    """Clean and create a new sqlite3 database based on `schema.sql`"""
-#    with closing(connect_db(db_path)) as db:
-#        with open(os.path.join(os.path.dirname(__file__), 'schema.sql')) as f:
-#            db.cursor().executescript(f.read())
-#        db.commit()
 
 
 def query_db(query, args=(), one=False, db=None):

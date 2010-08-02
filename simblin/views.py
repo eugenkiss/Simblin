@@ -6,7 +6,7 @@ from flask import Module, g, current_app, render_template, session, request, \
 
 from helpers import set_password, check_password, normalize, normalize_tags, \
     convert_markdown, connect_db, init_db, query_db, get_tags, create_tags, \
-    associate_tags, unassociate_tags, tidy_tags
+    associate_tags, unassociate_tags, tidy_tags, login_required
 
 view = Module(__name__)
 
@@ -34,15 +34,8 @@ def show_entry(slug):
 
 
 @view.route('/compose', methods=['GET', 'POST'])
+@login_required
 def add_entry():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    # TODO: Use: request.args.get('q', '')
-    #       To learn if an id is given. if it is the case, load the specific
-    #       entry from the database (if possible) and fill the forms with
-    #       its contents.
-    #       In the POST request, update the entry instead of inserting another
-    #       row.
     error = None
     if request.method == 'GET':
         id = request.args.get('id', '')
@@ -55,10 +48,7 @@ def add_entry():
                 return render_template('compose.html', entry=entry, tags=tags)
         else:
             return render_template('compose.html', entry=None, tags=None)
-    
-    # TODO: 
-    #       * Create slug (tornado) and normalize and unique it (-2)
-    #       
+        
     if request.method == 'POST':
         id = request.form['id']
         title = request.form['title']
@@ -74,6 +64,7 @@ def add_entry():
         now = datetime.datetime.now()
         tags = normalize_tags(request.form['tags'])
         create_tags(tags)
+        
         if request.form['title'] == '':
             error = 'You must provide a title'
         elif id and \
@@ -81,6 +72,7 @@ def add_entry():
             error = 'Invalid id'
         else:
             if not id:
+                # Create new entry
                 g.db.execute(
                     'INSERT INTO entries ' 
                     '(slug, title, markdown, html, published) ' 
@@ -91,6 +83,7 @@ def add_entry():
                 associate_tags(id, tags)
                 flash('New entry was successfully posted')
             else:
+                # Update existing entry
                 g.db.execute(
                     'UPDATE entries SET ' 
                     'slug=?, title=?, markdown=?, html=? ' 
@@ -102,7 +95,8 @@ def add_entry():
             tidy_tags()
             g.db.commit()
             return redirect(url_for('show_entries'))
-    return render_template('compose.html', error=error)
+    if error: flash(error, 'error')
+    return render_template('compose.html')
 
 
 @view.route('/login', methods=['GET', 'POST'])
@@ -111,6 +105,9 @@ def login():
     admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
     if not admin:
         return redirect(url_for('register'))
+    
+    #: For automatic redirection to the last visited page before login
+    next = request.values.get('next', '')
     
     error = None
     if request.method == 'POST':
@@ -121,27 +118,29 @@ def login():
         else:
             session['logged_in'] = True
             flash('You have been successfully logged in')
-            # TODO: Redirect to page the admin was coming from
-            return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
+            return redirect(next if next else url_for('show_entries'))
+    if error: flash(error, 'error')
+    return render_template('login.html')
 
 
 @view.route('/logout')
 def logout():
     session.pop('logged_in', None)
     flash('You have been successfully logged out')
-    return redirect(url_for('show_entries'))
-
+    #: For automatic redirection to the last visited page before login
+    next = request.values.get('next', '')
+    return redirect(next if next else url_for('show_entries'))
 
 @view.route('/register', methods=['GET', 'POST'])
 def register():
     admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
     if admin:
-        # TODO: Redirect to *last* page and show flash error message
-        error = 'There can only be one admin'
-        return render_template('register.html', error=error)
+        flash('There can only be one admin', 'error')
+        return redirect(url_for('show_entries'))
+    
     if request.method == 'GET':
         return render_template('register.html')
+    
     error = None
     if request.method == 'POST':
         if request.form['username'] == '':
@@ -155,10 +154,8 @@ def register():
                 [request.form['username'], 
                  set_password(request.form['password'])])
             g.db.commit()
-            # TODO: Automatic login after registration
-#            app.post(url_for('login'), data=dict(
-#                username=request.form['username'],
-#                password=request.form['password']))
+            session['logged_in'] = True
             flash('You are the new master of this blog')
             return redirect(url_for('login'))
-    return render_template('register.html', error=error)
+    if error: flash(error, 'error')
+    return render_template('register.html')

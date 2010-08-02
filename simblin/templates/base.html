@@ -9,7 +9,7 @@
   </head>
   <body>
     <div id="wrapper">
-      
+      <!-- Header'n'Navigation -->
       <div id="navigation">
         <ul>
           <li id="header"><a href="{{ url_for('show_entries') }}">{{ config['BLOG_TITLE'] }}</a></li>
@@ -19,24 +19,29 @@
           <li><a href="#">Impressum</a></li>
         </ul>
       </div>
-      
+      <!-- Login'n'stuff -->
       <div id="metanav">
       {% if not session.logged_in %}
-        <a href="{{ url_for('login') }}">log in</a>
+        <a href="{{ url_for('login', next=request.url) }}">log in</a>
       {% else %}
         <a href="{{ url_for('add_entry') }}">compose</a>
-        <a href="{{ url_for('logout') }}">log out</a>
+        <a href="{{ url_for('logout', next=request.url) }}">log out</a>
       {% endif %}
       </div>
-      
-      
-      
-      {% if error %}<p class=error>{{ error }}</p>{% endif %}
-      {% for message in get_flashed_messages() %}
-      <div class=flash>{{ message }}</div>
-      {% endfor %}
+      <!-- Message Flashing -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class=flashes>
+          {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+          {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <!-- Main Content -->
       <div id="content">
         {% block body %}{% endblock %}
+        <!-- Search Block -->
         {% block search %}
         <div id="search">
           <input id="search-field" name="search" type="text"/> 
@@ -45,6 +50,7 @@
         {% endblock %}
       </div>
     </div>
+    <!-- For Javascript -->
     {% block bottom %}{% endblock %}
   </body>
 </html>

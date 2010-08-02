@@ -42,15 +42,12 @@ label {
     width: 6em;
 }
 
-.flash {
-    text-align: center;
+.flashes {
     font-style: italic;
 }
 
 .error {
-    text-align: center;
-    font-style: italic;
-    background-color: #FFD2D2;
+    color: #cc0000;
 }
 
 #wrapper {

@@ -9,3 +9,4 @@ v0.1
 * update a blog post
 * associate tags with blogpost
 * simple design
+* redirection to last visited page after login/logout
