@@ -1,8 +1,13 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
+* Rewrite create_app() as class and put all the utility functions
+  as class methods in app, so that that weird db can dissappear
+
 * I want to fucking put the fucking test cases inside their motherfucking
   own fucking folder, why does it not work!!!!
+  -> ask this jacob how he does this!
 
+* Test if a session cooke was set in test
 * Got through Todo's inside Source
 * Look at tornado blog, what forgot
 * Look at minitwit example, what forgot
@@ -12,8 +17,6 @@
   instead of own methods
 [
 * Ask if someone could have a look at my unit tests
-* Ask if there is something like modules in tornado (IRC)?
-* Test if a session cooke was set in test (IRC)?
 * Automatic login after registration (IRC)?
 * Redirection to last visited page (IRC) (Cookie? last-visited='/blabla')?
 ** Could I theoretically put it in before request? -> test it
@@ -28,21 +31,16 @@
 
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
 
-* Tag support
-
-* Write Test Suite (with mock objects n shit)
-** create subfolder test (be inspired by hatta, look at that)
+* Tag support (at least /tag/blabla shows all posts with tag blabla)
 
 * Preview
-
-* Refactor as Package (as mentionend in flask docs)
 
 * Refactor/Document/Readme/Changelog
 
 * Test looks on firefox/opera and ggf. improve (buttons)
 
 -> v0.1
-
+-> github
 ----------------
 
 * http://blog.disqus.net/2007/03/11/a-django-primer/
@@ -80,7 +78,7 @@
 ** How to store them?
 *** maybe create a subvie /files, where one can upload and be able to link to them in the blog post
 
-* Comments (Disqus)
+* Comments (Disqus) or own
 
 * Create README
 * Document
@@ -94,3 +92,4 @@ future:
 * Put hardcoded Messages in config file
 * statistics
 * own comments
+* search
