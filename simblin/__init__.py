@@ -3,8 +3,7 @@
     Simblin
     ~~~~~~~
 
-    Simblin - **Sim**ple **B**log Eng**in**e. A blog engine written with Flask
-    and Sqlite3.
+    Simblin - Simple Blog Engine. A blog engine written with Flask and Sqlite3.
 
     :copyright: (c) 2010 by Eugen Kiss.
     :license: BSD, see LICENSE for more details.
