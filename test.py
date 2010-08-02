@@ -207,7 +207,7 @@ class ComposingTestCase(BlogTestCase):
         expected_markdown = markdown
         expected_tags = ['django','franz-und-bertha','vil-bil']
         expected_slug = "my-entry"
-        expected_html = u"<h1>Title</h1>\n"
+        expected_html = "<h1>Title</h1>"
         expected_date = datetime.date.today()
         rv = self.add_entry(title=title, markdown=markdown, tags=tags)
         
@@ -216,11 +216,9 @@ class ComposingTestCase(BlogTestCase):
         self.assertEqual(entry['title'], expected_title)
         self.assertEqual(entry['markdown'], expected_markdown)
         self.assertEqual(entry['slug'], expected_slug)
-        self.assertEqual(entry['html'], expected_html)
+        assert expected_html in entry['html']
         self.assertEqual(entry['published'].date(), expected_date)
         tags = helpers.get_tags(entry['id'], db=self.db)
-        #with blog.app.test_request_context('/'):
-        #    tags = blog.get_tags(entry['id'])
         self.assertEqual(tags, expected_tags)
         
         # Add another entry with the same fields but expect a different slug
@@ -253,7 +251,7 @@ class ComposingTestCase(BlogTestCase):
         expected_markdown = updated_markdown
         expected_tags = []
         expected_slug = 'cool'
-        expected_html = u'<h2>Title</h2>\n'
+        expected_html = '<h2>Title</h2>'
         expected_date = datetime.date.today()
         self.update_entry(title=updated_title, markdown=updated_markdown, 
                           tags=updated_tags, id=1)
@@ -262,7 +260,7 @@ class ComposingTestCase(BlogTestCase):
         self.assertEqual(entry['title'], expected_title)
         self.assertEqual(entry['markdown'], expected_markdown)
         self.assertEqual(entry['slug'], expected_slug)
-        self.assertEqual(entry['html'], expected_html)
+        assert expected_html in entry['html']
         self.assertEqual(entry['published'].date(), expected_date)
         tags = helpers.get_tags(entry_id=entry['id'], db=self.db)
         self.assertEqual(tags, expected_tags)
