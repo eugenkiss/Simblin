@@ -101,8 +101,6 @@ def update_entry(title, markdown, tags, id):
     ), follow_redirects=True)
         
         
-# TODO: Test entry view
-
 class TestRegister:
     
     def test_redirect(self):
@@ -251,3 +249,14 @@ class TestComposing:
         assert_equal(len(entries), 3)
         assert_equal(len(tags), 2)
         assert_equal(len(entry_tag_mappings), 4)
+
+
+class TestEntryView:
+    
+    def test_entryview(self):
+        clear_db()
+        register_and_login('barney', 'abc')
+        
+        add_entry(title='Title', markdown='', tags='')
+        rv = client.get('/entry/title')
+        assert 'Title' in rv.data
