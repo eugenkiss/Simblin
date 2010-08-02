@@ -1,12 +1,5 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Rewrite create_app() as class and put all the utility functions
-  as class methods in app, so that that weird db can dissappear
-
-* I want to fucking put the fucking test cases inside their motherfucking
-  own fucking folder, why does it not work!!!!
-  -> ask this jacob how he does this!
-
 * Test if a session cooke was set in test
 * Got through Todo's inside Source
 * Look at tornado blog, what forgot
@@ -35,9 +28,13 @@
 
 * Preview
 
+* Pylint
+
 * Refactor/Document/Readme/Changelog
 
 * Test looks on firefox/opera and ggf. improve (buttons)
+
+* Input from Community what to refactor (mailinglist??)
 
 -> v0.1
 -> github

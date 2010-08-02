@@ -1,144 +1,172 @@
 from __future__ import with_statement
-import unittest
 import datetime
 import tempfile
 import os
 
+from nose.tools import assert_equal, assert_true, assert_false, with_setup
 from simblin import create_app, helpers
 
 
-class BlogTestCase(unittest.TestCase):
-    
-    def setUp(self):
-        """Before each test, set up a blank database"""
-        class config:
-            DATABASE = ''
-        self.db_fd, config.DATABASE = tempfile.mkstemp()
-        self.app = create_app(config)
-        self.client = self.app.test_client()
-        helpers.init_db(self.app.config['DATABASE'])
-        self.db = helpers.connect_db(self.app.config['DATABASE'])
-        self._ctx = self.app.test_request_context()
-        self._ctx.push()
+# Configuration
+class config:
+    DATABASE = None
 
-    def tearDown(self):
-        """Get rid of the database again after each test."""
-        os.close(self.db_fd)
-        os.unlink(self.app.config['DATABASE'])
-        self._ctx.pop()
+#: File Pointer to temporary database
+db_tempfile = None
+#: The application
+app = None
+#: The test client   
+client = None
+#: The connection to the temporary database
+db = None
+#: The context of the application
+ctx = None
     
-    # helper functions
     
-    def query_db(self, query, args=(), one=False):
-        return helpers.query_db(query, args, one, db=self.db)
+def setUp():
+    """Initalize application and temporary database"""
+    global db_tempfile, app, client, db, ctx
+    db_tempfile, config.DATABASE = tempfile.mkstemp()
+    app = create_app(config)
+    client = app.test_client()
+    helpers.init_db(config.DATABASE, app=app)
+    db = helpers.connect_db(config.DATABASE)
+    ctx = app.test_request_context()
+    ctx.push()
+
+
+def teardown():
+    """Get rid of the database again"""
+    os.close(db_tempfile)
+    os.unlink(config.DATABASE)
+    ctx.pop()
     
-    def cleardb(self):
-        """Remove all rows inside the database"""
-        helpers.init_db(self.app.config['DATABASE'])
     
-    def register(self, username, password, password2=None):
-        """Helper function to register a user"""
-        return self.client.post('/register', data=dict(
-            username=username,
-            password=password,
-            password2=password2
-        ), follow_redirects=True)
+def clear_db():
+    """Remove all rows inside the database"""
+    helpers.init_db(config.DATABASE, app=app)
     
-    def login(self, username, password):
-        """Helper function to login"""
-        return self.client.post('/login', data=dict(
-            username=username,
-            password=password
-        ), follow_redirects=True)
+    
+# Helper functions
+
+def query_db(query, args=(), one=False):
+    return helpers.query_db(query, args, one, db=db)
+
+
+def register(username, password, password2=None):
+    """Helper function to register a user"""
+    return client.post('/register', data=dict(
+        username=username,
+        password=password,
+        password2=password2
+    ), follow_redirects=True)
+
+
+def login(username, password):
+    """Helper function to login"""
+    return client.post('/login', data=dict(
+        username=username,
+        password=password
+    ), follow_redirects=True)
+    
+    
+def register_and_login(username, password):
+    """Registers and logs in in one go"""
+    register(username, password, password)
+    login(username, password)
+
+
+def logout():
+    """Helper function to logout"""
+    return client.get('/logout', follow_redirects=True)
+
+
+def add_entry(title, markdown, tags):
+    """Helper functions to create a blog post"""
+    return client.post('/compose', data=dict(
+        title=title,
+        markdown=markdown,
+        tags=tags,
+        id=''
+    ), follow_redirects=True)
+
+
+def update_entry(title, markdown, tags, id):
+    """Helper functions to create a blog post"""
+    return client.post('/compose', data=dict(
+        title=title,
+        markdown=markdown,
+        tags=tags,
+        id=id
+    ), follow_redirects=True)
         
-    def register_and_login(self, username, password):
-        """Registers and logs in in one go"""
-        self.register(username, password, password)
-        self.login(username, password)
-
-    def logout(self):
-        """Helper function to logout"""
-        return self.client.get('/logout', follow_redirects=True)
-    
-    def add_entry(self, title, markdown, tags):
-        """Helper functions to create a blog post"""
-        return self.client.post('/compose', data=dict(
-            title=title,
-            markdown=markdown,
-            tags=tags,
-            id=''
-        ), follow_redirects=True)
-    
-    def update_entry(self, title, markdown, tags, id):
-        """Helper functions to create a blog post"""
-        return self.client.post('/compose', data=dict(
-            title=title,
-            markdown=markdown,
-            tags=tags,
-            id=id
-        ), follow_redirects=True)
         
 # TODO: Test entry view
 
-class RegisterTestCase(BlogTestCase):
+class TestRegister:
     
     def test_redirect(self):
         """
         If there is no admin yet the visitor shall be redirected 
         to the register page.
         """
-        rv = self.client.get('/', follow_redirects=True)
+        clear_db()
+        rv = client.get('/', follow_redirects=True)
+        print rv.data
         assert 'Register' in rv.data
     
     def test_registering(self):
-        rv = self.register('', 'password')
+        """Test form validation and successful registering"""
+        clear_db()
+        rv = register('', 'password')
         assert 'You have to enter a username' in rv.data
-        rv = self.register('britney spears', '')
+        rv = register('britney spears', '')
         assert 'You have to enter a password' in rv.data
-        rv = self.register('barney', 'abv', 'abc')
+        rv = register('barney', 'abv', 'abc')
         assert 'Passwords must match' in rv.data
-        rv = self.register('barney', 'abc', 'abc')
+        rv = register('barney', 'abc', 'abc')
         assert 'You are the new master of this blog' in rv.data
-        rv = self.register('barney', 'abc', 'abc')
+        rv = register('barney', 'abc', 'abc')
         assert 'There can only be one admin' in rv.data
         
 
-class LoginTestCase(BlogTestCase):
+class TestLogin:
     
     def test_login(self):
-        self.register('barney', 'abc', 'abc')
-        rv = self.login('borney', 'abc')
+        clear_db()
+        register('barney', 'abc', 'abc')
+        rv = login('borney', 'abc')
         assert 'Invalid username' in rv.data
-        rv = self.login('barney', 'abd')
+        rv = login('barney', 'abd')
         assert 'Invalid password' in rv.data
-        rv = self.login('barney', 'abc')
+        rv = login('barney', 'abc')
         assert 'You have been successfully logged in' in rv.data
         # TODO: Test if session.logged_in has been set
-        rv = self.logout()
+        rv = logout()
         assert 'You have been successfully logged out' in rv.data
         
         
-class ComposingTestCase(BlogTestCase):
+class TestComposing:
     
     def test_validation(self):
         """Check if form validation and validation in general works"""
-        self.cleardb();
-        self.register_and_login('barney', 'abc')
-        rv = self.add_entry(title='', markdown='a', tags='b')
+        clear_db()
+        register_and_login('barney', 'abc')
+        rv = add_entry(title='', markdown='a', tags='b')
         assert 'You must provide a title' in rv.data
-        rv = self.add_entry(title='a', markdown='', tags='')
+        rv = add_entry(title='a', markdown='', tags='')
         assert 'New entry was successfully posted' in rv.data
-        rv = self.update_entry(title='a', markdown='', tags='', id=999)
+        rv = update_entry(title='a', markdown='', tags='', id=999)
         assert 'Invalid id' in rv.data
-        rv = self.client.get('/compose?id=999')
+        rv = client.get('/compose?id=999')
         assert 'Invalid id' in rv.data
         
     def test_conversion(self):
         """
         Test the blog post's fields' correctness after adding/updating an entry
         """
-        self.cleardb();
-        self.register_and_login('barney', 'abc')
+        clear_db()
+        register_and_login('barney', 'abc')
         
         title = "My entry"
         markdown = "# Title"
@@ -150,38 +178,38 @@ class ComposingTestCase(BlogTestCase):
         expected_slug = "my-entry"
         expected_html = "<h1>Title</h1>"
         expected_date = datetime.date.today()
-        rv = self.add_entry(title=title, markdown=markdown, tags=tags)
+        add_entry(title=title, markdown=markdown, tags=tags)
+        entry = query_db('SELECT * FROM entries', one=True)
+        tags = helpers.get_tags(entry['id'], db=db)
         
-        entry = self.query_db('SELECT * FROM entries', one=True)
-        self.assertEqual(entry['id'], expected_id)
-        self.assertEqual(entry['title'], expected_title)
-        self.assertEqual(entry['markdown'], expected_markdown)
-        self.assertEqual(entry['slug'], expected_slug)
+        assert_equal(entry['id'], expected_id)
+        assert_equal(entry['title'], expected_title)
+        assert_equal(entry['markdown'], expected_markdown)
+        assert_equal(entry['slug'], expected_slug)
         assert expected_html in entry['html']
-        self.assertEqual(entry['published'].date(), expected_date)
-        tags = helpers.get_tags(entry['id'], db=self.db)
-        self.assertEqual(tags, expected_tags)
+        assert_equal(entry['published'].date(), expected_date)
+        assert_equal(tags, expected_tags)
         
         # Add another entry with the same fields but expect a different slug
         # and the same number of tags inside the database
         
         expected_slug2 = expected_slug + '-2'
         tags2 = "django, franz und bertha"
-        self.add_entry(title=title, markdown=markdown, tags=tags2)
-
-        entry = self.query_db('SELECT * FROM entries WHERE id=2', one=True)
-        self.assertEqual(entry['title'], expected_title) 
-        self.assertEqual(entry['slug'], expected_slug2)
-        all_tags = self.query_db('SELECT * FROM tags')
-        self.assertEqual(len(all_tags), 3)    
+        add_entry(title=title, markdown=markdown, tags=tags2)
+        entry = query_db('SELECT * FROM entries WHERE id=2', one=True)
+        all_tags = query_db('SELECT * FROM tags')
+        
+        assert_equal(entry['title'], expected_title) 
+        assert_equal(entry['slug'], expected_slug2)
+        assert_equal(len(all_tags), 3)    
         
         # Add yet another entry with the same title and expect a different slug
         
         expected_slug3 = expected_slug2 + '-2'
-        self.add_entry(title=title, markdown=markdown, tags=tags2)
+        add_entry(title=title, markdown=markdown, tags=tags2)
+        entry = query_db('SELECT * FROM entries WHERE id=3', one=True)
         
-        entry = self.query_db('SELECT * FROM entries WHERE id=3', one=True)
-        self.assertEqual(entry['slug'], expected_slug3)
+        assert_equal(entry['slug'], expected_slug3)
         
         # Now test updating an entry
         
@@ -194,17 +222,17 @@ class ComposingTestCase(BlogTestCase):
         expected_slug = 'cool'
         expected_html = '<h2>Title</h2>'
         expected_date = datetime.date.today()
-        self.update_entry(title=updated_title, markdown=updated_markdown, 
-                          tags=updated_tags, id=1)
-
-        entry = self.query_db('SELECT * FROM entries WHERE id=1', one=True)
-        self.assertEqual(entry['title'], expected_title)
-        self.assertEqual(entry['markdown'], expected_markdown)
-        self.assertEqual(entry['slug'], expected_slug)
+        update_entry(title=updated_title, markdown=updated_markdown, 
+            tags=updated_tags, id=1)
+        entry = query_db('SELECT * FROM entries WHERE id=1', one=True)
+        tags = helpers.get_tags(entry_id=entry['id'], db=db)
+        
+        assert_equal(entry['title'], expected_title)
+        assert_equal(entry['markdown'], expected_markdown)
+        assert_equal(entry['slug'], expected_slug)
         assert expected_html in entry['html']
-        self.assertEqual(entry['published'].date(), expected_date)
-        tags = helpers.get_tags(entry_id=entry['id'], db=self.db)
-        self.assertEqual(tags, expected_tags)
+        assert_equal(entry['published'].date(), expected_date)
+        assert_equal(tags, expected_tags)
         
         # Expect three rows in the entries table because three entries where
         # created and one updated. Expect only two rows in the tags table 
@@ -217,9 +245,9 @@ class ComposingTestCase(BlogTestCase):
         # 3          1
         # 3          2
         
-        entries = self.query_db('SELECT * FROM entries')
-        tags = self.query_db('SELECT * FROM tags')
-        entry_tag_mappings = self.query_db('SELECT * FROM entry_tag')
-        self.assertEqual(len(entries), 3)
-        self.assertEqual(len(tags), 2)
-        self.assertEqual(len(entry_tag_mappings), 4)
+        entries = query_db('SELECT * FROM entries')
+        tags = query_db('SELECT * FROM tags')
+        entry_tag_mappings = query_db('SELECT * FROM entry_tag')
+        assert_equal(len(entries), 3)
+        assert_equal(len(tags), 2)
+        assert_equal(len(entry_tag_mappings), 4)

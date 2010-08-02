@@ -63,12 +63,19 @@ def connect_db(db_path):
     return db
 
 
-def init_db(db_path):
-    """Clean and create a new sqlite3 database based on `schema.sql`"""
+def init_db(db_path, app=None):
+    if not app: app = current_app
     with closing(connect_db(db_path)) as db:
-        with open(os.path.join(os.path.dirname(__file__), 'schema.sql')) as f:
+        with app.open_resource('schema.sql') as f:
             db.cursor().executescript(f.read())
         db.commit()
+
+#def init_db(db_path):
+#    """Clean and create a new sqlite3 database based on `schema.sql`"""
+#    with closing(connect_db(db_path)) as db:
+#        with open(os.path.join(os.path.dirname(__file__), 'schema.sql')) as f:
+#            db.cursor().executescript(f.read())
+#        db.commit()
 
 
 def query_db(query, args=(), one=False, db=None):
