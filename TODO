@@ -1,37 +1,17 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Look at minitwit example, what forgot
-* Look at: http://bitbucket.org/danjac/newsmeme/src/
-  and look what you can use, e.g.
-  from werkzeug import generate_password_hash, check_password_hash,
+* from werkzeug import generate_password_hash, check_password_hash,
   instead of own methods
 * Learn about python's with statement
-[
-* Automatic login after registration (IRC)?
-* Redirection to last visited page (IRC) (Cookie? last-visited='/blabla')?
-** Could I theoretically put it in before request? -> test it
-] -> Maybe write mail to Mailinglist (Some Questions)
-
 * Delete Entries (but with confirmation)
-
-* use authenticated decorator (for example for add_entry)
-
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
-
 * Tag support (at least /tag/blabla shows all posts with tag blabla)
-
 * Preview
-
 * Pylint
-
 * Add possiblity to load real settings.cfg
-
-* Add License (BSD)
-
-* Refactor/Document/Readme/Changelog
-
+* Polish Templates/CSS
+* Refactor/Tests/Document/Readme/Changelog
 * Test looks on firefox/opera and ggf. improve (buttons)
-
 * Input from Community what to refactor (mailinglist??)
 
 -> v0.1
@@ -42,52 +22,34 @@
 * http://blog.disqus.net/2007/03/11/a-django-primer/
 * http://blog.jeffhui.net/2009/03/django-blog-tutorial/
 * Look for other Blog Tutorials
-
 * Only show login/compose on mouseover
-
 * Tab key does indent in compose editor
-
 * DB Design: http://www.bkent.net/Doc/simple5.htm
-
 * Category Support
-
 * Page creation
 ** Composing pages
 ** Have no comments
 ** Order Pages by `place` field
-
 * Ordering of Blog posts, e.g. (Archive Page creation)
 ** max 5 Entries Home Page ordererd by date
 ** Monghtly/Yearly archive
 ** Filter by Tag
 ** Filter by Category
 ** Show all tags and number of posts for a tag
-* Search
-
 * Proper Logging (read flask logging docs)
-
-* Add Tests
-
-* Refactor/Document/Readme/Changelog
+* Refactor/Tests/Document/Readme/Changelog
 
 -> v0.2
 -> Deployment http://clemesha.org/blog/2009/jul/05/modern-python-hacker-tools-virtualenv-fabric-pip/
 
 ----------------
 
-* Add smarty pants ``''
-
 * Pingback/Traceback (or does Disqus already do that?)
-
 * Images / File Attachments
 ** How to store them?
 *** maybe create a subvie /files, where one can upload and be able to link to them in the blog post
-
 * Comments (Disqus) or own
-
-* Create README
-* Document
-* Polish
+* Refactor/Tests/Document/Readme/Changelog
 
 -> v0.3
 
@@ -99,3 +61,4 @@ future:
 * own comments
 * search
 * feeds
+* Add smarty pants ``''
