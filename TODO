@@ -24,6 +24,7 @@
 * Look for other Blog Tutorials
 * Only show login/compose on mouseover
 * Tab key does indent in compose editor
+* Use WTForms: http://flask.pocoo.org/docs/patterns/wtforms/
 * DB Design: http://www.bkent.net/Doc/simple5.htm
 * Category Support
 * Page creation
@@ -41,6 +42,9 @@
 
 -> v0.2
 -> Deployment http://clemesha.org/blog/2009/jul/05/modern-python-hacker-tools-virtualenv-fabric-pip/
+   http://flask.pocoo.org/docs/patterns/fabric/
+   http://flask.pocoo.org/docs/config/#config
+   http://flask.pocoo.org/docs/deploying/mod_wsgi/
 
 ----------------
 
