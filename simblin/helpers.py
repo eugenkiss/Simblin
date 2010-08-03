@@ -26,21 +26,6 @@ def login_required(f):
     return decorated_function
 
 
-# TODO: Replace with Werkzeug pw hash??
-def set_password(raw_password):
-    """Return a secure representation of a password"""
-    salt = sha512(urandom(8)).hexdigest()
-    hsh = sha512('%s%s' % (salt, raw_password)).hexdigest()
-    return '%s$%s' % (salt, hsh)
-
-
-# TODO: Replace with Werkzeug pw hash??
-def check_password(raw_password, enc_password):
-    """Return a boolean of whether the raw_password was correct"""
-    salt, hsh = enc_password.split('$')
-    return hsh == sha512('%s%s' % (salt, raw_password)).hexdigest()
-
-
 def normalize(string):
     """Unify string"""
     string = unicodedata.normalize("NFKD", unicode(string)).encode(

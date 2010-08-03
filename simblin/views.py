@@ -10,10 +10,11 @@
 """
 import datetime
 
+from werkzeug import check_password_hash, generate_password_hash
 from flask import Module, g, current_app, render_template, session, request, \
     flash, redirect, url_for
 
-from helpers import set_password, check_password, normalize, normalize_tags, \
+from helpers import normalize, normalize_tags, \
     convert_markdown, connect_db, init_db, query_db, get_tags, create_tags, \
     associate_tags, unassociate_tags, tidy_tags, login_required
 
@@ -126,7 +127,8 @@ def login():
     if request.method == 'POST':
         if request.form['username'] != admin['username']:
             error = 'Invalid username'
-        elif not check_password(request.form['password'], admin['password']):
+        elif not check_password_hash(admin['password'], 
+                                     request.form['password']):
             error = 'Invalid password'
         else:
             session['logged_in'] = True
@@ -169,7 +171,7 @@ def register():
         else:
             g.db.execute('insert into admin (username, password) values (?, ?)',
                 [request.form['username'], 
-                 set_password(request.form['password'])])
+                 generate_password_hash(request.form['password'])])
             g.db.commit()
             session['logged_in'] = True
             flash('You are the new master of this blog')

@@ -10,14 +10,6 @@
 """
 from nose.tools import assert_equal, assert_true, assert_false, with_setup
 from simblin import helpers
-
-
-def test_password_functions():
-    """Check the integrity of the password functions"""
-    raw_password = 'passworD546$!!.,.'
-    hash = helpers.set_password(raw_password)
-    assert_true(helpers.check_password(raw_password, hash))
-    assert_false(helpers.check_password('abc', hash))
     
             
 def test_slug_normalizing():

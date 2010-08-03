@@ -1,7 +1,5 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* from werkzeug import generate_password_hash, check_password_hash,
-  instead of own methods
 * Learn about python's with statement
 * Delete Entries (but with confirmation)
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
