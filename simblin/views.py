@@ -118,7 +118,7 @@ def delete_entry(id):
     next = request.values.get('next', '')
     if not entry:
         flash('No such entry')
-        return redirect(next if next else url_for('show_entries'))
+        return redirect(next or url_for('show_entries'))
         
     if request.method == 'GET':
         flash("Really delete '%s'?" % entry['title'], 'question')
@@ -155,7 +155,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You have been successfully logged in')
-            return redirect(next if next else url_for('show_entries'))
+            return redirect(next or url_for('show_entries'))
     if error: flash(error, 'error')
     return render_template('login.html')
 
@@ -167,7 +167,7 @@ def logout():
     flash('You have been successfully logged out')
     #: For automatic redirection to the last visited page before login
     next = request.values.get('next', '')
-    return redirect(next if next else url_for('show_entries'))
+    return redirect(next or url_for('show_entries'))
 
 
 @view.route('/register', methods=['GET', 'POST'])

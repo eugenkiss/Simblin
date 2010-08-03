@@ -1,8 +1,6 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
 * Learn about python's with statement
-* replace `next if next else..` with `next or url_for...`
-* Add Tests for deletion
 * change compose entry <int:id>
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
 ** On entry view, show title of next and previous posts
