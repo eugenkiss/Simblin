@@ -112,6 +112,28 @@ def add_entry():
     return render_template('compose.html')
 
 
+@view.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete_entry(id):
+    entry = query_db('SELECT * FROM entries WHERE id=?', [id], one=True)
+    next = request.values.get('next', '')
+    if not entry:
+        flash('No such entry')
+        return redirect(next if next else url_for('show_entries'))
+        
+    if request.method == 'GET':
+        flash("Really delete '%s'?" % entry['title'], 'question')
+        return render_template('delete.html')
+    
+    if request.method == 'POST':
+        g.db.execute('DELETE FROM entries WHERE id=?', [entry['id']])
+        unassociate_tags(id)
+        tidy_tags()
+        g.db.commit()
+        next = request.form['next']
+        flash('Entry deleted')
+        return redirect(next or url_for('show_entries'))
+
+
 @view.route('/login', methods=['GET', 'POST'])
 def login():
     """Log the admin in"""
@@ -175,6 +197,6 @@ def register():
             g.db.commit()
             session['logged_in'] = True
             flash('You are the new master of this blog')
-            return redirect(url_for('login'))
+            return redirect(url_for('add_entry'))
     if error: flash(error, 'error')
     return render_template('register.html')

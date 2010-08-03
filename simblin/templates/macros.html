@@ -10,7 +10,10 @@
     {% endfor %}
     </div>
   {% if session.logged_in %}
-    <div class="admin"><a href="/compose?id={{ id }}">Edit</a></div>
+    <div class="admin">
+      <a href="/compose?id={{ id }}">Edit</a>
+      <a href="/delete/{{ id }}?next={{ request.url }}">Delete</a>
+    </div>
   {% endif %}
   </div>
 </div>

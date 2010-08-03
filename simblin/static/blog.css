@@ -50,6 +50,10 @@ label {
     color: #cc0000;
 }
 
+.question {
+    color: #b7b600;
+}
+
 #wrapper {
     max-width: 680px;
     /*min-width: 400px;*/

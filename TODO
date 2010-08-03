@@ -1,10 +1,14 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
 * Learn about python's with statement
-* Delete Entries (but with confirmation)
+* replace `next if next else..` with `next or url_for...`
+* Add Tests for deletion
+* change compose entry <int:id>
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
+** On entry view, show title of next and previous posts
 * Tag support (at least /tag/blabla shows all posts with tag blabla)
 * Preview
+* test redirections (look at how Flask-Testing does this)
 * Pylint
 * Add possiblity to load real settings.cfg
 * Polish Templates/CSS
@@ -63,4 +67,5 @@ future:
 * own comments
 * search
 * feeds
+* modal dialogs form confirmations (with jquery)
 * Add smarty pants ``''

@@ -110,6 +110,12 @@ def update_entry(title, markdown, tags, id):
         tags=tags,
         id=id
     ), follow_redirects=True)
+    
+
+def delete_entry(id):
+    """Helper function to delete a blog post"""
+    return client.post('/delete/%d' % id, data=dict(next=''), 
+        follow_redirects=True)
         
         
 class TestRegister:
@@ -176,8 +182,9 @@ class TestComposing:
         assert 'Invalid id' in rv.data
         
     def test_conversion(self):
-        """
-        Test the blog post's fields' correctness after adding/updating an entry
+        """ Test the blog post's fields' correctness after adding/updating an 
+        entry and test the proper creation and automatic tidying of tags and
+        tag mappings.
         """
         clear_db()
         register_and_login('barney', 'abc')
@@ -267,9 +274,42 @@ class TestComposing:
         assert_equal(len(entry_tag_mappings), 4)
 
 
+class TestDeletion:
+    
+    def test_deletion(self):
+        """Test the deletion of a blog post and the accompanying deletion of
+        tags and their mappings to a blog post"""
+        clear_db()
+        register_and_login('barney', 'abc')
+        
+        add_entry(title='Title', markdown='', tags='cool')
+        entries = query_db('SELECT * FROM entries')
+        tags = query_db('SELECT * FROM tags')
+        entry_tag_mappings = query_db('SELECT * FROM entry_tag')
+        
+        assert_equal(len(entries), 1)
+        assert_equal(len(tags), 1)
+        assert_equal(len(entry_tag_mappings), 1)
+        
+        rv = delete_entry(id=99)
+        assert 'No such entry' in rv.data
+        rv = delete_entry(id=1)
+        print rv.data
+        assert 'Entry deleted' in rv.data
+        
+        entries = query_db('SELECT * FROM entries')
+        tags = query_db('SELECT * FROM tags')
+        entry_tag_mappings = query_db('SELECT * FROM entry_tag')
+        
+        assert_equal(len(entries), 0)
+        assert_equal(len(tags), 0)
+        assert_equal(len(entry_tag_mappings), 0)
+
+
 class TestEntryView:
     
     def test_entryview(self):
+        """Test the displaying of one blog post"""
         clear_db()
         register_and_login('barney', 'abc')
         

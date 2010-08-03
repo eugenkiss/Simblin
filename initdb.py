@@ -4,6 +4,6 @@ from simblin import create_app
 
 app = create_app()
 
-init_db(os.path.join('simblin', app.config['DATABASE']))
+init_db(os.path.join('simblin', app.config['DATABASE']), app=app)
 
 print "Initialized new empty database"

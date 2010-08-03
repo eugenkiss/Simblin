@@ -10,9 +10,10 @@ v0.1
 * view all blog posts
 * view one blog post
 * update a blog post
+* delete a blog post
 * associate tags with blogpost
 ** automatically delete unused tags
 ** uniqueness of tags
 * message flashing (feedback)
 * simple design
-* redirection to last visited page after login/logout
+* redirection to last visited page after login/logout/...
