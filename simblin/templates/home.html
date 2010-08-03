@@ -1,9 +1,8 @@
 {% extends "base.html" %}
-{% from 'macros.html' import entry_macro with context %}
 {% block body %}
   {% for entry in entries %}
-  {{ entry_macro(id=entry.id, slug=entry.slug, title=entry.title, html=entry.html, published=entry.published, tags=entry.tags) }}
+    {% include 'entrymodule.html' %}
   {% else %}
-  <em>No entries here so far</em>
+    <em>No entries here so far</em>
   {% endfor %}
 {% endblock %}

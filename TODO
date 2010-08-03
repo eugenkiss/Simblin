@@ -1,7 +1,7 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
 * Learn about python's with statement
-* Rewrite entry macro to be an include
+* create models (class entry so that one can do entry.tags and it is a property that asks db...)
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
 ** On entry view, show title of next and previous posts
 * Tag support (at least /tag/blabla shows all posts with tag blabla)
