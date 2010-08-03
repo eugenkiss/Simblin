@@ -102,19 +102,18 @@ def add_entry(title, markdown, tags):
     ), follow_redirects=True)
 
 
-def update_entry(title, markdown, tags, id):
+def update_entry(title, markdown, tags, slug):
     """Helper functions to create a blog post"""
-    return client.post('/compose', data=dict(
+    return client.post('/update/%s' % slug, data=dict(
         title=title,
         markdown=markdown,
         tags=tags,
-        id=id
     ), follow_redirects=True)
     
 
-def delete_entry(id):
+def delete_entry(slug):
     """Helper function to delete a blog post"""
-    return client.post('/delete/%d' % id, data=dict(next=''), 
+    return client.post('/delete/%s' % slug, data=dict(next=''), 
         follow_redirects=True)
         
         
@@ -176,10 +175,8 @@ class TestComposing:
         assert 'You must provide a title' in rv.data
         rv = add_entry(title='a', markdown='', tags='')
         assert 'New entry was successfully posted' in rv.data
-        rv = update_entry(title='a', markdown='', tags='', id=999)
-        assert 'Invalid id' in rv.data
-        rv = client.get('/compose?id=999')
-        assert 'Invalid id' in rv.data
+        rv = update_entry(title='a', markdown='', tags='', slug='999x00')
+        assert 'Invalid slug' in rv.data
         
     def test_conversion(self):
         """ Test the blog post's fields' correctness after adding/updating an 
@@ -197,6 +194,7 @@ class TestComposing:
         expected_markdown = markdown
         expected_tags = ['django','franz-und-bertha','vil-bil']
         expected_slug = "my-entry"
+        first_slug = expected_slug
         expected_html = "<h1>Title</h1>"
         expected_date = datetime.date.today()
         add_entry(title=title, markdown=markdown, tags=tags)
@@ -243,8 +241,9 @@ class TestComposing:
         expected_slug = 'cool'
         expected_html = '<h2>Title</h2>'
         expected_date = datetime.date.today()
+        # Update the first entry (slug=first_slug)
         update_entry(title=updated_title, markdown=updated_markdown, 
-            tags=updated_tags, id=1)
+            tags=updated_tags, slug=first_slug)
         entry = query_db('SELECT * FROM entries WHERE id=1', one=True)
         tags = helpers.get_tags(entry_id=entry['id'], db=db)
         
@@ -291,10 +290,9 @@ class TestDeletion:
         assert_equal(len(tags), 1)
         assert_equal(len(entry_tag_mappings), 1)
         
-        rv = delete_entry(id=99)
+        rv = delete_entry(slug='idontexist')
         assert 'No such entry' in rv.data
-        rv = delete_entry(id=1)
-        print rv.data
+        rv = delete_entry(slug='title')
         assert 'Entry deleted' in rv.data
         
         entries = query_db('SELECT * FROM entries')

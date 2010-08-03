@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
   <h3>Compose</h3>
-  <form action="{{ url_for('add_entry') }}" method="post" class="compose">
+  <form action="{{ request.url }}" method="post" class="compose">
   <div>
     <div style="margin-bottom:5px">
       <input name="title" size=50 type="text" class="title" value="{{ entry.title if entry else '' }}"/>
@@ -25,7 +25,6 @@
       <a class="submit" href="{{ url_for('show_entry', slug=entry.slug) if entry else '/' }}">Preview</a>&nbsp;
       <a class="submit" href="{{ url_for('show_entry', slug=entry.slug) if entry else '/' }}">Cancel</a>
     </div>
-    <input type="hidden" name="id" value="{{ entry.id if entry else '' }}"/>
   </div>
   </form>
 {% endblock %}

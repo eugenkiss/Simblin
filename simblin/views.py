@@ -49,21 +49,11 @@ def show_entry(slug):
 @login_required
 def add_entry():
     """Create a new blog post"""
-    error = None
     if request.method == 'GET':
-        id = request.args.get('id', '')
-        if id:
-            entry = query_db('SELECT * FROM entries WHERE id=?', [id], one=True)
-            if not entry:
-                error = 'Invalid id'
-            else:
-                tags = get_tags(entry_id=id)
-                return render_template('compose.html', entry=entry, tags=tags)
-        else:
-            return render_template('compose.html', entry=None, tags=None)
-        
+        return render_template('compose.html', entry=None, tags=None)
+    
+    error = None
     if request.method == 'POST':
-        id = request.form['id']
         title = request.form['title']
         markdown = request.form['markdown']
         slug = normalize(title)
@@ -78,43 +68,82 @@ def add_entry():
         tags = normalize_tags(request.form['tags'])
         create_tags(tags)
         
-        if request.form['title'] == '':
+        if title == '':
             error = 'You must provide a title'
-        elif id and \
-            not query_db('SELECT * FROM entries WHERE id=?', [id], one=True):
-            error = 'Invalid id'
         else:
-            if not id:
-                # Create new entry
-                g.db.execute(
-                    'INSERT INTO entries ' 
-                    '(slug, title, markdown, html, published) ' 
-                    'VALUES (?, ?, ?, ?, ?)',
-                    [slug, title, markdown, html, now])
-                id = query_db('SELECT id FROM entries WHERE slug=?', 
-                    [slug], one=True)['id']
-                associate_tags(id, tags)
-                flash('New entry was successfully posted')
-            else:
-                # Update existing entry
-                g.db.execute(
-                    'UPDATE entries SET ' 
-                    'slug=?, title=?, markdown=?, html=? ' 
-                    'WHERE id=?',
-                    [slug, title, markdown, html, id])
-                flash('Entry was successfully updated')
-                unassociate_tags(id)
-                associate_tags(id, tags)
-            tidy_tags()
+            g.db.execute(
+                'INSERT INTO entries ' 
+                '(slug, title, markdown, html, published) ' 
+                'VALUES (?, ?, ?, ?, ?)',
+                [slug, title, markdown, html, now])
+            #: The id of the newly created blog post
+            id = query_db('SELECT id FROM entries WHERE slug=?', 
+                [slug], one=True)['id']
+            associate_tags(id, tags)
             g.db.commit()
+            flash('New entry was successfully posted')
             return redirect(url_for('show_entries'))
     if error: flash(error, 'error')
     return render_template('compose.html')
 
 
-@view.route('/delete/<int:id>', methods=['GET', 'POST'])
-def delete_entry(id):
-    entry = query_db('SELECT * FROM entries WHERE id=?', [id], one=True)
+@view.route('/update/<slug>', methods=['GET', 'POST'])
+@login_required
+def update_entry(slug):
+    """Update a new blog post"""
+    error = None
+    entry = None
+    if slug:
+        entry = query_db('SELECT * FROM entries WHERE slug=?', 
+            [slug], one=True)
+        
+    if request.method == 'GET':
+        if not entry:
+            error = 'Invalid slug'
+        else:
+            tags = get_tags(entry_id=entry['id'])
+            return render_template('compose.html', entry=entry, tags=tags)
+        
+    if request.method == 'POST':
+        id = entry['id'] if entry else None
+        title = request.form['title']
+        markdown = request.form['markdown']
+        slug = normalize(title)
+        # In order to make slug unique
+        while True:
+            entry = query_db('SELECT * FROM entries WHERE slug=?', [slug],
+                one=True)
+            if not entry: break
+            slug += "-2"
+        html = convert_markdown(markdown)
+        now = datetime.datetime.now()
+        tags = normalize_tags(request.form['tags'])
+        create_tags(tags)
+        
+        if title == '':
+            error = 'You must provide a title'
+        elif not id:
+            error = 'Invalid slug'
+        else:
+            g.db.execute(
+                'UPDATE entries SET ' 
+                'slug=?, title=?, markdown=?, html=? ' 
+                'WHERE id=?',
+                [slug, title, markdown, html, id])
+            flash('Entry was successfully updated')
+            unassociate_tags(id)
+            associate_tags(id, tags)
+            tidy_tags()
+            g.db.commit()
+            return redirect(url_for('show_entry', slug=slug))
+    if error: flash(error, 'error')
+    return redirect(url_for('show_entries'))
+
+
+@view.route('/delete/<slug>', methods=['GET', 'POST'])
+@login_required
+def delete_entry(slug):
+    entry = query_db('SELECT * FROM entries WHERE slug=?', [slug], one=True)
     next = request.values.get('next', '')
     if not entry:
         flash('No such entry')
@@ -125,11 +154,15 @@ def delete_entry(id):
         return render_template('delete.html')
     
     if request.method == 'POST':
-        g.db.execute('DELETE FROM entries WHERE id=?', [entry['id']])
+        id = entry['id']
+        g.db.execute('DELETE FROM entries WHERE id=?', [id])
         unassociate_tags(id)
         tidy_tags()
         g.db.commit()
         next = request.form['next']
+        # So that the user is not redirected to a not any more existent page
+        if url_for('show_entry', slug='') in next:
+            next = None
         flash('Entry deleted')
         return redirect(next or url_for('show_entries'))
 

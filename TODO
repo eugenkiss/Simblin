@@ -1,11 +1,12 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
 * Learn about python's with statement
-* change compose entry <int:id>
+* Rewrite entry macro to be an include
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
 ** On entry view, show title of next and previous posts
 * Tag support (at least /tag/blabla shows all posts with tag blabla)
 * Preview
+* Split views to "admin_view" and "std_view"
 * test redirections (look at how Flask-Testing does this)
 * Pylint
 * Add possiblity to load real settings.cfg
@@ -65,5 +66,6 @@ future:
 * own comments
 * search
 * feeds
+* sql-alchemy?
 * modal dialogs form confirmations (with jquery)
 * Add smarty pants ``''
