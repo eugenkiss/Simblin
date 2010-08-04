@@ -20,9 +20,10 @@
 
 ----------------
 
-* http://blog.disqus.net/2007/03/11/a-django-primer/
-* http://blog.jeffhui.net/2009/03/django-blog-tutorial/
-* Look for other Blog Tutorials
+* Look for Blog Tutorials (to get ideas)
+** http://blog.disqus.net/2007/03/11/a-django-primer/
+** http://blog.jeffhui.net/2009/03/django-blog-tutorial/
+* Link "Show source" that opens the pure mkd source of the blog post in a new window
 * Only show login/compose on mouseover
 * Tab key does indent in compose editor
 * Use WTForms: http://flask.pocoo.org/docs/patterns/wtforms/
@@ -66,6 +67,6 @@ future:
 * own comments
 * search
 * feeds
-* sql-alchemy?
+* mail notification
 * modal dialogs form confirmations (with jquery)
 * Add smarty pants ``''
