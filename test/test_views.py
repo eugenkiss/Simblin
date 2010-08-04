@@ -38,12 +38,11 @@ def setUp():
     global db_tempfile, app, client, ctx
     db_tempfile, config.DATABASE = tempfile.mkstemp()
     app = create_app(config)
-    ctx = app.test_request_context()
-    # Why is it important to call ctx.push before helpers.init_db?
-    ctx.push()
     client = app.test_client()
+    ctx = app.test_request_context()
+    #: Because init_db uses current_app there must already be a context?
+    ctx.push()
     helpers.init_db(app.config['DATABASE'])
-    g.db = helpers.connect_db(app.config['DATABASE'])
 
 
 def teardown():
@@ -60,8 +59,26 @@ def clear_db():
     
 # Helper functions
 
+class faked_request:
+    """Use with the `with` statement. Simulates the `before_request` and 
+    `after_request` actions."""
+    
+    def __enter__(self):
+        """Initialize db connections, g, request etc."""
+        ctx.push()
+        app.preprocess_request()
+        
+    def __exit__(self, type, value, traceback):
+        """Close db connections, g, request etc."""
+        app.process_response(app.response_class())
+        ctx.pop()
+
+
 def query_db(query, args=(), one=False):
-    return helpers.query_db(query, args, one)
+    # `query_db` needs an openend database connection so the request must be
+    # faked.
+    with faked_request():
+        return helpers.query_db(query, args, one)
 
 
 def register(username, password, password2=None):
@@ -201,7 +218,9 @@ class TestComposing:
         expected_date = datetime.date.today()
         add_entry(title=title, markdown=markdown, tags=tags)
         entry = query_db('SELECT * FROM entries', one=True)
-        tags = helpers.get_tags(entry['id'])
+        # In order to open a database connection to retrieve the tags
+        with faked_request():
+            tags = helpers.get_tags(entry['id'])
         
         assert_equal(entry['id'], expected_id)
         assert_equal(entry['title'], expected_title)
@@ -247,7 +266,8 @@ class TestComposing:
         update_entry(title=updated_title, markdown=updated_markdown, 
             tags=updated_tags, slug=first_slug)
         entry = query_db('SELECT * FROM entries WHERE id=1', one=True)
-        tags = helpers.get_tags(entry_id=entry['id'])
+        with faked_request():
+            tags = helpers.get_tags(entry_id=entry['id'])
         
         assert_equal(entry['title'], expected_title)
         assert_equal(entry['markdown'], expected_markdown)
@@ -284,7 +304,7 @@ class TestDeletion:
         register_and_login('barney', 'abc')
         
         add_entry(title='Title', markdown='', tags='cool')
-        entries = helpers.query_db('SELECT * FROM entries')
+        entries = query_db('SELECT * FROM entries')
         tags = query_db('SELECT * FROM tags')
         entry_tag_mappings = query_db('SELECT * FROM entry_tag')
         
