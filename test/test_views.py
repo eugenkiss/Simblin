@@ -14,6 +14,7 @@ import tempfile
 import os
 import flask
 
+from flask import g
 from nose.tools import assert_equal, assert_true, assert_false, with_setup
 from simblin import create_app, helpers
 
@@ -28,40 +29,39 @@ db_tempfile = None
 app = None
 #: The test client   
 client = None
-#: The connection to the temporary database
-db = None
 #: The context of the application
 ctx = None
     
     
 def setUp():
     """Initalize application and temporary database"""
-    global db_tempfile, app, client, db, ctx
+    global db_tempfile, app, client, ctx
     db_tempfile, config.DATABASE = tempfile.mkstemp()
     app = create_app(config)
-    client = app.test_client()
-    helpers.init_db(config.DATABASE, app=app)
-    db = helpers.connect_db(config.DATABASE)
     ctx = app.test_request_context()
+    # Why is it important to call ctx.push before helpers.init_db?
     ctx.push()
+    client = app.test_client()
+    helpers.init_db(app.config['DATABASE'])
+    g.db = helpers.connect_db(app.config['DATABASE'])
 
 
 def teardown():
     """Get rid of the database again"""
     os.close(db_tempfile)
-    os.unlink(config.DATABASE)
+    os.unlink(app.config['DATABASE'])
     ctx.pop()
     
     
 def clear_db():
     """Remove all rows inside the database"""
-    helpers.init_db(config.DATABASE, app=app)
+    helpers.init_db(app.config['DATABASE'])
     
     
 # Helper functions
 
 def query_db(query, args=(), one=False):
-    return helpers.query_db(query, args, one, db=db)
+    return helpers.query_db(query, args, one)
 
 
 def register(username, password, password2=None):
@@ -131,6 +131,8 @@ class TestRegister:
     
     def test_registering(self):
         """Test form validation and successful registering"""
+        # Why does ctx.push() needs to be here but not everywhere else?
+        ctx.push()
         clear_db()
         rv = register('', 'password')
         assert 'You have to enter a username' in rv.data
@@ -155,7 +157,7 @@ class TestLogin:
         assert 'Invalid username' in rv.data
         rv = login('barney', 'abd')
         assert 'Invalid password' in rv.data
-        # In order to keep the context around (whatever that means)
+        # In order to keep the context around
         with client:   
             rv = login('barney', 'abc')
             assert 'You have been successfully logged in' in rv.data
@@ -199,7 +201,7 @@ class TestComposing:
         expected_date = datetime.date.today()
         add_entry(title=title, markdown=markdown, tags=tags)
         entry = query_db('SELECT * FROM entries', one=True)
-        tags = helpers.get_tags(entry['id'], db=db)
+        tags = helpers.get_tags(entry['id'])
         
         assert_equal(entry['id'], expected_id)
         assert_equal(entry['title'], expected_title)
@@ -245,7 +247,7 @@ class TestComposing:
         update_entry(title=updated_title, markdown=updated_markdown, 
             tags=updated_tags, slug=first_slug)
         entry = query_db('SELECT * FROM entries WHERE id=1', one=True)
-        tags = helpers.get_tags(entry_id=entry['id'], db=db)
+        tags = helpers.get_tags(entry_id=entry['id'])
         
         assert_equal(entry['title'], expected_title)
         assert_equal(entry['markdown'], expected_markdown)
@@ -282,7 +284,7 @@ class TestDeletion:
         register_and_login('barney', 'abc')
         
         add_entry(title='Title', markdown='', tags='cool')
-        entries = query_db('SELECT * FROM entries')
+        entries = helpers.query_db('SELECT * FROM entries')
         tags = query_db('SELECT * FROM tags')
         entry_tag_mappings = query_db('SELECT * FROM entry_tag')
         
