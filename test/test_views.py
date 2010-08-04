@@ -278,7 +278,7 @@ class TestComposing:
         
         # Expect three rows in the entries table because three entries where
         # created and one updated. Expect only two rows in the tags table 
-        # because the tag 'vil/bil' is not used anymore by an entry. Also 
+        # because the tag 'vil-bil' is not used anymore by an entry. Also 
         # expect four entries in the entry_tag table because it should look
         # like this:
         # entry_id | tag_id
