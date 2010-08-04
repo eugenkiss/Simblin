@@ -54,6 +54,8 @@ def teardown():
     
 def clear_db():
     """Remove all rows inside the database"""
+    #: Because init_db uses current_app there must already be a context?
+    ctx.push()
     helpers.init_db(app.config['DATABASE'])
     
     
@@ -134,7 +136,7 @@ def delete_entry(slug):
         follow_redirects=True)
         
         
-class TestRegister:
+class TestRegistration:
     
     def test_redirect(self):
         """
@@ -148,8 +150,6 @@ class TestRegister:
     
     def test_registering(self):
         """Test form validation and successful registering"""
-        # Why does ctx.push() needs to be here but not everywhere else?
-        ctx.push()
         clear_db()
         rv = register('', 'password')
         assert 'You have to enter a username' in rv.data

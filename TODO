@@ -1,10 +1,12 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Learn about python's with statement
-* create models (class entry so that one can do entry.tags and it is a property that asks db...)
+* SQL ALCHEMY
+** create models (class entry so that one can do entry.tags and it is a property that asks db...)
+** http://packages.python.org/Flask-Testing/#testing-with-sqlalchemy
+** Use in memory sqlite db (so that tests are faster)
 * Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
 ** On entry view, show title of next and previous posts
-* Tag support (at least /tag/blabla shows all posts with tag blabla)
+* Tag support (at least /tag/blabla shows all posts with tag blabla ordered by id)
 * Preview
 * Split views to "admin_view" and "std_view"
 * test redirections (look at how Flask-Testing does this)
@@ -13,7 +15,7 @@
 * Polish Templates/CSS
 * Refactor/Tests/Document/Readme/Changelog
 * Test looks on firefox/opera and ggf. improve (buttons)
-* Input from Community what to refactor (mailinglist??)
+
 
 -> v0.1
 -> github
@@ -23,6 +25,7 @@
 * Look for Blog Tutorials (to get ideas)
 ** http://blog.disqus.net/2007/03/11/a-django-primer/
 ** http://blog.jeffhui.net/2009/03/django-blog-tutorial/
+** http://github.com/mitsuhiko/flask/tree/website/flask_website/
 * Link "Show source" that opens the pure mkd source of the blog post in a new window
 * Only show login/compose on mouseover
 * Tab key does indent in compose editor
@@ -40,6 +43,7 @@
 ** Filter by Category
 ** Show all tags and number of posts for a tag
 * Proper Logging (read flask logging docs)
+* Input from Community what to refactor (mailinglist??)
 * Refactor/Tests/Document/Readme/Changelog
 
 -> v0.2
@@ -64,7 +68,7 @@
 future:
 * Put hardcoded Messages in config file
 * statistics
-* own comments
+* own comments?
 * search
 * feeds
 * mail notification
