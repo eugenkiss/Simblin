@@ -16,15 +16,21 @@ import flask
 
 from flask import g
 from nose.tools import assert_equal, assert_true, assert_false, with_setup
-from simblin import create_app, helpers
 
+from simblin import create_app, helpers
+from simblin.extensions import db
+from simblin.models import Entry, Tag, entry_tags
+
+# TODO: Test Models separately (see danjac)
 
 # Configuration
-class config:
-    DATABASE = None
 
-#: File Pointer to temporary database
-db_tempfile = None
+#: Inmemory database
+SQLALCHEMY_DATABASE_URI = 'sqlite://'
+
+
+# Globals
+
 #: The application
 app = None
 #: The test client   
@@ -35,28 +41,25 @@ ctx = None
     
 def setUp():
     """Initalize application and temporary database"""
-    global db_tempfile, app, client, ctx
-    db_tempfile, config.DATABASE = tempfile.mkstemp()
-    app = create_app(config)
+    global app, client, ctx
+    app = create_app(__name__)
     client = app.test_client()
     ctx = app.test_request_context()
-    #: Because init_db uses current_app there must already be a context?
     ctx.push()
-    helpers.init_db(app.config['DATABASE'])
+    db.init_app(app)
+    db.create_all()
 
 
 def teardown():
-    """Get rid of the database again"""
-    os.close(db_tempfile)
-    os.unlink(app.config['DATABASE'])
+    """Get rid of the context"""
     ctx.pop()
     
     
 def clear_db():
     """Remove all rows inside the database"""
-    #: Because init_db uses current_app there must already be a context?
-    ctx.push()
-    helpers.init_db(app.config['DATABASE'])
+    ctx.push() # If I remove this test_registering won't work?
+    db.drop_all()
+    db.create_all()
     
     
 # Helper functions
@@ -76,14 +79,7 @@ class faked_request:
         ctx.pop()
 
 
-def query_db(query, args=(), one=False):
-    # `query_db` needs an openend database connection so the request must be
-    # faked.
-    with faked_request():
-        return helpers.query_db(query, args, one)
-
-
-def register(username, password, password2=None):
+def register(username, password, password2=''):
     """Helper function to register a user"""
     return client.post('/register', data=dict(
         username=username,
@@ -111,21 +107,20 @@ def logout():
     return client.get('/logout', follow_redirects=True)
 
 
-def add_entry(title, markdown, tags):
+def add_entry(title, markup, tags):
     """Helper functions to create a blog post"""
     return client.post('/compose', data=dict(
         title=title,
-        markdown=markdown,
+        markup=markup,
         tags=tags,
-        id=''
     ), follow_redirects=True)
 
 
-def update_entry(title, markdown, tags, slug):
+def update_entry(title, markup, tags, slug):
     """Helper functions to create a blog post"""
     return client.post('/update/%s' % slug, data=dict(
         title=title,
-        markdown=markdown,
+        markup=markup,
         tags=tags,
     ), follow_redirects=True)
     
@@ -190,11 +185,11 @@ class TestComposing:
         """Check if form validation and validation in general works"""
         clear_db()
         register_and_login('barney', 'abc')
-        rv = add_entry(title='', markdown='a', tags='b')
+        rv = add_entry(title='', markup='a', tags='b')
         assert 'You must provide a title' in rv.data
-        rv = add_entry(title='a', markdown='', tags='')
+        rv = add_entry(title='a', markup='', tags='')
         assert 'New entry was successfully posted' in rv.data
-        rv = update_entry(title='a', markdown='', tags='', slug='999x00')
+        rv = update_entry(title='a', markup='', tags='', slug='999x00')
         assert 'Invalid slug' in rv.data
         
     def test_conversion(self):
@@ -206,75 +201,72 @@ class TestComposing:
         register_and_login('barney', 'abc')
         
         title = "My entry"
-        markdown = "# Title"
+        markup = "# Title"
         tags = "django, franz und bertha,vil/bil"
         expected_id = 1
         expected_title = title
-        expected_markdown = markdown
+        expected_markup = markup
         expected_tags = ['django','franz-und-bertha','vil-bil']
         expected_slug = "my-entry"
         first_slug = expected_slug
         expected_html = "<h1>Title</h1>"
         expected_date = datetime.date.today()
-        add_entry(title=title, markdown=markdown, tags=tags)
-        entry = query_db('SELECT * FROM entries', one=True)
-        # In order to open a database connection to retrieve the tags
-        with faked_request():
-            tags = helpers.get_tags(entry['id'])
+        add_entry(title=title, markup=markup, tags=tags)
+        entry = Entry.query.first()
+        entry_tagnames = [tag.name for tag in entry.tags]
         
-        assert_equal(entry['id'], expected_id)
-        assert_equal(entry['title'], expected_title)
-        assert_equal(entry['markdown'], expected_markdown)
-        assert_equal(entry['slug'], expected_slug)
-        assert expected_html in entry['html']
-        assert_equal(entry['published'].date(), expected_date)
-        assert_equal(tags, expected_tags)
+        assert_equal(entry.id, expected_id)
+        assert_equal(entry.title, expected_title)
+        assert_equal(entry.markup, expected_markup)
+        assert_equal(entry.slug, expected_slug)
+        assert expected_html in entry.html
+        assert_equal(entry.published.date(), expected_date)
+        assert_equal(sorted(entry_tagnames), sorted(expected_tags))
         
         # Add another entry with the same fields but expect a different slug
         # and the same number of tags inside the database
         
         expected_slug2 = expected_slug + '-2'
         tags2 = "django, franz und bertha"
-        add_entry(title=title, markdown=markdown, tags=tags2)
-        entry = query_db('SELECT * FROM entries WHERE id=2', one=True)
-        all_tags = query_db('SELECT * FROM tags')
+        add_entry(title=title, markup=markup, tags=tags2)
+        entry = Entry.query.filter_by(id=2).first()
+        all_tags = Tag.query.all()
         
-        assert_equal(entry['title'], expected_title) 
-        assert_equal(entry['slug'], expected_slug2)
+        assert_equal(entry.title, expected_title) 
+        assert_equal(entry.slug, expected_slug2)
         assert_equal(len(all_tags), 3)    
         
         # Add yet another entry with the same title and expect a different slug
         
         expected_slug3 = expected_slug2 + '-2'
-        add_entry(title=title, markdown=markdown, tags=tags2)
-        entry = query_db('SELECT * FROM entries WHERE id=3', one=True)
+        add_entry(title=title, markup=markup, tags=tags2)
+        entry = Entry.query.filter_by(id=3).first()
         
-        assert_equal(entry['slug'], expected_slug3)
+        assert_equal(entry.slug, expected_slug3)
         
         # Now test updating an entry
         
         updated_title = 'cool'
-        updated_markdown = '## Title'
+        updated_markup = '## Title'
         updated_tags = ''
         expected_title = updated_title
-        expected_markdown = updated_markdown
+        expected_markup = updated_markup
         expected_tags = []
         expected_slug = 'cool'
         expected_html = '<h2>Title</h2>'
         expected_date = datetime.date.today()
         # Update the first entry (slug=first_slug)
-        update_entry(title=updated_title, markdown=updated_markdown, 
+        update_entry(title=updated_title, markup=updated_markup, 
             tags=updated_tags, slug=first_slug)
-        entry = query_db('SELECT * FROM entries WHERE id=1', one=True)
-        with faked_request():
-            tags = helpers.get_tags(entry_id=entry['id'])
+        entry = Entry.query.filter_by(id=1).first()
+        entry_tagnames = [tag.name for tag in entry.tags]
         
-        assert_equal(entry['title'], expected_title)
-        assert_equal(entry['markdown'], expected_markdown)
-        assert_equal(entry['slug'], expected_slug)
-        assert expected_html in entry['html']
-        assert_equal(entry['published'].date(), expected_date)
-        assert_equal(tags, expected_tags)
+        assert_equal(entry.title, expected_title)
+        assert_equal(entry.markup, expected_markup)
+        assert_equal(entry.slug, expected_slug)
+        assert expected_html in entry.html
+        assert_equal(entry.published.date(), expected_date)
+        assert_equal(sorted(entry_tagnames), sorted(expected_tags))
         
         # Expect three rows in the entries table because three entries where
         # created and one updated. Expect only two rows in the tags table 
@@ -287,43 +279,43 @@ class TestComposing:
         # 3          1
         # 3          2
         
-        entries = query_db('SELECT * FROM entries')
-        tags = query_db('SELECT * FROM tags')
-        entry_tag_mappings = query_db('SELECT * FROM entry_tag')
+        entries = Entry.query.all()
+        tags = Tag.query.all()
+        entry_tag_mappings = db.session.query(entry_tags).all()
         assert_equal(len(entries), 3)
         assert_equal(len(tags), 2)
         assert_equal(len(entry_tag_mappings), 4)
+        
+        # TODO: Get all posts by a tag
+        # TODO: Make class TestEntries and split actions to
+        #       * validation * creation * updating * deletion * tags
 
 
 class TestDeletion:
     
     def test_deletion(self):
         """Test the deletion of a blog post and the accompanying deletion of
-        tags and their mappings to a blog post"""
+        tags"""
         clear_db()
         register_and_login('barney', 'abc')
         
-        add_entry(title='Title', markdown='', tags='cool')
-        entries = query_db('SELECT * FROM entries')
-        tags = query_db('SELECT * FROM tags')
-        entry_tag_mappings = query_db('SELECT * FROM entry_tag')
+        add_entry(title='Title', markup='', tags='cool')
+        entries = Entry.query.all()
+        tags = Tag.query.all()
         
         assert_equal(len(entries), 1)
         assert_equal(len(tags), 1)
-        assert_equal(len(entry_tag_mappings), 1)
         
         rv = delete_entry(slug='idontexist')
         assert 'No such entry' in rv.data
         rv = delete_entry(slug='title')
         assert 'Entry deleted' in rv.data
         
-        entries = query_db('SELECT * FROM entries')
-        tags = query_db('SELECT * FROM tags')
-        entry_tag_mappings = query_db('SELECT * FROM entry_tag')
+        entries = Entry.query.all()
+        tags = Tag.query.all()
         
         assert_equal(len(entries), 0)
         assert_equal(len(tags), 0)
-        assert_equal(len(entry_tag_mappings), 0)
 
 
 class TestEntryView:
@@ -333,6 +325,6 @@ class TestEntryView:
         clear_db()
         register_and_login('barney', 'abc')
         
-        add_entry(title='Title', markdown='', tags='')
+        add_entry(title='Title', markup='', tags='')
         rv = client.get('/entry/title')
         assert 'Title' in rv.data

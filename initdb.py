@@ -1,9 +1,11 @@
 import os
-from simblin.helpers import init_db
+from simblin.extensions import db
 from simblin import create_app
 
 app = create_app()
 
-init_db(os.path.join('simblin', app.config['DATABASE']), app=app)
+# TODO: Explain why the need for request context
+with app.test_request_context():
+    db.create_all()
 
 print "Initialized new empty database"

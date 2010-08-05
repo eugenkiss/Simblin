@@ -7,7 +7,7 @@
       <input name="title" size=50 type="text" class="title" value="{{ entry.title if entry else '' }}"/>
     </div>
     <div style="margin-bottom:5px">
-      <textarea name="markdown" rows="30" style="width:100%;" class="markdown">{{ entry.markdown|safe if entry else "" }}</textarea>
+      <textarea name="markup" rows="30" style="width:100%;" class="markup">{{ entry.markup|safe if entry else "" }}</textarea>
     </div>
     <div>
       <label for=tags>Tags:</label> 
