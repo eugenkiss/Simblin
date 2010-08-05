@@ -14,9 +14,10 @@ from werkzeug import check_password_hash, generate_password_hash
 from flask import Module, g, current_app, render_template, session, request, \
     flash, redirect, url_for
 
-from helpers import normalize, normalize_tags, \
-    convert_markdown, connect_db, init_db, query_db, get_tags, create_tags, \
-    associate_tags, unassociate_tags, tidy_tags, login_required
+from simblin.extensions import db
+from simblin.models import Admin, Entry, Tag
+from simblin.helpers import normalize, normalize_tags, login_required
+from simblin import signals
 
 view = Module(__name__)
 
@@ -24,9 +25,7 @@ view = Module(__name__)
 @view.route('/')
 def show_entries():
     """Show the latest x blog posts"""
-    entries = query_db('SELECT * FROM entries ORDER BY id DESC')
-    for entry in entries:
-        entry['tags'] = get_tags(entry['id'])
+    entries = Entry.query.order_by(Entry.id).all()
     if not entries:
         return redirect(url_for('add_entry'))
     else:
@@ -36,12 +35,11 @@ def show_entries():
 @view.route('/entry/<slug>')
 def show_entry(slug):
     """Show a specific blog post alone"""
-    entry = query_db('SELECT * FROM entries WHERE slug=?', [slug], one=True)
+    entry = Entry.query.filter_by(slug=slug).first()
     if not entry:
         flash("No such entry")
         return redirect(url_for('show_entries'))
     else:
-        entry['tags'] = get_tags(entry['id'])
         return render_template('entry.html', entry=entry)
 
 
@@ -55,32 +53,17 @@ def add_entry():
     error = None
     if request.method == 'POST':
         title = request.form['title']
-        markdown = request.form['markdown']
-        slug = normalize(title)
-        # In order to make slug unique
-        while True:
-            entry = query_db('SELECT * FROM entries WHERE slug=?', [slug],
-                one=True)
-            if not entry: break
-            slug += "-2"
-        html = convert_markdown(markdown)
-        now = datetime.datetime.now()
+        markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
-        create_tags(tags)
         
         if title == '':
             error = 'You must provide a title'
         else:
-            g.db.execute(
-                'INSERT INTO entries ' 
-                '(slug, title, markdown, html, published) ' 
-                'VALUES (?, ?, ?, ?, ?)',
-                [slug, title, markdown, html, now])
-            #: The id of the newly created blog post
-            id = query_db('SELECT id FROM entries WHERE slug=?', 
-                [slug], one=True)['id']
-            associate_tags(id, tags)
-            g.db.commit()
+            entry = Entry(title, markup)
+            entry.tags = tags
+            db.session.add(entry)
+            db.session.commit()
+            signals.entry_created.send(entry)
             flash('New entry was successfully posted')
             return redirect(url_for('show_entries'))
     if error: flash(error, 'error')
@@ -94,47 +77,32 @@ def update_entry(slug):
     error = None
     entry = None
     if slug:
-        entry = query_db('SELECT * FROM entries WHERE slug=?', 
-            [slug], one=True)
+        entry = Entry.query.filter_by(slug=slug).first()
         
     if request.method == 'GET':
         if not entry:
             error = 'Invalid slug'
         else:
-            tags = get_tags(entry_id=entry['id'])
+            # TODO: Change compose.html to use entry.tags instead of tags
+            tags = entry.tags
             return render_template('compose.html', entry=entry, tags=tags)
         
     if request.method == 'POST':
-        id = entry['id'] if entry else None
         title = request.form['title']
-        markdown = request.form['markdown']
-        slug = normalize(title)
-        # In order to make slug unique
-        while True:
-            entry = query_db('SELECT * FROM entries WHERE slug=?', [slug],
-                one=True)
-            if not entry: break
-            slug += "-2"
-        html = convert_markdown(markdown)
-        now = datetime.datetime.now()
+        markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
-        create_tags(tags)
         
         if title == '':
             error = 'You must provide a title'
-        elif not id:
+        elif not entry:
             error = 'Invalid slug'
         else:
-            g.db.execute(
-                'UPDATE entries SET ' 
-                'slug=?, title=?, markdown=?, html=? ' 
-                'WHERE id=?',
-                [slug, title, markdown, html, id])
+            entry.title = title
+            entry.markup = markup
+            entry.tags = tags
+            db.session.commit()
+            signals.entry_updated.send(entry)
             flash('Entry was successfully updated')
-            unassociate_tags(id)
-            associate_tags(id, tags)
-            tidy_tags()
-            g.db.commit()
             return redirect(url_for('show_entry', slug=slug))
     if error: flash(error, 'error')
     return redirect(url_for('show_entries'))
@@ -143,7 +111,7 @@ def update_entry(slug):
 @view.route('/delete/<slug>', methods=['GET', 'POST'])
 @login_required
 def delete_entry(slug):
-    entry = query_db('SELECT * FROM entries WHERE slug=?', [slug], one=True)
+    entry = Entry.query.filter_by(slug=slug).first()
     next = request.values.get('next', '')
     if not entry:
         flash('No such entry')
@@ -154,16 +122,14 @@ def delete_entry(slug):
         return render_template('delete.html')
     
     if request.method == 'POST':
-        id = entry['id']
-        g.db.execute('DELETE FROM entries WHERE id=?', [id])
-        unassociate_tags(id)
-        tidy_tags()
-        g.db.commit()
+        db.session.delete(entry)
+        db.session.commit()
+        signals.entry_deleted.send(entry)
+        flash('Entry deleted')
         next = request.form['next']
-        # So that the user is not redirected to a not any more existent page
+        # Don't redirect user to a deleted page
         if url_for('show_entry', slug='') in next:
             next = None
-        flash('Entry deleted')
         return redirect(next or url_for('show_entries'))
 
 
@@ -171,7 +137,7 @@ def delete_entry(slug):
 def login():
     """Log the admin in"""
     # The first visitor shall become the admin
-    admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
+    admin = Admin.query.first()
     if not admin:
         return redirect(url_for('register'))
     
@@ -180,10 +146,9 @@ def login():
     
     error = None
     if request.method == 'POST':
-        if request.form['username'] != admin['username']:
+        if request.form['username'] != admin.username:
             error = 'Invalid username'
-        elif not check_password_hash(admin['password'], 
-                                     request.form['password']):
+        elif not admin.check_password(request.form['password']):
             error = 'Invalid password'
         else:
             session['logged_in'] = True
@@ -207,7 +172,7 @@ def logout():
 def register():
     """Register the first visitor of the page. After that don't allow any
     registrations anymore"""
-    admin = query_db('SELECT * FROM admin LIMIT 1', one=True)
+    admin = Admin.query.first()
     if admin:
         flash('There can only be one admin', 'error')
         return redirect(url_for('show_entries'))
@@ -217,17 +182,18 @@ def register():
     
     error = None
     if request.method == 'POST':
-        if request.form['username'] == '':
+        username = request.form['username']
+        password = request.form['password']
+        password2 = request.form['password2']
+        if username == '':
             error = 'You have to enter a username'
-        elif request.form['password'] == '':
+        elif password == '':
             error = 'You have to enter a password'
-        elif not request.form['password'] == request.form['password2']:
+        elif not password == password2:
             error = "Passwords must match"
         else:
-            g.db.execute('insert into admin (username, password) values (?, ?)',
-                [request.form['username'], 
-                 generate_password_hash(request.form['password'])])
-            g.db.commit()
+            db.session.add(Admin(username, password))
+            db.session.commit()
             session['logged_in'] = True
             flash('You are the new master of this blog')
             return redirect(url_for('add_entry'))
