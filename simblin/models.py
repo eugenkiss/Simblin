@@ -46,7 +46,8 @@ class Entry(db.Model):
     published = db.Column(db.DateTime)
     
     # Many to many Entry <-> Tag
-    _tags = db.relationship('Tag', secondary='entry_tags', backref='entries')
+    _tags = db.relationship('Tag', secondary='entry_tags', 
+        backref=db.backref('entries', lazy='dynamic'))
     
     def __init__(self, title, markup):
         self.title = title

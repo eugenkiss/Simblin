@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% from 'macros.html' import render_pagination %}
+{% block body %}
+  {% for entry in pagination.items %}
+    {% include 'entrymodule.html' %}
+    <div class=spacer></div>
+  {% endfor %}
+  {{ render_pagination(pagination, endpoint_func) }}
+{% endblock %}

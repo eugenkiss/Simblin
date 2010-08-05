@@ -17,3 +17,6 @@ v0.1
 * message flashing (feedback)
 * simple design
 * redirection to last visited page after login/logout/...
+* built on sqlalchemy
+* pagination
+* view all posts of a tag

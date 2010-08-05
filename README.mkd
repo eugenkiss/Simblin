@@ -3,6 +3,8 @@ Simblin
 
 **Sim**ple **B**log Eng**in**e - A blog engine written with Flask and Sqlite3.
 
+Simple is not to misinterpret as minimalistic.
+
 requires flask and everything that flask requires
 
 first run `python initdb.py` then run `python blog.py`

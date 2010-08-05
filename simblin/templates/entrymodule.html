@@ -5,7 +5,7 @@
     <div class="date">{{ entry.published.strftime("%A %d. %B %Y") }}</div>
     <div class="tags">Tags: 
     {% for tag in entry.tags %}
-      <a href='/'>{{ tag }}</a>{% if not loop.last %}, {% endif %} 
+      <a href="{{ url_for('show_tag', tag=tag.name) }}">{{ tag.name }}</a>{% if not loop.last %}, {% endif %} 
     {% endfor %}
     </div>
   {% if session.logged_in %}

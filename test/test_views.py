@@ -133,16 +133,6 @@ def delete_entry(slug):
         
 class TestRegistration:
     
-    def test_redirect(self):
-        """
-        If there is no admin yet the visitor shall be redirected 
-        to the register page.
-        """
-        clear_db()
-        logout()
-        rv = client.get('/', follow_redirects=True)
-        assert 'Register' in rv.data
-    
     def test_registering(self):
         """Test form validation and successful registering"""
         clear_db()

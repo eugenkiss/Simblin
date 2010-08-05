@@ -13,6 +13,7 @@ import datetime
 from werkzeug import check_password_hash, generate_password_hash
 from flask import Module, g, current_app, render_template, session, request, \
     flash, redirect, url_for
+from flaskext.sqlalchemy import Pagination
 
 from simblin.extensions import db
 from simblin.models import Admin, Entry, Tag
@@ -22,25 +23,45 @@ from simblin import signals
 view = Module(__name__)
 
 
-@view.route('/')
-def show_entries():
+@view.route('/', defaults={'page':1})
+@view.route('/<int:page>')
+def show_entries(page):
     """Show the latest x blog posts"""
-    entries = Entry.query.order_by(Entry.id).all()
-    if not entries:
-        return redirect(url_for('add_entry'))
-    else:
-        return render_template('home.html', entries=entries)
+    pagination = Entry.query.order_by(Entry.id.desc()).paginate(page=page, 
+        per_page=current_app.config['POSTS_PER_PAGE'])
+    if not pagination.total: flash("No entries so far")
+    return render_template('show_entries.html', pagination=pagination,
+        endpoint_func=lambda x: url_for('show_entries', page=x))
 
 
 @view.route('/entry/<slug>')
 def show_entry(slug):
     """Show a specific blog post alone"""
     entry = Entry.query.filter_by(slug=slug).first()
+    if entry:
+        prev_entry = Entry.query.filter_by(id=entry.id-1).first()
+        next_entry = Entry.query.filter_by(id=entry.id+1).first()
     if not entry:
         flash("No such entry")
         return redirect(url_for('show_entries'))
     else:
-        return render_template('entry.html', entry=entry)
+        return render_template('entry.html', entry=entry, prev=prev_entry,
+                               next=next_entry)
+
+
+@view.route('/tag/<tag>', defaults={'page':1})
+@view.route('/tag/<tag>/<int:page>')
+def show_tag(tag, page):
+    """Shows all entries with a specific tag"""
+    per_page = current_app.config['POSTS_PER_PAGE']
+    entries = Tag.query.filter_by(name=tag).first().entries.order_by(
+        Entry.id.desc())
+    items = entries.limit(per_page).offset((page - 1) * per_page).all()
+    pagination = Pagination(entries, page=page, per_page=per_page, 
+        total=entries.count(), items=items)
+    flash("Posts tagged with '%s'" % tag)
+    return render_template('show_entries.html', pagination=pagination,
+        endpoint_func=lambda x: url_for('show_tag', tag=tag, page=x))
 
 
 @view.route('/compose', methods=['GET', 'POST'])

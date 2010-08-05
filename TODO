@@ -1,21 +1,14 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* SQL ALCHEMY
-** create models (class entry so that one can do entry.tags and it is a property that asks db...)
-** http://packages.python.org/Flask-Testing/#testing-with-sqlalchemy
-** Use in memory sqlite db (so that tests are faster)
-* Next/prev links on all Pages (so that e.g. only alwas 5 posts shown)
-** On entry view, show title of next and previous posts
-* Tag support (at least /tag/blabla shows all posts with tag blabla ordered by id)
 * Preview
+* Create lib folder and put markdow2.py there
 * Split views to "admin_view" and "std_view"
-* test redirections (look at how Flask-Testing does this)
+* Refactor entries to posts
 * Pylint
 * Add possiblity to load real settings.cfg
 * Polish Templates/CSS
-* Refactor/Tests/Document/Readme/Changelog
 * Test looks on firefox/opera and ggf. improve (buttons)
-
+* Refactor/Tests/Document/Readme/Changelog
 
 -> v0.1
 -> github

@@ -54,6 +54,11 @@ label {
     color: #b7b600;
 }
 
+/* Between blog posts */
+.spacer {
+    height: 1em;
+}
+
 #wrapper {
     max-width: 680px;
     /*min-width: 400px;*/
@@ -115,6 +120,18 @@ label {
 
 #content {
     margin-top: 3em;
+}
+
+/* Next/prev posts on entry view */
+#adjacent-posts {
+}
+
+#prev-post {
+    float:left;
+}
+
+#next-post {
+    float:right;
 }
 
 #search {
