@@ -14,4 +14,4 @@ put your real settings in a file called `settings.cfg`. You can look at
 
 Markdown: http://code.google.com/p/python-markdown2/
 
-Tests: Use `nosetests test/` to run tests
+Tests: Use `nosetests test` to run tests

@@ -1,3 +1,4 @@
+{% from 'macros.html' import render_entry with context %}
 {% extends "base.html" %}
 {% block body %}
   <h3>Compose</h3>
@@ -11,21 +12,26 @@
     </div>
     <div>
       <label for=tags>Tags:</label> 
-      <input name="tags" type="text" size=50 value="{{ ', '.join(tags) if tags else '' }}"/>
+      <input name="tags" type="text" size=50 
+      value="{% if entry %}{% for tag in entry.tags %}{{ tag.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}"/>
     </div>
     <div style="margin-top: 0.5em"></div>
     <div>
       <!-- TODO: This should rather be some kind of checkbox/list and one should be able to create/delete  
                  categories here -->
       <label for=tags>Categories:</label>
-      <input name="categories" size=50 type="text" value="{{ ', '.join(categories) if categories else '' }}"/>
+      <input name="categories" size=50 type="text" value="{{ ', '.join(entry.categories) if entry else '' }}"/>
     </div>
     <div style="margin-top:1em; text-align:right;">
-      <input type="submit" value="{{ 'Update' if entry else 'Publish' }}" class="submit"/>&nbsp;
-      <a class="submit" href="{{ url_for('show_entry', slug=entry.slug) if entry else '/' }}">Preview</a>&nbsp;
+      <input type="submit" name="action" value="{{ 'Update' if entry else 'Publish' }}" class="submit"/>&nbsp;
+      <input type="submit" name="action" value="Preview" class="submit"/>&nbsp;
       <a class="submit" href="{{ url_for('show_entry', slug=entry.slug) if entry else '/' }}">Cancel</a>
     </div>
   </div>
   </form>
+  {% if entry %}
+    <h3>Preview</h3>
+    {{ render_entry(entry, is_preview=True) }}
+  {% endif %}
 {% endblock %}
 {% block search %}{% endblock %}

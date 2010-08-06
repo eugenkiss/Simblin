@@ -113,6 +113,7 @@ def add_entry(title, markup, tags):
         title=title,
         markup=markup,
         tags=tags,
+        action='Post',
     ), follow_redirects=True)
 
 
@@ -122,6 +123,7 @@ def update_entry(title, markup, tags, slug):
         title=title,
         markup=markup,
         tags=tags,
+        action='Update',
     ), follow_redirects=True)
     
 

@@ -1,7 +1,8 @@
+{% from 'macros.html' import render_entry with context %}
 {% extends "base.html" %}
 {% block body %}
   {% if entry %}
-    {% include 'entrymodule.html' %}
+    {{ render_entry(entry) }}
   {% endif %}
   <div id=adjacent-posts>
     <div id="prev-post">

@@ -17,7 +17,8 @@ from flaskext.sqlalchemy import Pagination
 
 from simblin.extensions import db
 from simblin.models import Admin, Entry, Tag
-from simblin.helpers import normalize, normalize_tags, login_required
+from simblin.helpers import normalize, normalize_tags, convert_markup, \
+    login_required
 from simblin import signals
 
 view = Module(__name__)
@@ -30,7 +31,7 @@ def show_entries(page):
     pagination = Entry.query.order_by(Entry.id.desc()).paginate(page=page, 
         per_page=current_app.config['POSTS_PER_PAGE'])
     if not pagination.total: flash("No entries so far")
-    return render_template('show_entries.html', pagination=pagination,
+    return render_template('entries.html', pagination=pagination,
         endpoint_func=lambda x: url_for('show_entries', page=x))
 
 
@@ -60,8 +61,23 @@ def show_tag(tag, page):
     pagination = Pagination(entries, page=page, per_page=per_page, 
         total=entries.count(), items=items)
     flash("Posts tagged with '%s'" % tag)
-    return render_template('show_entries.html', pagination=pagination,
+    return render_template('entries.html', pagination=pagination,
         endpoint_func=lambda x: url_for('show_tag', tag=tag, page=x))
+        
+
+def preview(args):
+    """Returns a preview of a blog post. Use this inside a real view"""
+    # Mimic entry object to fill form fields
+    entry = dict(
+        slug=normalize(args['title']),
+        title=args['title'],
+        markup=args['markup'],
+        html=convert_markup(args['markup']),
+        published=datetime.datetime.now(),
+        # Mimic the tag relationship field of entry
+        tags=[dict(name=tag) for tag in normalize_tags(args['tags'])],
+    )
+    return render_template('compose.html', entry=entry)
 
 
 @view.route('/compose', methods=['GET', 'POST'])
@@ -69,10 +85,12 @@ def show_tag(tag, page):
 def add_entry():
     """Create a new blog post"""
     if request.method == 'GET':
-        return render_template('compose.html', entry=None, tags=None)
+        return render_template('compose.html', entry=None)
     
     error = None
     if request.method == 'POST':
+        if request.form['action'] == 'Preview':
+            return preview(request.form)
         title = request.form['title']
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
@@ -104,11 +122,11 @@ def update_entry(slug):
         if not entry:
             error = 'Invalid slug'
         else:
-            # TODO: Change compose.html to use entry.tags instead of tags
-            tags = entry.tags
-            return render_template('compose.html', entry=entry, tags=tags)
+            return render_template('compose.html', entry=entry)
         
     if request.method == 'POST':
+        if request.form['action'] == 'Preview':
+            return preview(request.form)
         title = request.form['title']
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
@@ -124,7 +142,7 @@ def update_entry(slug):
             db.session.commit()
             signals.entry_updated.send(entry)
             flash('Entry was successfully updated')
-            return redirect(url_for('show_entry', slug=slug))
+            return redirect(url_for('show_entry', slug=entry.slug))
     if error: flash(error, 'error')
     return redirect(url_for('show_entries'))
 
