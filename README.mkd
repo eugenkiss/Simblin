@@ -1,9 +1,37 @@
 Simblin
 =======
 
-**Sim**ple **B**log Eng**in**e - A blog engine written with Flask and Sqlite3.
+**Sim**ple **B**log Eng**in**e - A blog engine written with [Flask][] and
+[SQLAlchemy][].
 
-Simple is not to misinterpret as minimalistic.
+Simblin is built to be used by only one author. Simblin has no dashboard, no
+plugin support and no theme support although the templates and css can be
+modified by hand of course. Simblin does not provide its own comment system
+but has support for [Disqus](http://disqus.com/).
+
+On the other hand Simblin delivers every feature that is needed to provide
+an uncomplicated blogging experience. Simblin has 
+
+* tags and categories 
+* pages (``static'' blog posts)
+* pagination 
+* markdown support
+* archives
+* source code highlighting
+
+Simple is not to misinterpret as minimalistic. Had Simblin been a minimalistic
+blog engine (*minblin* :)) there would have been no tags, categories etc. Only
+one page that shows the five lates posts and a possibility to see older posts.
+But that would have been a little to sparse for my taste...
+
+**Not everything is implemented as of now**
+
+
+Configuration
+-------------
+
+Don't forget version numbers!
+* Link to deployment section of flask
 
 requires flask and everything that flask requires
 
@@ -12,6 +40,42 @@ first run `python initdb.py` then run `python blog.py`
 put your real settings in a file called `settings.cfg`. You can look at
 `default-settings.cfg` to get an idea.
 
-Markdown: http://code.google.com/p/python-markdown2/
+Use a python shell to create a secret key:
+
+    >>> import os
+    >>> os.urandom(24)
+    '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 
 Tests: Use `nosetests test` to run tests
+
+
+Usage
+-----
+
+### Pages
+
+Simblin pages are simply blog posts in the category `pages' with disabled
+comments. The order of pages is determined by their id. So to retroactively
+change the order of the pages copy their content, delete all pages and recreate
+them in the desired order. 
+
+### Source Code Highlighting
+
+Source code highlighting is enabled by the [CodeColor][] extension of 
+[Markdown2][] and you can don't have to be afraid to use underscores in your
+code thanks to [CodeFriendly].
+
+  [codecolor]: http://code.google.com/p/python-markdown2/wiki/CodeColor
+  [codefriendly]: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
+
+
+Used Libraries/Frameworks
+-------------------------
+
+* [Flask][]
+* [SQLAlchemy][]
+* [Markdown2][]
+
+  [markdown2]: http://code.google.com/p/python-markdown2/
+  [flask]: http://flask.pocoo.org/
+  [sqlalchemy]: http://www.sqlalchemy.org/
