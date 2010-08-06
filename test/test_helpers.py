@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     Simblin Test Helpers
-    ~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~
 
     Test the different utility functions of the blogging application.
 
@@ -9,6 +9,7 @@
     :license: BSD, see LICENSE for more details.
 """
 from nose.tools import assert_equal, assert_true, assert_false, with_setup
+
 from simblin import helpers
     
             

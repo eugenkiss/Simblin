@@ -1,14 +1,12 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* put simblin. before every intra import and add a space between intra and inter
-  imports
-* Split views to "admin_view" and "std_view"
 * Refactor entries to posts
 ** rename update_entry to edit_post
 * Pylint
 * Add possiblity to load real settings.cfg
 * Polish Templates/CSS
 * Test looks on firefox/opera and ggf. improve (buttons)
+* grep TODOs
 * Refactor/Tests/Document/Readme/Changelog
 * Write requirements in Readme (sqlalchemy version 0.9.1...)
 

@@ -12,14 +12,15 @@ import datetime
 
 from werkzeug import check_password_hash, generate_password_hash
 from flask import Module, g, current_app, render_template, session, request, \
-    flash, redirect, url_for
+                  flash, redirect, url_for
 from flaskext.sqlalchemy import Pagination
 
+from simblin import signals
 from simblin.extensions import db
 from simblin.models import Admin, Entry, Tag
 from simblin.helpers import normalize, normalize_tags, convert_markup, \
-    login_required
-from simblin import signals
+                            login_required
+
 
 view = Module(__name__)
 
