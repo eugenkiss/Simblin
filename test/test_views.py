@@ -10,14 +10,11 @@
 """
 from __future__ import with_statement
 import datetime
-import tempfile
-import os
 import flask
 
-from flask import g
-from nose.tools import assert_equal, assert_true, assert_false, with_setup
+from nose.tools import assert_equal
 
-from simblin import create_app, helpers
+from simblin import create_app
 from simblin.extensions import db
 from simblin.models import Post, Tag, post_tags
 
