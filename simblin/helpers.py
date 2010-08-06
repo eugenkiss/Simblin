@@ -12,15 +12,15 @@ from __future__ import with_statement
 import sqlite3
 import unicodedata
 import re
-import markdown2
 import os
 
 from os import urandom
 from hashlib import sha512
 from contextlib import closing
 from functools import wraps
-
 from flask import current_app, g, session, url_for, redirect, request, flash
+
+from simblin.lib import markdown2
 
 
 def login_required(f):

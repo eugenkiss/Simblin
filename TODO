@@ -1,6 +1,5 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Create lib folder and put markdow2.py there
 * put simblin. before every intra import and add a space between intra and inter
   imports
 * Split views to "admin_view" and "std_view"
@@ -11,6 +10,7 @@
 * Polish Templates/CSS
 * Test looks on firefox/opera and ggf. improve (buttons)
 * Refactor/Tests/Document/Readme/Changelog
+* Write requirements in Readme (sqlalchemy version 0.9.1...)
 
 -> v0.1
 -> github
@@ -71,3 +71,4 @@ future:
 * mail notification
 * modal dialogs form confirmations (with jquery)
 * Add smarty pants ``''
+* Update markdown2 lib
