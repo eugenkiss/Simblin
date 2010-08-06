@@ -1,7 +1,5 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Refactor entries to posts
-** rename update_entry to edit_post
 * Pylint
 * Add possiblity to load real settings.cfg
 * Polish Templates/CSS

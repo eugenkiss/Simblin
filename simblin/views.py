@@ -17,7 +17,7 @@ from flaskext.sqlalchemy import Pagination
 
 from simblin import signals
 from simblin.extensions import db
-from simblin.models import Admin, Entry, Tag
+from simblin.models import Admin, Post, Tag
 from simblin.helpers import normalize, normalize_tags, convert_markup, \
                             login_required
 
@@ -27,75 +27,77 @@ view = Module(__name__)
 
 @view.route('/', defaults={'page':1})
 @view.route('/<int:page>')
-def show_entries(page):
+def show_posts(page):
     """Show the latest x blog posts"""
-    pagination = Entry.query.order_by(Entry.id.desc()).paginate(page=page, 
+    pagination = Post.query.order_by(Post.id.desc()).paginate(page=page, 
         per_page=current_app.config['POSTS_PER_PAGE'])
-    if not pagination.total: flash("No entries so far")
-    return render_template('entries.html', pagination=pagination,
-        endpoint_func=lambda x: url_for('show_entries', page=x))
+    if not pagination.total: flash("No posts so far")
+    return render_template('posts.html', pagination=pagination,
+        endpoint_func=lambda x: url_for('show_posts', page=x))
 
 
-@view.route('/entry/<slug>')
-def show_entry(slug):
+@view.route('/post/<slug>')
+def show_post(slug):
     """Show a specific blog post alone"""
-    entry = Entry.query.filter_by(slug=slug).first()
-    if entry:
-        prev_entry = Entry.query.filter_by(id=entry.id-1).first()
-        next_entry = Entry.query.filter_by(id=entry.id+1).first()
-    if not entry:
-        flash("No such entry")
-        return redirect(url_for('show_entries'))
+    post = Post.query.filter_by(slug=slug).first()
+    if post:
+        prev_post = Post.query.filter_by(id=post.id-1).first()
+        next_post = Post.query.filter_by(id=post.id+1).first()
+    if not post:
+        flash("No such post")
+        return redirect(url_for('show_posts'))
     else:
-        return render_template('entry.html', entry=entry, prev=prev_entry,
-                               next=next_entry)
+        return render_template('post.html', post=post, prev=prev_post,
+                               next=next_post)
 
 
 @view.route('/tag/<tag>', defaults={'page':1})
 @view.route('/tag/<tag>/<int:page>')
 def show_tag(tag, page):
-    """Shows all entries with a specific tag"""
+    """Shows all posts with a specific tag"""
     per_page = current_app.config['POSTS_PER_PAGE']
-    entries = Tag.query.filter_by(name=tag).first().entries.order_by(
-        Entry.id.desc())
-    items = entries.limit(per_page).offset((page - 1) * per_page).all()
-    pagination = Pagination(entries, page=page, per_page=per_page, 
-        total=entries.count(), items=items)
+    posts = Tag.query.filter_by(name=tag).first().posts.order_by(
+        Post.id.desc())
+    items = posts.limit(per_page).offset((page - 1) * per_page).all()
+    pagination = Pagination(posts, page=page, per_page=per_page, 
+        total=posts.count(), items=items)
     flash("Posts tagged with '%s'" % tag)
-    return render_template('entries.html', pagination=pagination,
+    return render_template('posts.html', pagination=pagination,
         endpoint_func=lambda x: url_for('show_tag', tag=tag, page=x))
         
 
 def preview(args):
     """Returns a preview of a blog post. Use this inside a real view"""
-    # Mimic entry object to fill form fields
-    entry = dict(
-        slug=normalize(args['title']),
+    # Mimic post object to fill form fields
+    post = dict(
+        #: Needed hack for distinguishing between existent and non-existant post
+        #  when clicking `preview`
+        slug=None, 
         title=args['title'],
         markup=args['markup'],
         html=convert_markup(args['markup']),
         published=datetime.datetime.now(),
-        # Mimic the tag relationship field of entry
+        # Mimic the tag relationship field of post
         tags=[dict(name=tag) for tag in normalize_tags(args['tags'])],
     )
-    return render_template('compose.html', entry=entry)
+    return render_template('compose.html', post=post)
 
 
 @view.route('/compose', methods=['GET', 'POST'], defaults={'slug':None})
 @view.route('/update/<slug>', methods=['GET', 'POST'])
 @login_required
-def create_entry(slug):
+def create_post(slug):
     """Create a new or edit an existing blog post"""
     next = request.values.get('next', '')
-    entry = None
+    post = None
     if slug:
-        entry = Entry.query.filter_by(slug=slug).first()
-    if slug and not entry:
+        post = Post.query.filter_by(slug=slug).first()
+    if slug and not post:
         flash('Invalid slug', 'error')
         return redirect(next)
     
     if request.method == 'GET':
-        return render_template('compose.html', entry=entry)
+        return render_template('compose.html', post=post)
             
     if request.method == 'POST':
         if request.form['action'] == 'Preview':
@@ -110,36 +112,36 @@ def create_entry(slug):
             flash('You must provide a title', 'error')
             return render_template('compose.html')
         elif request.form['action'] == 'Publish':
-            entry = Entry(title, markup)
-            entry.tags = tags
-            db.session.add(entry)
+            post = Post(title, markup)
+            post.tags = tags
+            db.session.add(post)
             db.session.commit()
-            signals.entry_created.send(entry)
-            flash('New entry was successfully posted')
-            return redirect(url_for('show_entries'))
+            signals.post_created.send(post)
+            flash('New post was successfully posted')
+            return redirect(url_for('show_posts'))
         elif request.form['action'] == 'Update':
-            entry.title = title
-            entry.markup = markup
-            entry.tags = tags
+            post.title = title
+            post.markup = markup
+            post.tags = tags
             db.session.commit()
-            signals.entry_updated.send(entry)
-            flash('Entry was successfully updated')
-            return redirect(next or url_for('show_entry', slug=entry.slug))
+            signals.post_updated.send(post)
+            flash('Post was successfully updated')
+            return redirect(next or url_for('show_post', slug=post.slug))
             
 
-def update_entry(slug):
+def update_post(slug):
     """Update a new blog post"""
     next = request.values.get('next', '')
     error = None
-    entry = None
+    post = None
     if slug:
-        entry = Entry.query.filter_by(slug=slug).first()
+        post = Post.query.filter_by(slug=slug).first()
         
     if request.method == 'GET':
-        if not entry:
+        if not post:
             error = 'Invalid slug'
         else:
-            return render_template('compose.html', entry=entry)
+            return render_template('compose.html', post=post)
         
     if request.method == 'POST':
         if request.form['action'] == 'Preview':
@@ -152,42 +154,42 @@ def update_entry(slug):
         
         if title == '':
             error = 'You must provide a title'
-        elif not entry:
+        elif not post:
             error = 'Invalid slug'
         else:
-            entry.title = title
-            entry.markup = markup
-            entry.tags = tags
+            post.title = title
+            post.markup = markup
+            post.tags = tags
             db.session.commit()
-            signals.entry_updated.send(entry)
-            flash('Entry was successfully updated')
-            return redirect(next or url_for('show_entry', slug=entry.slug))
+            signals.post_updated.send(post)
+            flash('Post was successfully updated')
+            return redirect(next or url_for('show_post', slug=post.slug))
     if error: flash(error, 'error')
-    return redirect(url_for('show_entries'))
+    return redirect(url_for('show_posts'))
 
 
 @view.route('/delete/<slug>', methods=['GET', 'POST'])
 @login_required
-def delete_entry(slug):
+def delete_post(slug):
     next = request.values.get('next', '')
-    entry = Entry.query.filter_by(slug=slug).first()
-    if not entry:
-        flash('No such entry')
-        return redirect(next or url_for('show_entries'))
+    post = Post.query.filter_by(slug=slug).first()
+    if not post:
+        flash('No such post')
+        return redirect(next or url_for('show_posts'))
         
     if request.method == 'GET':
-        flash("Really delete '%s'?" % entry.title, 'question')
+        flash("Really delete '%s'?" % post.title, 'question')
         return render_template('delete.html')
     
     if request.method == 'POST':
-        db.session.delete(entry)
+        db.session.delete(post)
         db.session.commit()
-        signals.entry_deleted.send(entry)
-        flash('Entry deleted')
+        signals.post_deleted.send(post)
+        flash('Post deleted')
         # Don't redirect user to a deleted page
-        if url_for('show_entry', slug='') in next:
+        if url_for('show_post', slug='') in next:
             next = None
-        return redirect(next or url_for('show_entries'))
+        return redirect(next or url_for('show_posts'))
 
 
 @view.route('/login', methods=['GET', 'POST'])
@@ -210,7 +212,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You have been successfully logged in')
-            return redirect(next or url_for('show_entries'))
+            return redirect(next or url_for('show_posts'))
     if error: flash(error, 'error')
     return render_template('login.html')
 
@@ -222,7 +224,7 @@ def logout():
     flash('You have been successfully logged out')
     #: For automatic redirection to the last visited page before login
     next = request.values.get('next', '')
-    return redirect(next or url_for('show_entries'))
+    return redirect(next or url_for('show_posts'))
 
 
 @view.route('/register', methods=['GET', 'POST'])
@@ -232,7 +234,7 @@ def register():
     admin = Admin.query.first()
     if admin:
         flash('There can only be one admin', 'error')
-        return redirect(url_for('show_entries'))
+        return redirect(url_for('show_posts'))
     
     if request.method == 'GET':
         return render_template('register.html')
@@ -253,6 +255,6 @@ def register():
             db.session.commit()
             session['logged_in'] = True
             flash('You are the new master of this blog')
-            return redirect(url_for('create_entry'))
+            return redirect(url_for('create_post'))
     if error: flash(error, 'error')
     return render_template('register.html')

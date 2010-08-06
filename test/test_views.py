@@ -19,7 +19,7 @@ from nose.tools import assert_equal, assert_true, assert_false, with_setup
 
 from simblin import create_app, helpers
 from simblin.extensions import db
-from simblin.models import Entry, Tag, entry_tags
+from simblin.models import Post, Tag, post_tags
 
 # TODO: Test Models separately (see danjac)
 
@@ -107,7 +107,7 @@ def logout():
     return client.get('/logout', follow_redirects=True)
 
 
-def add_entry(title, markup, tags):
+def add_post(title, markup, tags):
     """Helper functions to create a blog post"""
     return client.post('/compose', data=dict(
         title=title,
@@ -117,7 +117,7 @@ def add_entry(title, markup, tags):
     ), follow_redirects=True)
 
 
-def update_entry(title, markup, tags, slug):
+def update_post(title, markup, tags, slug):
     """Helper functions to create a blog post"""
     return client.post('/update/%s' % slug, data=dict(
         title=title,
@@ -127,7 +127,7 @@ def update_entry(title, markup, tags, slug):
     ), follow_redirects=True)
     
 
-def delete_entry(slug):
+def delete_post(slug):
     """Helper function to delete a blog post"""
     return client.post('/delete/%s' % slug, data=dict(next=''), 
         follow_redirects=True)
@@ -177,66 +177,66 @@ class TestComposing:
         """Check if form validation and validation in general works"""
         clear_db()
         register_and_login('barney', 'abc')
-        rv = add_entry(title='', markup='a', tags='b')
+        rv = add_post(title='', markup='a', tags='b')
         assert 'You must provide a title' in rv.data
-        rv = add_entry(title='a', markup='', tags='')
-        assert 'New entry was successfully posted' in rv.data
-        rv = update_entry(title='a', markup='', tags='', slug='999x00')
+        rv = add_post(title='a', markup='', tags='')
+        assert 'New post was successfully posted' in rv.data
+        rv = update_post(title='a', markup='', tags='', slug='999x00')
         assert 'Invalid slug' in rv.data
         
     def test_conversion(self):
         """ Test the blog post's fields' correctness after adding/updating an 
-        entry and test the proper creation and automatic tidying of tags and
+        post and test the proper creation and automatic tidying of tags and
         tag mappings.
         """
         clear_db()
         register_and_login('barney', 'abc')
         
-        title = "My entry"
+        title = "My post"
         markup = "# Title"
         tags = "django, franz und bertha,vil/bil"
         expected_id = 1
         expected_title = title
         expected_markup = markup
         expected_tags = ['django','franz-und-bertha','vil-bil']
-        expected_slug = "my-entry"
+        expected_slug = "my-post"
         first_slug = expected_slug
         expected_html = "<h1>Title</h1>"
         expected_date = datetime.date.today()
-        add_entry(title=title, markup=markup, tags=tags)
-        entry = Entry.query.first()
-        entry_tagnames = [tag.name for tag in entry.tags]
+        add_post(title=title, markup=markup, tags=tags)
+        post = Post.query.first()
+        post_tagnames = [tag.name for tag in post.tags]
         
-        assert_equal(entry.id, expected_id)
-        assert_equal(entry.title, expected_title)
-        assert_equal(entry.markup, expected_markup)
-        assert_equal(entry.slug, expected_slug)
-        assert expected_html in entry.html
-        assert_equal(entry.published.date(), expected_date)
-        assert_equal(sorted(entry_tagnames), sorted(expected_tags))
+        assert_equal(post.id, expected_id)
+        assert_equal(post.title, expected_title)
+        assert_equal(post.markup, expected_markup)
+        assert_equal(post.slug, expected_slug)
+        assert expected_html in post.html
+        assert_equal(post.published.date(), expected_date)
+        assert_equal(sorted(post_tagnames), sorted(expected_tags))
         
-        # Add another entry with the same fields but expect a different slug
+        # Add another post with the same fields but expect a different slug
         # and the same number of tags inside the database
         
         expected_slug2 = expected_slug + '-2'
         tags2 = "django, franz und bertha"
-        add_entry(title=title, markup=markup, tags=tags2)
-        entry = Entry.query.filter_by(id=2).first()
+        add_post(title=title, markup=markup, tags=tags2)
+        post = Post.query.filter_by(id=2).first()
         all_tags = Tag.query.all()
         
-        assert_equal(entry.title, expected_title) 
-        assert_equal(entry.slug, expected_slug2)
+        assert_equal(post.title, expected_title) 
+        assert_equal(post.slug, expected_slug2)
         assert_equal(len(all_tags), 3)    
         
-        # Add yet another entry with the same title and expect a different slug
+        # Add yet another post with the same title and expect a different slug
         
         expected_slug3 = expected_slug2 + '-2'
-        add_entry(title=title, markup=markup, tags=tags2)
-        entry = Entry.query.filter_by(id=3).first()
+        add_post(title=title, markup=markup, tags=tags2)
+        post = Post.query.filter_by(id=3).first()
         
-        assert_equal(entry.slug, expected_slug3)
+        assert_equal(post.slug, expected_slug3)
         
-        # Now test updating an entry
+        # Now test updating an post
         
         updated_title = 'cool'
         updated_markup = '## Title'
@@ -247,36 +247,36 @@ class TestComposing:
         expected_slug = 'cool'
         expected_html = '<h2>Title</h2>'
         expected_date = datetime.date.today()
-        # Update the first entry (slug=first_slug)
-        update_entry(title=updated_title, markup=updated_markup, 
+        # Update the first post (slug=first_slug)
+        update_post(title=updated_title, markup=updated_markup, 
             tags=updated_tags, slug=first_slug)
-        entry = Entry.query.filter_by(id=1).first()
-        entry_tagnames = [tag.name for tag in entry.tags]
+        post = Post.query.filter_by(id=1).first()
+        post_tagnames = [tag.name for tag in post.tags]
         
-        assert_equal(entry.title, expected_title)
-        assert_equal(entry.markup, expected_markup)
-        assert_equal(entry.slug, expected_slug)
-        assert expected_html in entry.html
-        assert_equal(entry.published.date(), expected_date)
-        assert_equal(sorted(entry_tagnames), sorted(expected_tags))
+        assert_equal(post.title, expected_title)
+        assert_equal(post.markup, expected_markup)
+        assert_equal(post.slug, expected_slug)
+        assert expected_html in post.html
+        assert_equal(post.published.date(), expected_date)
+        assert_equal(sorted(post_tagnames), sorted(expected_tags))
         
-        # Expect three rows in the entries table because three entries where
+        # Expect three rows in the posts table because three posts where
         # created and one updated. Expect only two rows in the tags table 
-        # because the tag 'vil-bil' is not used anymore by an entry. Also 
-        # expect four entries in the entry_tags table because it should look
+        # because the tag 'vil-bil' is not used anymore by an post. Also 
+        # expect four posts in the post_tags table because it should look
         # like this:
-        # entry_id | tag_id
+        # post_id | tag_id
         # 2          1
         # 2          2
         # 3          1
         # 3          2
         
-        entries = Entry.query.all()
+        posts = Post.query.all()
         tags = Tag.query.all()
-        entry_tag_mappings = db.session.query(entry_tags).all()
-        assert_equal(len(entries), 3)
+        post_tag_mappings = db.session.query(post_tags).all()
+        assert_equal(len(posts), 3)
         assert_equal(len(tags), 2)
-        assert_equal(len(entry_tag_mappings), 4)
+        assert_equal(len(post_tag_mappings), 4)
         
         # TODO: Get all posts by a tag
         # TODO: Make class TestEntries and split actions to
@@ -291,32 +291,32 @@ class TestDeletion:
         clear_db()
         register_and_login('barney', 'abc')
         
-        add_entry(title='Title', markup='', tags='cool')
-        entries = Entry.query.all()
+        add_post(title='Title', markup='', tags='cool')
+        posts = Post.query.all()
         tags = Tag.query.all()
         
-        assert_equal(len(entries), 1)
+        assert_equal(len(posts), 1)
         assert_equal(len(tags), 1)
         
-        rv = delete_entry(slug='idontexist')
-        assert 'No such entry' in rv.data
-        rv = delete_entry(slug='title')
-        assert 'Entry deleted' in rv.data
+        rv = delete_post(slug='idontexist')
+        assert 'No such post' in rv.data
+        rv = delete_post(slug='title')
+        assert 'Post deleted' in rv.data
         
-        entries = Entry.query.all()
+        posts = Post.query.all()
         tags = Tag.query.all()
         
-        assert_equal(len(entries), 0)
+        assert_equal(len(posts), 0)
         assert_equal(len(tags), 0)
 
 
-class TestEntryView:
+class TestPostView:
     
-    def test_entryview(self):
+    def test_postview(self):
         """Test the displaying of one blog post"""
         clear_db()
         register_and_login('barney', 'abc')
         
-        add_entry(title='Title', markup='', tags='')
-        rv = client.get('/entry/title')
+        add_post(title='Title', markup='', tags='')
+        rv = client.get('/post/title')
         assert 'Title' in rv.data

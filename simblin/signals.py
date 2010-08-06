@@ -12,6 +12,6 @@ from blinker import Namespace
 
 signals = Namespace()
 
-entry_created = signals.signal("entry-created")
-entry_updated = signals.signal("entry-updated")
-entry_deleted = signals.signal("entry-deleted")
+post_created = signals.signal("entry-created")
+post_updated = signals.signal("entry-updated")
+post_deleted = signals.signal("entry-deleted")

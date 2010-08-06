@@ -1,18 +1,32 @@
-{% macro render_entry(entry, is_preview=False) %}
-<div class="entry">
-  <h1 class="entry-title"><a href="{{ url_for('show_entry', slug=entry.slug) }}">{{ entry.title }}</a></h1>
-  <div class="body">{{ entry.html|safe }}</div>
+{% macro render_post(post, is_preview=False) %}
+<div class="post">
+  <h1 class="post-title">
+  {% if not is_preview %}
+    <a href="{{ url_for('show_post', slug=post.slug) }}">
+  {% else %}
+    <a href=#>
+  {% endif %}
+    {{ post.title }}
+    </a>
+  </h1>
+  <div class="body">{{ post.html|safe }}</div>
   <div class="info">
-    <div class="date">{{ entry.published.strftime("%A %d. %B %Y") }}</div>
+    <div class="date">{{ post.published.strftime("%A %d. %B %Y") }}</div>
     <div class="tags">Tags: 
-    {% for tag in entry.tags %}
-      <a href="{{ url_for('show_tag', tag=tag.name) }}">{{ tag.name }}</a>{% if not loop.last %}, {% endif %} 
+    {% for tag in post.tags %}
+      {% if not is_preview %}
+        <a href="{{ url_for('show_tag', tag=tag.name) }}">
+      {% else %}
+        <a href=#>
+      {% endif %}
+      {{ tag.name }}
+      </a>{% if not loop.last %}, {% endif %} 
     {% endfor %}
     </div>
   {% if session.logged_in and not is_preview %}
     <div class="admin">
-      <a href="{{ url_for('create_entry', slug=entry.slug, next=request.url) }}">Edit</a>
-      <a href="{{ url_for('delete_entry', slug=entry.slug, next=request.url) }}">Delete</a>
+      <a href="{{ url_for('create_post', slug=post.slug, next=request.url) }}">Edit</a>
+      <a href="{{ url_for('delete_post', slug=post.slug, next=request.url) }}">Delete</a>
     </div>
   {% endif %}
   </div>

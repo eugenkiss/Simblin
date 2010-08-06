@@ -1,9 +1,9 @@
 {% from 'macros.html' import render_pagination %}
-{% from 'macros.html' import render_entry with context %}
+{% from 'macros.html' import render_post with context %}
 {% extends "base.html" %}
 {% block body %}
-  {% for entry in pagination.items %}
-    {{ render_entry(entry) }}
+  {% for post in pagination.items %}
+    {{ render_post(post) }}
     <div class=spacer></div>
   {% endfor %}
   {{ render_pagination(pagination, endpoint_func) }}

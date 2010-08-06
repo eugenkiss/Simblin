@@ -33,11 +33,9 @@ class Admin(db.Model):
         return check_password_hash(self.pw_hash, password)
 
 
-class Entry(db.Model):
-    # TODO: * Make tags/categories property
-    #       * Pagination
+class Post(db.Model):
     
-    __tablename__ = 'entries'
+    __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     _slug = db.Column(db.String(255), unique=True, nullable=False)
     _title = db.Column(db.String(255), nullable=False)
@@ -45,9 +43,9 @@ class Entry(db.Model):
     _html = db.Column(db.Text)
     published = db.Column(db.DateTime)
     
-    # Many to many Entry <-> Tag
-    _tags = db.relationship('Tag', secondary='entry_tags', 
-        backref=db.backref('entries', lazy='dynamic'))
+    # Many to many Post <-> Tag
+    _tags = db.relationship('Tag', secondary='post_tags', 
+        backref=db.backref('posts', lazy='dynamic'))
     
     def __init__(self, title, markup):
         self.title = title
@@ -60,7 +58,7 @@ class Entry(db.Model):
         slug = normalize(title)
         # Make the slug unique
         while True:
-            entry = Entry.query.filter_by(slug=slug).first()
+            entry = Post.query.filter_by(slug=slug).first()
             if not entry: break
             slug += "-2"
         self._slug = slug
@@ -115,14 +113,14 @@ class Entry(db.Model):
         pass
     
     def __repr__(self):
-        return '<Entry: %s>' % self.slug
+        return '<Post: %s>' % self.slug
     
     
 #: Association table
 # TODO: Explain ondelete='Cascade'
-entry_tags = db.Table('entry_tags', db.Model.metadata,
-    db.Column('entry_id', db.Integer, 
-              db.ForeignKey('entries.id', ondelete='CASCADE')),
+post_tags = db.Table('post_tags', db.Model.metadata,
+    db.Column('post_id', db.Integer, 
+              db.ForeignKey('posts.id', ondelete='CASCADE')),
     db.Column('tag_id', db.Integer,
               db.ForeignKey('tags.id', ondelete='CASCADE')))
 
@@ -134,13 +132,14 @@ class Tag(db.Model):
     name = db.Column(db.String(), unique=True, nullable=False)
     
     def __init__(self, name):
-        # TODO: only create new row if name does not exist yet
+        # TODO: only create new row if name does not exist yet (ask IRC how)
+        #       __new__ to the rescue?
         self.name = name
     
     @property
     def num_associations(self):
         """Return the number of posts with this tag"""
-        return len(self.entries)
+        return len(self.posts)
     
     def __repr__(self):
         return '<Tag: %s>' % self.name
@@ -148,12 +147,12 @@ class Tag(db.Model):
     
 # ------------- SIGNALS ----------------#
 
-def tidy_tags(entry):
+def tidy_tags(post):
     """Remove tags with zero associations"""
-    for tag in Tag.query.filter_by(entries=None):
+    for tag in Tag.query.filter_by(posts=None):
         db.session.delete(tag)
     db.session.commit()
 
-signals.entry_created.connect(tidy_tags)
-signals.entry_updated.connect(tidy_tags)
-signals.entry_deleted.connect(tidy_tags)
+signals.post_created.connect(tidy_tags)
+signals.post_updated.connect(tidy_tags)
+signals.post_deleted.connect(tidy_tags)
