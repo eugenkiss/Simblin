@@ -84,13 +84,18 @@ def preview(args):
 @login_required
 def add_entry():
     """Create a new blog post"""
+    next = request.values.get('next', '')
+    error = None
+    
     if request.method == 'GET':
         return render_template('compose.html', entry=None)
     
-    error = None
+    
     if request.method == 'POST':
         if request.form['action'] == 'Preview':
             return preview(request.form)
+        if request.form['action'] == 'Cancel':
+            return redirect(next)
         title = request.form['title']
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
@@ -113,6 +118,7 @@ def add_entry():
 @login_required
 def update_entry(slug):
     """Update a new blog post"""
+    next = request.values.get('next', '')
     error = None
     entry = None
     if slug:
@@ -127,6 +133,8 @@ def update_entry(slug):
     if request.method == 'POST':
         if request.form['action'] == 'Preview':
             return preview(request.form)
+        if request.form['action'] == 'Cancel':
+            return redirect(next)
         title = request.form['title']
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
@@ -142,7 +150,7 @@ def update_entry(slug):
             db.session.commit()
             signals.entry_updated.send(entry)
             flash('Entry was successfully updated')
-            return redirect(url_for('show_entry', slug=entry.slug))
+            return redirect(next or url_for('show_entry', slug=entry.slug))
     if error: flash(error, 'error')
     return redirect(url_for('show_entries'))
 
@@ -150,14 +158,14 @@ def update_entry(slug):
 @view.route('/delete/<slug>', methods=['GET', 'POST'])
 @login_required
 def delete_entry(slug):
-    entry = Entry.query.filter_by(slug=slug).first()
     next = request.values.get('next', '')
+    entry = Entry.query.filter_by(slug=slug).first()
     if not entry:
         flash('No such entry')
         return redirect(next or url_for('show_entries'))
         
     if request.method == 'GET':
-        flash("Really delete '%s'?" % entry['title'], 'question')
+        flash("Really delete '%s'?" % entry.title, 'question')
         return render_template('delete.html')
     
     if request.method == 'POST':
@@ -165,7 +173,6 @@ def delete_entry(slug):
         db.session.commit()
         signals.entry_deleted.send(entry)
         flash('Entry deleted')
-        next = request.form['next']
         # Don't redirect user to a deleted page
         if url_for('show_entry', slug='') in next:
             next = None
@@ -180,7 +187,7 @@ def login():
     if not admin:
         return redirect(url_for('register'))
     
-    #: For automatic redirection to the last visited page before login
+    #: For automatic redirection after login to the last visited page
     next = request.values.get('next', '')
     
     error = None

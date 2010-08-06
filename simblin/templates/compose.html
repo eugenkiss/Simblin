@@ -25,7 +25,8 @@
     <div style="margin-top:1em; text-align:right;">
       <input type="submit" name="action" value="{{ 'Update' if entry else 'Publish' }}" class="submit"/>&nbsp;
       <input type="submit" name="action" value="Preview" class="submit"/>&nbsp;
-      <a class="submit" href="{{ url_for('show_entry', slug=entry.slug) if entry else '/' }}">Cancel</a>
+      <input type="submit" name="action" value="Cancel" class="submit"/>
+      <input type=hidden name=next value="{{ request.values.next or '' }}">
     </div>
   </div>
   </form>

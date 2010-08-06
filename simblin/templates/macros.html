@@ -11,8 +11,8 @@
     </div>
   {% if session.logged_in and not is_preview %}
     <div class="admin">
-      <a href="/update/{{ entry.slug }}">Edit</a>
-      <a href="/delete/{{ entry.slug }}?next={{ request.url }}">Delete</a>
+      <a href="{{ url_for('update_entry', slug=entry.slug, next=request.url) }}">Edit</a>
+      <a href="{{ url_for('delete_entry', slug=entry.slug, next=request.url) }}">Delete</a>
     </div>
   {% endif %}
   </div>

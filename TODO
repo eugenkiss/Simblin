@@ -1,11 +1,10 @@
 * Style orientation http://demo.jimbarraud.com/manifest/
 
-* Not only distinguish between preview but also between cancel action
-  and go to last page (you must set next argument on edit link and add hidden
-  field like on login page)
+  * merge add entry and update entry
 * Create lib folder and put markdow2.py there
 * Split views to "admin_view" and "std_view"
 * Refactor entries to posts
+** rename update_entry to edit_post
 * put simblin. before every intra import and add a space between intra and inter
   imports
 * Pylint
@@ -23,6 +22,7 @@
 ** http://blog.disqus.net/2007/03/11/a-django-primer/
 ** http://blog.jeffhui.net/2009/03/django-blog-tutorial/
 ** http://github.com/mitsuhiko/flask/tree/website/flask_website/
+*** Look at how to improve my tests
 * Link "Show source" that opens the pure mkd source of the blog post in a new window
 * Only show login/compose on mouseover
 * Tab key does indent in compose editor
