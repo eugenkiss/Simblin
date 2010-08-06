@@ -80,29 +80,35 @@ def preview(args):
     return render_template('compose.html', entry=entry)
 
 
-@view.route('/compose', methods=['GET', 'POST'])
+@view.route('/compose', methods=['GET', 'POST'], defaults={'slug':None})
+@view.route('/update/<slug>', methods=['GET', 'POST'])
 @login_required
-def add_entry():
-    """Create a new blog post"""
+def create_entry(slug):
+    """Create a new or edit an existing blog post"""
     next = request.values.get('next', '')
-    error = None
+    entry = None
+    if slug:
+        entry = Entry.query.filter_by(slug=slug).first()
+    if slug and not entry:
+        flash('Invalid slug', 'error')
+        return redirect(next)
     
     if request.method == 'GET':
-        return render_template('compose.html', entry=None)
-    
-    
+        return render_template('compose.html', entry=entry)
+            
     if request.method == 'POST':
         if request.form['action'] == 'Preview':
             return preview(request.form)
         if request.form['action'] == 'Cancel':
             return redirect(next)
+        
         title = request.form['title']
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
-        
         if title == '':
-            error = 'You must provide a title'
-        else:
+            flash('You must provide a title', 'error')
+            return render_template('compose.html')
+        elif request.form['action'] == 'Publish':
             entry = Entry(title, markup)
             entry.tags = tags
             db.session.add(entry)
@@ -110,12 +116,16 @@ def add_entry():
             signals.entry_created.send(entry)
             flash('New entry was successfully posted')
             return redirect(url_for('show_entries'))
-    if error: flash(error, 'error')
-    return render_template('compose.html')
+        elif request.form['action'] == 'Update':
+            entry.title = title
+            entry.markup = markup
+            entry.tags = tags
+            db.session.commit()
+            signals.entry_updated.send(entry)
+            flash('Entry was successfully updated')
+            return redirect(next or url_for('show_entry', slug=entry.slug))
+            
 
-
-@view.route('/update/<slug>', methods=['GET', 'POST'])
-@login_required
 def update_entry(slug):
     """Update a new blog post"""
     next = request.values.get('next', '')
@@ -242,6 +252,6 @@ def register():
             db.session.commit()
             session['logged_in'] = True
             flash('You are the new master of this blog')
-            return redirect(url_for('add_entry'))
+            return redirect(url_for('create_entry'))
     if error: flash(error, 'error')
     return render_template('register.html')

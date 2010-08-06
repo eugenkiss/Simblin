@@ -113,7 +113,7 @@ def add_entry(title, markup, tags):
         title=title,
         markup=markup,
         tags=tags,
-        action='Post',
+        action='Publish',
     ), follow_redirects=True)
 
 
