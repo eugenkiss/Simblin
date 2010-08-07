@@ -14,7 +14,6 @@ an uncomplicated blogging experience. Simblin has
 
 * tags and categories 
 * pages (``static'' blog posts)
-* pagination 
 * markdown support
 * archives
 * source code highlighting
@@ -24,7 +23,9 @@ blog engine (*minblin* :)) there would have been no tags, categories etc. Only
 one page that shows the five lates posts and a possibility to see older posts.
 But that would have been a little to sparse for my taste...
 
-**Not everything is implemented as of now**
+**Not everything is implemented as of now in v0.1**
+
+See the changelog to see what featueres a specific version provides.
 
 
 Configuration
@@ -61,12 +62,20 @@ them in the desired order.
 
 ### Source Code Highlighting
 
-Source code highlighting is enabled by the [CodeColor][] extension of 
-[Markdown2][] and you can don't have to be afraid to use underscores in your
-code thanks to [CodeFriendly].
+Source code highlighting is enabled by the [CodeColor][] extension of
+[Markdown2][] and you don't have to be afraid to use underscores in your code
+thanks to [CodeFriendly].
 
   [codecolor]: http://code.google.com/p/python-markdown2/wiki/CodeColor
   [codefriendly]: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
+  
+  
+Why another Blog engine?
+------------------------
+
+First reason: to learn about web programming and getting experience with the
+excellent Flask framework. Second reason: to have a perfectly tailored blog for
+my website.
 
 
 Used Libraries/Frameworks

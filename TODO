@@ -1,10 +1,15 @@
-* Style orientation http://demo.jimbarraud.com/manifest/
+* Style orientation 
+** http://demo.jimbarraud.com/manifest/
+** http://tomayko.com/ (i like the position of the date)
+*** Restyle, like http://tomayko.com/, on entry view no navigation, bigger font...
 
+* REMOVE NASTY PREVIEW BUG: Edit a post, Click Preview and now the button is publish!
 * Polish Templates/CSS
 * Test looks on firefox/opera and ggf. improve (buttons)
 * grep TODOs
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor/Document/Readme/Changelog
 * Write requirements in Readme (sqlalchemy version 0.9.1...)
+* tag 0.1
 
 -> v0.1
 -> github
@@ -60,7 +65,7 @@ future:
 * statistics
 * ajax preview
 * own comments?
-* search
+* search (http://pypi.python.org/pypi/Whoosh/)
 * feeds
 * mail notification
 * modal dialogs form confirmations (with jquery)
