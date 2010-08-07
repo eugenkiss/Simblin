@@ -6,11 +6,9 @@ body {
     margin: 0;
     font-family: Georgia, serif;
     font-size: 0.85em;
-    /*background-color: #F8F8FF;*/
 }
 
 img {
-    /*margin: 0.2em 1em;*/
 }
 
 a {
@@ -55,14 +53,14 @@ label {
 }
 
 /* Between blog posts */
+
 .spacer {
     height: 1em;
 }
 
 #wrapper {
     max-width: 680px;
-    /*min-width: 400px;*/
-    margin: 0 auto; /* So that it is centered */
+    margin: 0 auto; 
     padding: 1em;
     padding-top: 0;
 }
@@ -71,8 +69,6 @@ label {
     text-transform: uppercase;
     font-weight: bold;
     letter-spacing: 0.3em;
-    /*font-size: 3em;*/
-    /*color: #666;*/
 }
 
 #navigation {
@@ -82,7 +78,6 @@ label {
 #navigation a {
     color: gray;
     color: #080000;
-    /*font-variant: small-caps;*/
 }
 
 #navigation ul {
@@ -99,7 +94,6 @@ label {
     padding-right: 1em;
     padding-left: 1em;
     text-transform: uppercase;
-    /*font-family: Times New Roman, Palatino, serif;*/
 }
 
 #navigation li:first-child {
@@ -123,7 +117,6 @@ label {
     margin-top: 3em;
 }
 
-/* Next/prev posts on post view */
 #adjacent-posts {
 }
 
@@ -148,16 +141,12 @@ label {
 
 .post h1.post-title {
     text-align: left;
-    /*border-bottom: 1px dotted gray;*/
-    /*padding-bottom: 0.5em;*/
 }
 
 .post h1.post-title a {
-    /*font-variant: small-caps;*/
     color: #AA2C8C;
     color: #080000;
     font-weight: normal;
-    /*font-size: 90%;*/
 }
 
 .post h1.post-title a:hover {
@@ -184,8 +173,6 @@ label {
 }
 
 .post .body h2 {
-    /*font-size: 120%;*/
-    /*color: #666;*/
 }
 
 .codehilite {
