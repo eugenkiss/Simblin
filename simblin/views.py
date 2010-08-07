@@ -11,13 +11,14 @@
 import datetime
 
 from flask import Module, current_app, render_template, session, request, \
-                  flash, redirect, url_for
+                  flash, redirect, url_for, jsonify
 from flaskext.sqlalchemy import Pagination
 
 from simblin import signals
 from simblin.extensions import db
 from simblin.models import Admin, Post, Tag
-from simblin.helpers import normalize_tags, convert_markup, login_required
+from simblin.helpers import normalize_tags, convert_markup, login_required, \
+                            normalize
 
 
 view = Module(__name__)
@@ -64,13 +65,14 @@ def show_tag(tag, page):
         endpoint_func=lambda x: url_for('show_tag', tag=tag, page=x))
         
 
-def preview(args):
-    """Returns a preview of a blog post. Use this inside a real view"""
-    # Mimic post object to fill form fields
+@view.route('/_preview', methods=['POST'])
+def preview():
+    """Returns a preview of a blog post. Used with an Ajax request"""
+    args = request.form
+    print request.form
+    # Mimic post object
     post = dict(
-        #: Needed hack for distinguishing between existent and non-existant post
-        #  when clicking `preview`
-        slug=None, 
+        slug=normalize(args['title']), 
         title=args['title'],
         markup=args['markup'],
         html=convert_markup(args['markup']),
@@ -78,7 +80,7 @@ def preview(args):
         # Mimic the tag relationship field of post
         tags=[dict(name=tag) for tag in normalize_tags(args['tags'])],
     )
-    return render_template('compose.html', post=post)
+    return render_template('_preview.html', post=post)
 
 
 @view.route('/compose', methods=['GET', 'POST'], defaults={'slug':None})
@@ -98,8 +100,6 @@ def create_post(slug):
         return render_template('compose.html', post=post)
             
     if request.method == 'POST':
-        if request.form['action'] == 'Preview':
-            return preview(request.form)
         if request.form['action'] == 'Cancel':
             return redirect(next)
         
@@ -125,45 +125,6 @@ def create_post(slug):
             signals.post_updated.send(post)
             flash('Post was successfully updated')
             return redirect(next or url_for('show_post', slug=post.slug))
-            
-
-def update_post(slug):
-    """Update a new blog post"""
-    next = request.values.get('next', '')
-    error = None
-    post = None
-    if slug:
-        post = Post.query.filter_by(slug=slug).first()
-        
-    if request.method == 'GET':
-        if not post:
-            error = 'Invalid slug'
-        else:
-            return render_template('compose.html', post=post)
-        
-    if request.method == 'POST':
-        if request.form['action'] == 'Preview':
-            return preview(request.form)
-        if request.form['action'] == 'Cancel':
-            return redirect(next)
-        title = request.form['title']
-        markup = request.form['markup']
-        tags = normalize_tags(request.form['tags'])
-        
-        if title == '':
-            error = 'You must provide a title'
-        elif not post:
-            error = 'Invalid slug'
-        else:
-            post.title = title
-            post.markup = markup
-            post.tags = tags
-            db.session.commit()
-            signals.post_updated.send(post)
-            flash('Post was successfully updated')
-            return redirect(next or url_for('show_post', slug=post.slug))
-    if error: flash(error, 'error')
-    return redirect(url_for('show_posts'))
 
 
 @view.route('/delete/<slug>', methods=['GET', 'POST'])

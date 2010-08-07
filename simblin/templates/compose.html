@@ -24,15 +24,36 @@
     </div>
     <div style="margin-top:1em; text-align:right;">
       <input type="submit" name="action" value="{{ 'Update' if post and post.slug else 'Publish' }}" class="submit"/>&nbsp;
-      <input type="submit" name="action" value="Preview" class="submit"/>&nbsp;
+      <input id='preview-button' type="submit" name="action" value="Preview" class="submit"/>&nbsp;
       <input type="submit" name="action" value="Cancel" class="submit"/>
       <input type=hidden name=next value="{{ request.values.next or '' }}">
     </div>
   </div>
-  </form>
-  {% if post %}
-    <h3>Preview</h3>
-    {{ render_post(post, is_preview=True) }}
-  {% endif %}
+  </form>  
+  <div id=preview></div>
 {% endblock %}
 {% block search %}{% endblock %}
+{% block bottom %}
+<script type=text/javascript>
+  $(function() {
+    $("#preview-button").bind('click', function(e) {
+      e.preventDefault();
+      var data = {
+        'title': $("input[name$='title']").val(),
+        'markup': $("textarea[name$='markup']").val(),
+        'tags': $("input[name$='tags']").val()
+      }
+      $.ajax({
+        type: "POST",
+        url: "/_preview",
+        data: data,
+        success: function(preview) {
+          $('#preview').html("<h3>Preview</h3>" + preview)
+          .fadeTo(0,0).fadeTo('normal',1);
+        }
+      });
+      return false;
+    });
+  });
+</script>
+{% endblock %}
