@@ -31,12 +31,14 @@ See the changelog to see what featueres a specific version provides.
 Configuration
 -------------
 
+TODO: This needs work
+
 Don't forget version numbers!
 * Link to deployment section of flask
 
 requires flask and everything that flask requires
 
-first run `python initdb.py` then run `python blog.py`
+first run `python initdb.py` then run `python run.py`
 
 put your real settings in a file called `settings.cfg`. You can look at
 `default-settings.cfg` to get an idea.
@@ -47,7 +49,9 @@ Use a python shell to create a secret key:
     >>> os.urandom(24)
     '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 
-Tests: Use `nosetests test` to run tests
+### Tests 
+
+Use `nosetests test` to run tests
 
 
 Usage

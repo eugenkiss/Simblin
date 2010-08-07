@@ -20,3 +20,4 @@ v0.1
 * built on sqlalchemy
 * pagination
 * view all posts of a tag
+* ajax preview

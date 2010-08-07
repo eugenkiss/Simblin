@@ -3,17 +3,6 @@
 ** http://tomayko.com/ (i like the position of the date)
 *** Restyle, like http://tomayko.com/, on entry view no navigation, bigger font...
 
-* Polish Templates/CSS
-* Test looks on firefox/opera and ggf. improve (buttons)
-* grep TODOs
-* Refactor/Document/Readme/Changelog
-* Write requirements in Readme (sqlalchemy version 0.9.1...)
-* tag 0.1
-
--> v0.1
--> github
-
-----------------
 
 * Look for Blog Tutorials (to get ideas)
 ** http://blog.disqus.net/2007/03/11/a-django-primer/
@@ -38,6 +27,7 @@
 * DB Design: http://www.bkent.net/Doc/simple5.htm
 * Proper Logging (read flask logging docs)
 * Input from Community what to refactor (mailinglist??)
+* grep TODOs
 * Refactor/Tests/Document/Readme/Changelog
 
 -> v0.2
