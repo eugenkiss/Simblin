@@ -16,7 +16,7 @@ from nose.tools import assert_equal
 
 from simblin import create_app
 from simblin.extensions import db
-from simblin.models import Post, Tag, post_tags
+from simblin.models import Post, Tag, Category, post_tags
 
 # TODO: Test Models separately (see danjac)
 
@@ -104,22 +104,24 @@ def logout():
     return client.get('/logout', follow_redirects=True)
 
 
-def add_post(title, markup, tags):
+def add_post(title, markup, tags=None, categories=None):
     """Helper functions to create a blog post"""
     return client.post('/compose', data=dict(
         title=title,
         markup=markup,
         tags=tags,
+        categories=categories,
         action='Publish',
     ), follow_redirects=True)
 
 
-def update_post(title, markup, tags, slug):
+def update_post(slug, title, markup, tags=None, categories=None):
     """Helper functions to create a blog post"""
     return client.post('/update/%s' % slug, data=dict(
         title=title,
         markup=markup,
         tags=tags,
+        categories=categories,
         action='Update',
     ), follow_redirects=True)
     
@@ -128,6 +130,15 @@ def delete_post(slug):
     """Helper function to delete a blog post"""
     return client.post('/delete/%s' % slug, data=dict(next=''), 
         follow_redirects=True)
+        
+        
+def add_category(name):
+    """Register category in the database and return it"""
+    # TODO: Create view `_add-category' and use it instead
+    category = Category(name)
+    db.session.add(category)
+    db.session.commit()
+    return category
         
         
 class TestRegistration:
@@ -181,7 +192,7 @@ class TestComposing:
         rv = update_post(title='a', markup='', tags='', slug='999x00')
         assert 'Invalid slug' in rv.data
         
-    def test_conversion(self):
+    def test_creation(self):
         """ Test the blog post's fields' correctness after adding/updating an 
         post and test the proper creation and automatic tidying of tags and
         tag mappings.
@@ -211,6 +222,7 @@ class TestComposing:
         assert expected_html in post.html
         assert_equal(post.published.date(), expected_date)
         assert_equal(sorted(post_tagnames), sorted(expected_tags))
+        assert_equal([], post.categories)
         
         # Add another post with the same fields but expect a different slug
         # and the same number of tags inside the database
@@ -226,12 +238,20 @@ class TestComposing:
         assert_equal(len(all_tags), 3)    
         
         # Add yet another post with the same title and expect a different slug
+        # Add some categories
         
+        category1 = add_category('cool')
+        category2 = add_category('cooler')
         expected_slug3 = expected_slug2 + '-2'
-        add_post(title=title, markup=markup, tags=tags2)
+        add_post(title=title, markup=markup, tags=tags2, 
+            #categories=[category1_id, category2_id])
+            categories=str(category1.id) + ',' + str(category2.id))
         post = Post.query.filter_by(id=3).first()
+        category_names = [x.name for x in post.categories]
         
         assert_equal(post.slug, expected_slug3)
+        assert_equal(Category.query.count(), 2)
+        assert_equal(category_names, [category1.name, category2.name])
         
         # Now test updating an post
         
@@ -275,9 +295,9 @@ class TestComposing:
         assert_equal(len(tags), 2)
         assert_equal(len(post_tag_mappings), 4)
         
-        # TODO: Get all posts by a tag
+        # TODO: Test Get all posts by a tag
         # TODO: Make class TestEntries and split actions to
-        #       * validation * creation * updating * deletion * tags
+        #       * validation * creation * updating * deletion * tags * categories
 
 
 class TestDeletion:

@@ -4,13 +4,12 @@
 *** Restyle, like http://tomayko.com/, on entry view no navigation, bigger font...
 
 
-* Look for Blog Tutorials (to get ideas)
-** http://blog.disqus.net/2007/03/11/a-django-primer/
-** http://blog.jeffhui.net/2009/03/django-blog-tutorial/
-** http://github.com/mitsuhiko/flask/tree/website/flask_website/
-*** Look at how to improve my tests
 * Category Support
+** Add categories to a post like in google calendar with reminders (jquery)
+*** Also be able to create categories there
+* Improve Test suite
 * Page creation
+** Add field `comments_allowed' to Entry model
 ** Composing pages
 ** Have no comments
 ** Order Pages by `place` field
@@ -55,6 +54,7 @@ future:
 * own comments?
 * search (http://pypi.python.org/pypi/Whoosh/)
 * feeds
+* Javascript Tag suggestion
 * mail notification
 * modal dialogs form confirmations (with jquery)
 * Add smarty pants ``''

@@ -47,6 +47,10 @@ class Post(db.Model):
     _tags = db.relationship('Tag', secondary='post_tags', 
         backref=db.backref('posts', lazy='dynamic'))
     
+    # Manty to many Post <-> Category
+    _categories = db.relationship('Category', secondary='post_categories',
+        backref='categories')
+    
     def __init__(self, title, markup):
         self.title = title
         self.markup = markup
@@ -109,6 +113,18 @@ class Post(db.Model):
         
     tags = db.synonym("_tags", descriptor=property(_get_tags, _set_tags))
     
+    def _set_categories(self, category_ids):
+        """Associate categories with this entry"""
+        self._categories = []
+        for id in category_ids:
+            self._categories.append(Category.query.get(id))
+        
+    def _get_categories(self):
+        return self._categories
+    
+    categories = db.synonym("_categories", descriptor=property(_get_categories,
+        _set_categories))
+    
     def set_categories(self, categorylist):
         pass
     
@@ -116,13 +132,21 @@ class Post(db.Model):
         return '<Post: %s>' % self.slug
     
     
-#: Association table
+# Association tables
+
 # TODO: Explain ondelete='Cascade'
 post_tags = db.Table('post_tags', db.Model.metadata,
     db.Column('post_id', db.Integer, 
               db.ForeignKey('posts.id', ondelete='CASCADE')),
     db.Column('tag_id', db.Integer,
               db.ForeignKey('tags.id', ondelete='CASCADE')))
+
+# TODO: Explain ondelete='Cascade'
+post_categories = db.Table('post_categories', db.Model.metadata,
+    db.Column('post_id', db.Integer, 
+              db.ForeignKey('posts.id', ondelete='CASCADE')),
+    db.Column('category_id', db.Integer,
+              db.ForeignKey('categories.id', ondelete='CASCADE')))
 
 
 class Tag(db.Model):
@@ -143,6 +167,25 @@ class Tag(db.Model):
     
     def __repr__(self):
         return '<Tag: %s>' % self.name
+    
+
+class Category(db.Model):
+    
+    __tablename__ = 'categories'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), unique=True, nullable=False)
+    
+    def __init__(self, name):
+        # TODO: Prevent creation of duplicate categories
+        self.name = name
+    
+    @property
+    def num_associations(self):
+        """Return the number of posts in this category"""
+        return len(self.posts)
+    
+    def __repr__(self):
+        return '<Category: %s>' % self.name
     
     
 # ------------- SIGNALS ----------------#

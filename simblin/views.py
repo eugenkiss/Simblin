@@ -16,7 +16,7 @@ from flaskext.sqlalchemy import Pagination
 
 from simblin import signals
 from simblin.extensions import db
-from simblin.models import Admin, Post, Tag
+from simblin.models import Admin, Post, Tag, Category
 from simblin.helpers import normalize_tags, convert_markup, login_required, \
                             normalize
 
@@ -106,12 +106,18 @@ def create_post(slug):
         title = request.form['title']
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
+        category_csv = request.form.get('categories', None)
+        if category_csv:
+            categories = [int(id) for id in category_csv.split(',')]
+        else:
+            categories = []
         if title == '':
             flash('You must provide a title', 'error')
             return render_template('compose.html')
         elif request.form['action'] == 'Publish':
             post = Post(title, markup)
             post.tags = tags
+            post.categories = categories
             db.session.add(post)
             db.session.commit()
             signals.post_created.send(post)
@@ -121,6 +127,7 @@ def create_post(slug):
             post.title = title
             post.markup = markup
             post.tags = tags
+            post.categories = categories
             db.session.commit()
             signals.post_updated.send(post)
             flash('Post was successfully updated')
