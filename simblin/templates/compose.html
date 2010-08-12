@@ -4,24 +4,50 @@
   <h3>Compose</h3>
   <form action="{{ request.url }}" method="post" class="compose">
   <div>
+    <!-- Title -->
     <div style="margin-bottom:5px">
       <input name="title" size=50 type="text" class="title" value="{{ post.title if post else '' }}"/>
     </div>
+    
+    <!-- Markup -->
     <div style="margin-bottom:5px">
-      <textarea name="markup" rows="30" style="width:100%;" class="markup">{{ post.markup|safe if post else "" }}</textarea>
+      <textarea name="markup" rows="30" 
+      style="width:100%;" class="markup">{{ post.markup|safe if post else "" }}</textarea>
     </div>
+    
+    <!-- Tags -->
     <div>
       <label for=tags>Tags:</label> 
       <input name="tags" type="text" size=50 
-      value="{% if post %}{% for tag in post.tags %}{{ tag.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}"/>
+      value="{% if post %}{{ post.get_tagstring() }}{% endif %}"/>
     </div>
     <div style="margin-top: 0.5em"></div>
-    <div>
-      <!-- TODO: This should rather be some kind of checkbox/list and one should be able to create/delete  
-                 categories here -->
-      <label for=tags>Categories:</label>
-      <input name="categories" size=50 type="text" value="{{ ', '.join(post.categories) if post else '' }}"/>
-    </div>
+    
+    <!-- Categories -->
+    <table style="margin:0; padding:0; border-spacing:0;">
+    <tr>
+    <td style="vertical-align:top;">
+      <label>Categories:</label>
+    </td>
+    <td>
+      <div id="categories">
+        <div id="category-1">
+          <select name="category-1">
+            <option value=0>Uncategorized</option>
+          {% for category in categories %}
+            <option value={{ category.id }}>{{ category.name}}</option>
+          {% endfor %}
+            <option id='create-category'>Create New Category</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 0.5em"></div>
+      <a id='add-category' href='#'>Add Another Category</a>
+    </td>
+    </tr>
+    </table>
+    
+    <!-- Buttons -->
     <div style="margin-top:1em; text-align:right;">
       <input type="submit" name="action" value="{{ 'Update' if post and post.slug else 'Publish' }}" class="submit"/>&nbsp;
       <input id='preview-button' type="submit" name="action" value="Preview" class="submit"/>&nbsp;
@@ -29,13 +55,16 @@
       <input type=hidden name=next value="{{ request.values.next or '' }}">
     </div>
   </div>
-  </form>  
+  </form>
+  
+  <!-- Preview Area -->
   <div id=preview></div>
 {% endblock %}
 {% block search %}{% endblock %}
 {% block bottom %}
 <script type=text/javascript>
   $(function() {
+    // Ajax Preview
     $("#preview-button").bind('click', function(e) {
       e.preventDefault();
       var data = {
@@ -51,6 +80,38 @@
           $('#preview').html("<h3>Preview</h3>" + preview)
           .fadeTo(0,0).fadeTo('normal',1);
         }
+      });
+      return false;
+    });
+    
+    // Add Categories
+    categoryCounter = 1;
+    $("#add-category").bind('click', function(e) {
+      e.preventDefault();
+      categoryCounter++;
+      var deleteLink = "<a id='delete-category-"+categoryCounter+"' href=#>" +
+        "Delete</a>";
+      var categorySelect = 
+        "<div id='category-"+categoryCounter+"'>" +
+          "<select name='category-"+categoryCounter+"'>" +
+            "<option value=0>Uncategorized</option>" +
+          {% for category in categories %}
+            "<option value={{ category.id }}>{{ category.name}}</option>" +
+          {% endfor %}
+            "<option id='create-category'>Create New Category</option>" +
+          "</select>" + deleteLink +
+        "</div>";
+      $("#categories").append(categorySelect);
+      $("#category-"+categoryCounter).fadeTo(0, 0).fadeTo('fast', 1);
+      
+      var currentCategoryCount = categoryCounter;
+      $("#delete-category-"+categoryCounter).bind('click', function(e) {
+        e.preventDefault();
+        $("#category-"+currentCategoryCount).fadeTo('fast', 0, function() {
+          $(this).remove();
+        });
+        categoryCounter--;
+        return false;
       });
       return false;
     });

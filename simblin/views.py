@@ -16,10 +16,11 @@ from flaskext.sqlalchemy import Pagination
 
 from simblin import signals
 from simblin.extensions import db
-from simblin.models import Admin, Post, Tag
+from simblin.models import Admin, Post, Tag, Category
 from simblin.helpers import normalize_tags, convert_markup, login_required, \
                             normalize
 
+# TODO: Split to admin (here also preview and add_category), main view
 
 view = Module(__name__)
 
@@ -63,9 +64,36 @@ def show_tag(tag, page):
     flash("Posts tagged with '%s'" % tag)
     return render_template('posts.html', pagination=pagination,
         endpoint_func=lambda x: url_for('show_tag', tag=tag, page=x))
+
+
+@view.route('/category/<category>', defaults={'page':1})
+@view.route('/category/<category>/<int:page>')
+def show_category(category, page):
+    """Shows all posts with in a category"""
+    per_page = current_app.config['POSTS_PER_PAGE']
+    posts = Category.query.filter_by(name=category).first().posts.order_by(
+        Post.id.desc())
+    items = posts.limit(per_page).offset((page - 1) * per_page).all()
+    pagination = Pagination(posts, page=page, per_page=per_page, 
+        total=posts.count(), items=items)
+    flash("Posts in category '%s'" % category)
+    return render_template('posts.html', pagination=pagination,
+        endpoint_func=lambda x: url_for('show_category', category=category, 
+                                        page=x))
+                                        
+
+@view.route('/_add_category/<name>', methods=['POST'])
+@login_required
+def add_category(name):
+    """Add category to database and return its id"""
+    category = Category(name)
+    db.session.add(category)
+    db.session.commit()
+    return str(category.id)
         
 
 @view.route('/_preview', methods=['POST'])
+@login_required
 def preview():
     """Returns a preview of a blog post. Used with an Ajax request"""
     args = request.form
@@ -97,7 +125,8 @@ def create_post(slug):
         return redirect(next)
     
     if request.method == 'GET':
-        return render_template('compose.html', post=post)
+        return render_template('compose.html', post=post,
+            categories=Category.query.all())
             
     if request.method == 'POST':
         if request.form['action'] == 'Cancel':
@@ -106,12 +135,19 @@ def create_post(slug):
         title = request.form['title']
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
+        #: Contains the ids of the categories
+        categories = []
+        for name, id in request.form.iteritems():
+            if 'category-' in name:
+                categories.append(id)
+                
         if title == '':
             flash('You must provide a title', 'error')
             return render_template('compose.html')
         elif request.form['action'] == 'Publish':
             post = Post(title, markup)
             post.tags = tags
+            post.categories = categories
             db.session.add(post)
             db.session.commit()
             signals.post_created.send(post)
@@ -121,6 +157,7 @@ def create_post(slug):
             post.title = title
             post.markup = markup
             post.tags = tags
+            post.categories = categories
             db.session.commit()
             signals.post_updated.send(post)
             flash('Post was successfully updated')
@@ -185,7 +222,7 @@ def logout():
     next = request.values.get('next', '')
     return redirect(next or url_for('show_posts'))
 
-
+# TODO: Allow reregistering and add e-mail field (for e-mail notification)
 @view.route('/register', methods=['GET', 'POST'])
 def register():
     """Register the first visitor of the page. After that don't allow any

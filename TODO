@@ -4,29 +4,31 @@
 *** Restyle, like http://tomayko.com/, on entry view no navigation, bigger font...
 
 
-* Look for Blog Tutorials (to get ideas)
-** http://blog.disqus.net/2007/03/11/a-django-primer/
-** http://blog.jeffhui.net/2009/03/django-blog-tutorial/
-** http://github.com/mitsuhiko/flask/tree/website/flask_website/
-*** Look at how to improve my tests
-* Category Support
-* Page creation
-** Composing pages
-** Have no comments
-** Order Pages by `place` field
 * Ordering of Blog posts, e.g. (Archive Page creation)
-** max 5 Entries Home Page ordererd by date
 ** Monghtly/Yearly archive
 ** Filter by Tag
-** Filter by Category
-** Show all tags and number of posts for a tag
+** Filter by Category (put posts without category in pseudocategory 'Uncategorized')
+** Tag Cloud
+** Category creation if logged in (ajax)
+* Page creation
+** Add field `comments_allowed' to Entry model
+** Just Convention: Put your "pages" in category pages and harcode their link
+   on a menu entry of your template and don't allow comments
+*** Update Readme to reflect change opinion about pages
+* Modal dialog / alert box when clicking delete
+* Reregistration; don't show (if loggend in): "there can only be one" but allow
+  Reregistration if logged in user puts right password in (that is: simply
+  delete admin from db and relink to register page)
 * Link "Show source" (only on entry page) that opens the pure mkd source of the blog post in a new window
-* Only show login/compose on mouseover (pure js)
-* Tab key does indent in compose editor
-* Maybe Use WTForms: http://flask.pocoo.org/docs/patterns/wtforms/
-* DB Design: http://www.bkent.net/Doc/simple5.htm
+* Only show login/compose on mouseover
+* Tab key does indent in compose editor / embed bespin
 * Proper Logging (read flask logging docs)
-* Input from Community what to refactor (mailinglist??)
+* Improve Test suite
+* Look with epydoc where forgot comments, look with pyflakes
+* Input from Community what to refactor (mailinglist??) 
+** how to improve test suite? see danjac
+** how to prevent duplicates in database upon sqlalchemy object creation (__new__)
+** Comments/Documentation ok?
 * grep TODOs
 * Refactor/Tests/Document/Readme/Changelog
 
@@ -39,7 +41,7 @@
 ----------------
 
 * Pingback/Traceback (or does Disqus already do that?)
-* Images / File Attachments
+* Images / File Attachments (or use dropbox?)
 ** How to store them?
 *** maybe create a subvie /files, where one can upload and be able to link to them in the blog post
 * Comments (Disqus) or own
@@ -52,10 +54,13 @@
 future:
 * Put hardcoded Messages in config file
 * statistics
+* "high level" documentation with sphinx
 * own comments?
+* bespin embedded for textarea
 * search (http://pypi.python.org/pypi/Whoosh/)
 * feeds
-* mail notification
+* Javascript Tag suggestion
+* mail notification (optional angabe of e-mail upon registration)
 * modal dialogs form confirmations (with jquery)
 * Add smarty pants ``''
 * Update markdown2 lib

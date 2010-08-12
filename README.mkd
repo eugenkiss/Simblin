@@ -72,6 +72,21 @@ thanks to [CodeFriendly].
 
   [codecolor]: http://code.google.com/p/python-markdown2/wiki/CodeColor
   [codefriendly]: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
+
+### What's the difference between categories and tags in Simblin?
+
+Tags tell you what topics are talked about in a blog post and categories tell
+you where the blog post belongs although sometimes the difference is fluent.
+ 
+Suppose you create a programming tutorial. The blog post could not be in a
+category at all and have the tags `programming' and `tutorial'. Or it could be
+in the category `programming' and have the tag `tutorial'. I, however, would put
+the post in the categories `programming' and `tutorial' and add tags like
+`django' if the tutorial would be about django.
+
+Since a blog post can belong in different places a blog post can have several 
+categories, too. Essentially they are implemented like tags. However, tags are
+deleted automatically when no posts reference a tag anymore. Categories are not.
   
   
 Why another Blog engine?

@@ -11,24 +11,44 @@
   </h1>
   <div class="body">{{ post.html|safe }}</div>
   <div class="info">
-    <div class="date">{{ post.published.strftime("%A %d. %B %Y") }}</div>
-    <div class="tags">Tags: 
-    {% for tag in post.tags %}
-      {% if not is_preview %}
-        <a href="{{ url_for('show_tag', tag=tag.name) }}">
-      {% else %}
-        <a href=#>
-      {% endif %}
-      {{ tag.name }}
-      </a>{% if not loop.last %}, {% endif %} 
-    {% endfor %}
-    </div>
+    <span class="date">{{ post.published.strftime("%A %d. %B %Y") }}</span>
+    
+    {% if post.categories %}
+      in
+      <span class="categories">
+      {% for category in post.categories %}
+        {% if not is_preview %}
+          <a href="{{ url_for('show_category', category=category.name) }}">
+        {% else %}
+          <a href=#>
+        {% endif %}
+        {{ category.name }}
+        </a>{% if not loop.last %}, {% endif %} 
+      {% endfor %}
+      </span>
+    {% endif %}
+    
+    {% if post.tags %}
+      <div class="tags">Tags: 
+      {% for tag in post.tags %}
+        {% if not is_preview %}
+          <a href="{{ url_for('show_tag', tag=tag.name) }}">
+        {% else %}
+          <a href=#>
+        {% endif %}
+        {{ tag.name }}
+        </a>{% if not loop.last %}, {% endif %} 
+      {% endfor %}
+      </div>
+    {% endif %}
+    
   {% if session.logged_in and not is_preview %}
     <div class="admin">
       <a href="{{ url_for('create_post', slug=post.slug, next=request.url) }}">Edit</a>
       <a href="{{ url_for('delete_post', slug=post.slug, next=request.url) }}">Delete</a>
     </div>
   {% endif %}
+  
   </div>
 </div>
 {% endmacro %}
