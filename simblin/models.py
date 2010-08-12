@@ -113,6 +113,10 @@ class Post(db.Model):
         
     tags = db.synonym("_tags", descriptor=property(_get_tags, _set_tags))
     
+    def get_tagstring(self):
+        """Return the tags of this post as a comma separated string"""
+        return ', '.join([tag.name for tag in self._tags])
+    
     def _set_categories(self, category_ids):
         """Associate categories with this entry"""
         self._categories = []
