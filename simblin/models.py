@@ -49,7 +49,7 @@ class Post(db.Model):
     
     # Manty to many Post <-> Category
     _categories = db.relationship('Category', secondary='post_categories',
-        backref='categories')
+        backref=db.backref('posts', lazy='dynamic'))
     
     def __init__(self, title, markup):
         self.title = title
