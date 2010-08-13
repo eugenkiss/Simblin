@@ -120,7 +120,8 @@ class Post(db.Model):
     def _set_categories(self, category_ids):
         """Associate categories with this entry"""
         self._categories = []
-        for id in category_ids:
+        # Use set to prevent duplicate mappings
+        for id in set(category_ids):
             self._categories.append(Category.query.get(id))
         
     def _get_categories(self):
@@ -180,7 +181,6 @@ class Category(db.Model):
     name = db.Column(db.String(), unique=True, nullable=False)
     
     def __init__(self, name):
-        # TODO: Prevent creation of duplicate categories
         self.name = name
     
     @property

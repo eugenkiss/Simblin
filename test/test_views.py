@@ -16,7 +16,7 @@ from nose.tools import assert_equal
 
 from simblin import create_app
 from simblin.extensions import db
-from simblin.models import Post, Tag, Category, post_tags
+from simblin.models import Post, Tag, Category, post_tags, post_categories
 
 # TODO: Test Models separately (see danjac)
 
@@ -138,7 +138,9 @@ def delete_post(slug):
         
 def add_category(name):
     """Register category in the database and return its id"""
-    return client.post('/_add_category/%s' % name).data
+    return flask.json.loads(
+        client.post('/_add_category', data=dict(name=name)).data)['id']
+    
         
         
 class TestRegistration:
@@ -244,7 +246,7 @@ class TestComposing:
         category2_id = add_category('cooler')
         expected_slug3 = expected_slug2 + '-2'
         add_post(title=title, markup=markup, tags=tags2, 
-            categories=[category1_id, category2_id])
+            categories=[category1_id, category1_id, category1_id, category2_id])
         post = Post.query.filter_by(id=3).first()
         category_names = [x.name for x in post.categories]
         
@@ -252,6 +254,11 @@ class TestComposing:
         assert_equal(Category.query.count(), 2)
         assert_equal(sorted(category_names), 
             sorted(['cool', 'cooler']))
+        
+        # Expect only two mappings although the mapping to the same category
+        # has been added three times and to the other category once    
+        post_category_mappings = db.session.query(post_categories).all()
+        assert_equal(len(post_category_mappings), 2)
         
         # Now test updating an post
         

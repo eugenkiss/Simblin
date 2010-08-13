@@ -14,8 +14,8 @@
       <div id="navigation">
         <ul>
           <li id="header"><a href="{{ url_for('show_posts') }}">{{ config['BLOG_TITLE'] }}</a></li>
+          <li><a href="{{ url_for('show_archives') }}">Archives</a></li>
           <li><a href="#">About</a></li>
-          <li><a href="#">Archives</a></li>
           <li><a href="#">Projects</a></li>
           <li><a href="#">Impressum</a></li>
         </ul>
@@ -25,7 +25,7 @@
       {% if not session.logged_in %}
         <a href="{{ url_for('login', next=request.url) }}">log in</a>
       {% else %}
-        <a href="{{ url_for('create_post', next=request.url) }}">compose</a>
+        <a href="{{ url_for('create_post') }}">compose</a>
         <a href="{{ url_for('logout', next=request.url) }}">log out</a>
       {% endif %}
       </div>

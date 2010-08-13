@@ -37,7 +37,6 @@
           {% for category in categories %}
             <option value={{ category.id }}>{{ category.name}}</option>
           {% endfor %}
-            <option id='create-category'>Create New Category</option>
           </select>
         </div>
       </div>
@@ -98,7 +97,6 @@
           {% for category in categories %}
             "<option value={{ category.id }}>{{ category.name}}</option>" +
           {% endfor %}
-            "<option id='create-category'>Create New Category</option>" +
           "</select>" + deleteLink +
         "</div>";
       $("#categories").append(categorySelect);

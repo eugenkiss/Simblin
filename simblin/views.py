@@ -34,6 +34,24 @@ def show_posts(page):
     if not pagination.total: flash("No posts so far")
     return render_template('posts.html', pagination=pagination,
         endpoint_func=lambda x: url_for('show_posts', page=x))
+        
+
+@view.route('/archive/')
+def show_archives():
+    """Show the archive. That is recent posts, posts by category etc."""
+    # TODO:
+    # * Months (with number of posts in a month)
+    # ** Create month view
+    # * Categories (with number of posts in category)
+    # ** Category deletion and adding
+    # * Tag cloud
+    latest = Post.query.order_by(Post.id.desc()).limit(5)
+    tags = Tag.query.all()
+    categories = Category.query.all()
+    categories = sorted(categories, key=lambda x: -x.posts.count())
+    uncategorized = Post.query.filter(Post.categories==None)
+    return render_template('archives.html', latest=latest, tags=tags,
+        categories=categories, uncategorized=uncategorized)
 
 
 @view.route('/post/<slug>')
@@ -51,8 +69,8 @@ def show_post(slug):
                                next=next_post)
 
 
-@view.route('/tag/<tag>', defaults={'page':1})
-@view.route('/tag/<tag>/<int:page>')
+@view.route('/tag/<tag>/', defaults={'page':1})
+@view.route('/tag/<tag>/<int:page>/')
 def show_tag(tag, page):
     """Shows all posts with a specific tag"""
     per_page = current_app.config['POSTS_PER_PAGE']
@@ -66,13 +84,17 @@ def show_tag(tag, page):
         endpoint_func=lambda x: url_for('show_tag', tag=tag, page=x))
 
 
-@view.route('/category/<category>', defaults={'page':1})
-@view.route('/category/<category>/<int:page>')
+@view.route('/category/<category>/', defaults={'page':1})
+@view.route('/category/<category>/<int:page>/')
 def show_category(category, page):
-    """Shows all posts with in a category"""
+    """Shows all posts in a category"""
+    # TODO: Add a test for this
+    if not Category.query.filter_by(name=category).first():
+        flash("No such category '%s'" % category)
+        return redirect(url_for('show_posts'))
     per_page = current_app.config['POSTS_PER_PAGE']
-    posts = Category.query.filter_by(name=category).first().posts.order_by(
-        Post.id.desc())
+    posts = Category.query.filter_by(name=category).first().posts
+    posts = posts.order_by(Post.id.desc())
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
@@ -82,14 +104,40 @@ def show_category(category, page):
                                         page=x))
                                         
 
-@view.route('/_add_category/<name>', methods=['POST'])
+@view.route('/uncategorized/', defaults={'page':1})
+@view.route('/uncategorized/<int:page>/')
+def show_uncategorized(page):
+    """Shows all posts which aren't in any category"""
+    per_page = current_app.config['POSTS_PER_PAGE']
+    posts = Post.query.filter(Post.categories==None)
+    items = posts.limit(per_page).offset((page - 1) * per_page).all()
+    pagination = Pagination(posts, page=page, per_page=per_page, 
+        total=posts.count(), items=items)
+    flash("Uncategorized posts")
+    return render_template('posts.html', pagination=pagination,
+        endpoint_func=lambda x: url_for('show_uncategorized', page=x))
+                                        
+
+@view.route('/_add_category', methods=['POST'])
 @login_required
-def add_category(name):
+def add_category():
     """Add category to database and return its id"""
-    category = Category(name)
+    category = Category(request.form['name'])
     db.session.add(category)
     db.session.commit()
-    return str(category.id)
+    return jsonify(id=category.id, name=category.name,
+        url=url_for('show_category', category=category.name))
+
+
+@view.route('/_delete_category', methods=['POST'])
+@login_required
+def delete_category():
+    """Delete category specified by id from database"""
+    # TODO: Add test
+    category = Category.query.get(request.form['id'])
+    db.session.delete(category)
+    db.session.commit()
+    return ''
         
 
 @view.route('/_preview', methods=['POST'])
@@ -97,7 +145,6 @@ def add_category(name):
 def preview():
     """Returns a preview of a blog post. Used with an Ajax request"""
     args = request.form
-    print request.form
     # Mimic post object
     post = dict(
         slug=normalize(args['title']), 
@@ -164,6 +211,7 @@ def create_post(slug):
             return redirect(next or url_for('show_post', slug=post.slug))
 
 
+# TODO: Make this "private" url and ask question with javascript
 @view.route('/delete/<slug>', methods=['GET', 'POST'])
 @login_required
 def delete_post(slug):

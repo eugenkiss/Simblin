@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>Archive</h2>
+
+<h3>Recent Posts</h3>
+<ul id="recent-articles">
+{% for post in latest %}
+<li>
+  <a href="{{ url_for('show_post', slug=post.slug) }}">{{ post.title }}</a>
+  <div class="post-date">{{ post.published.strftime("%A %d. %B %Y") }}</div>
+</li>
+{% endfor %}
+</ul>
+
+<h3>Months</h3>
+<ul id="months">
+{% for month in months %}
+<li>
+  <a href="{{ url_for('show_month', year=month.year, month=month.month) }}">{{ month.print }}</a>
+  <div class="post-count">({{ month.count }})</div>
+</li>
+{% endfor %}
+</ul>
+
+<h3>Categories</h3>
+<ul id="categories">
+{% if uncategorized %}
+<li>
+  <a href="{{ url_for('show_uncategorized', page=1) }}">Uncategorized</a>
+  <div class="post-count">({{ uncategorized.count() }})</div>
+</li>
+{% endif %}
+{% for category in categories %}
+<li>
+  <a href="{{ url_for('show_category', category=category.name) }}">{{ category.name }}</a>
+  <div class="post-count">({{ category.posts.count() }})</div>
+  {% if session.logged_in %}
+  <a class="delete-category" href=# category-id="{{ category.id }}">delete</a>
+  {% endif %}
+</li>
+{% endfor %}
+</ul>
+{% if session.logged_in %}
+<a id='create-category' href='#'>create category</a>
+{% endif %}
+
+<h3>Tags</h3>
+<!-- TODO: Make tag cloud -->
+<ul id="tags">
+{% for tag in tags %}
+<li>
+  <a href="{{ url_for('show_tag', tag=tag.name) }}">{{ tag.name }}</a>
+  <div class="post-count">({{ tag.posts.count() }})</div>
+</li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block bottom %}
+{% if session.logged_in %}
+<script type=text/javascript>
+  $(function() {
+    // Create Category
+    $("#create-category").bind('click', function(e) {
+      e.preventDefault();
+      var name = prompt("Enter the name of the category you want to create");
+      $.ajax({
+        type: "POST",
+        url: "/_add_category",
+        data: {'name':name},
+        success: function(category) {
+          categoryLink = "<a href='"+category.url+"'>"+category.name+"</a>";
+          categoryCount = "<div class='post-count'>(0)</div>";
+          deleteLink = "<a class='delete-category' href=# category-id='"+category.id+"'>delete</a>";
+          $('#categories').append("<li>"+categoryLink+categoryCount+deleteLink+"</li>")
+          .fadeTo(0,0).fadeTo('normal',1);
+        },
+        error: function() {
+          alert('Could not create category');
+        }
+      });
+      return false;
+    });
+    
+    // Delete Category
+    $(".delete-category").live('click', function(e) {
+      e.preventDefault();
+      var id = $(this).attr('category-id');
+      //: The parent list item that contains the link to the category, delete link, count
+      var li = $(this).closest('li');
+      $.ajax({
+        type: "POST",
+        url: "/_delete_category",
+        data: {'id':id},
+        success: function() {
+          li.fadeTo('fast', 0, function() {
+            $(this).remove();
+          });
+        },
+        error: function() {
+          alert('Could not delete category');
+        }
+      });
+      return false;
+    });
+  });
+</script>
+{% endif %}
+{% endblock %}
+<!-- kate: tab-width 2; -->
