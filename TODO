@@ -4,8 +4,6 @@
 *** Restyle, like http://tomayko.com/, on entry view no navigation, bigger font...
 
 
-* Ordering of Blog posts, e.g. (Archive Page creation)
-** Monghtly/Yearly archive
 ** Tag Cloud
 * Page creation
 ** Add field `comments_allowed' to Entry model

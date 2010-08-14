@@ -130,8 +130,11 @@ class Post(db.Model):
     categories = db.synonym("_categories", descriptor=property(_get_categories,
         _set_categories))
     
-    def set_categories(self, categorylist):
-        pass
+    def get_year(self):
+        return self.published.year
+    
+    def get_month(self):
+        return self.published.month
     
     def __repr__(self):
         return '<Post: %s>' % self.slug

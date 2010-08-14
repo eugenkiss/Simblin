@@ -49,10 +49,24 @@ def show_archives():
         categories=categories, uncategorized=uncategorized, months=months)
 
 
-@view.route('/<int:year>/<int:month>')
-def show_month(year, month):
-    # TODO: Implement
-    return ''
+# TODO: Test month view
+@view.route('/<int:year>/<int:month>/', defaults={'page':1})
+@view.route('/<int:year>/<int:month>/<int:page>/')
+def show_month(year, month, page):
+    """Show all posts from a specific year and month"""
+    from calendar import month_name
+    per_page = current_app.config['POSTS_PER_PAGE']
+    # TODO: why extract?
+    posts = Post.query.filter(db.extract('year', Post.published)==year)
+    posts = posts.filter(db.extract('month', Post.published)==month)
+    posts = posts.order_by(Post.id.desc()) 
+    items = posts.limit(per_page).offset((page - 1) * per_page).all()
+    pagination = Pagination(posts, page=page, per_page=per_page, 
+        total=posts.count(), items=items)
+    flash("Posts from %s %d" % (month_name[month], year))
+    return render_template('posts.html', pagination=pagination,
+        endpoint_func=lambda x: url_for('show_month', year=year, month=month, 
+        page=x))
 
 
 @view.route('/post/<slug>')

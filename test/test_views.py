@@ -19,6 +19,7 @@ from simblin.extensions import db
 from simblin.models import Post, Tag, Category, post_tags, post_categories
 
 # TODO: Test Models separately (see danjac)
+# TODO: Test archive view, Test month view
 
 # Configuration
 
