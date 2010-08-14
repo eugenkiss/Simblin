@@ -29,6 +29,25 @@ def login_required(f):
     return decorated_function
 
 
+# TODO: Test
+def get_postmonths(posts):
+    """Given an iterable `posts' group by month and year and return month
+    object. `posts' needs to already be ordered by date."""
+    from itertools import groupby
+    from calendar import month_name
+    months = []
+    def group_key(item): 
+        return item.published.year, item.published.month
+    for ((year, month), items) in groupby(posts, group_key):
+        months.append(dict(
+            year=year,
+            index=month,
+            name=month_name[month],
+            count=len(list(items)),
+        ))
+    return months
+
+
 def normalize(string):
     """Unify string"""
     string = unicodedata.normalize("NFKD", unicode(string)).encode(

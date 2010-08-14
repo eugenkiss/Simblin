@@ -16,7 +16,7 @@
 <ul id="months">
 {% for month in months %}
 <li>
-  <a href="{{ url_for('show_month', year=month.year, month=month.month) }}">{{ month.print }}</a>
+  <a href="{{ url_for('show_month', year=month.year, month=month.index) }}">{{ month.year }} {{ month.name }}</a>
   <div class="post-count">({{ month.count }})</div>
 </li>
 {% endfor %}

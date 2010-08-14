@@ -24,9 +24,7 @@ def test_slug_normalizing():
     
     
 def test_tags_normalizing():
-    """
-    Test the correct interpretation of a string of comma separated tags
-    """
+    """Test the correct interpretation of a string of comma separated tags"""
     assert_equal(helpers.normalize_tags(''), [])
     assert_equal(helpers.normalize_tags(','), [])
     assert_equal(helpers.normalize_tags('cool'), ['cool'])
@@ -42,3 +40,8 @@ def test_tags_normalizing():
     assert_equal(
         helpers.normalize_tags("django, franz und bertha,vil/bil"),
         ['django','franz-und-bertha','vil-bil'])
+
+
+def test_postmonths():
+    """Test the correct grouping of posts by month and year"""
+    # TODO

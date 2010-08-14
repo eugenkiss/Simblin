@@ -37,10 +37,12 @@
 
 ----------------
 
+* rename categories
 * Tab key does indent in compose editor / embed bespin
 * Pingback/Traceback (or does Disqus already do that?)
 * Images / File Attachments (or use dropbox? or use stuff.eugenkiss.com/blog/? is that a good idea?)
 ** How to store them?
+** Write Q&A that images/files should be just uploaded to a folder and linked in a blog post
 * Comments (Disqus)
 * Refactor/Tests/Document/Readme/Changelog
 
@@ -52,11 +54,12 @@ future:
 * Put hardcoded Messages in config file
 * statistics
 * memcache/redis
-* "high level" documentation with sphinx
+* "high level" documentation (use github wiki support! http://github.com/blog/699-making-github-more-open-git-backed-wikis)
 * own comments?
 * bespin embedded for textarea
 * search (http://pypi.python.org/pypi/Whoosh/)
 * feeds
+* profiling (how?) in order to improve performance (archives view esp.)
 * Javascript Tag suggestion
 * mail notification (optional angabe of e-mail upon registration)
 * modal dialogs form confirmations (with jquery)

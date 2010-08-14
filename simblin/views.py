@@ -18,7 +18,7 @@ from simblin import signals
 from simblin.extensions import db
 from simblin.models import Admin, Post, Tag, Category
 from simblin.helpers import normalize_tags, convert_markup, login_required, \
-                            normalize
+                            normalize, get_postmonths
 
 # TODO: Split to admin (here also preview and add_category), main view
 
@@ -39,19 +39,20 @@ def show_posts(page):
 @view.route('/archive/')
 def show_archives():
     """Show the archive. That is recent posts, posts by category etc."""
-    # TODO:
-    # * Months (with number of posts in a month)
-    # ** Create month view
-    # * Categories (with number of posts in category)
-    # ** Category deletion and adding
-    # * Tag cloud
+    # TODO: Tag cloud
     latest = Post.query.order_by(Post.id.desc()).limit(5)
+    months = get_postmonths(Post.query.order_by(Post.published.desc()))
     tags = Tag.query.all()
-    categories = Category.query.all()
-    categories = sorted(categories, key=lambda x: -x.posts.count())
+    categories = sorted(Category.query.all(), key=lambda x: -x.posts.count())
     uncategorized = Post.query.filter(Post.categories==None)
     return render_template('archives.html', latest=latest, tags=tags,
-        categories=categories, uncategorized=uncategorized)
+        categories=categories, uncategorized=uncategorized, months=months)
+
+
+@view.route('/<int:year>/<int:month>')
+def show_month(year, month):
+    # TODO: Implement
+    return ''
 
 
 @view.route('/post/<slug>')
