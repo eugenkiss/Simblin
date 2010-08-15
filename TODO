@@ -50,6 +50,7 @@
 
 future:
 * be able to rename categories
+* Add to config sqlalchemy pw and username for other db engines than sqlite
 * Put hardcoded Messages in config file
 * statistics
 * memcache/redis
