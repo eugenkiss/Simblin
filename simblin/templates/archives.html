@@ -46,14 +46,13 @@
 
 <h3>Tags</h3>
 <!-- TODO: Make tag cloud -->
-<ul id="tags">
+<div id="tag-cloud">
 {% for tag in tags %}
-<li>
-  <a href="{{ url_for('show_tag', tag=tag.name) }}">{{ tag.name }}</a>
-  <div class="post-count">({{ tag.posts.count() }})</div>
-</li>
+<a href="{{ url_for('show_tag', tag=tag.name) }}" 
+   title="{{ tag.posts.count() }} tagged in {{ tag.name }}"
+   style="font-size:{{ 50 + 150 * tag.posts.count() / max_count }}%; margin-right:1em;">{{ tag.name }}</a>
 {% endfor %}
-</ul>
+</div>
 {% endblock %}
 
 {% block bottom %}
@@ -69,11 +68,7 @@
         url: "/_add_category",
         data: {'name':name},
         success: function(category) {
-          categoryLink = "<a href='"+category.url+"'>"+category.name+"</a>";
-          categoryCount = "<div class='post-count'>(0)</div>";
-          deleteLink = "<a class='delete-category' href=# category-id='"+category.id+"'>delete</a>";
-          $('#categories').append("<li>"+categoryLink+categoryCount+deleteLink+"</li>")
-          .fadeTo(0,0).fadeTo('normal',1);
+          location.reload();
         },
         error: function() {
           alert('Could not create category');
@@ -95,6 +90,7 @@
         success: function() {
           li.fadeTo('fast', 0, function() {
             $(this).remove();
+            location.reload();
           });
         },
         error: function() {

@@ -4,7 +4,8 @@
 *** Restyle, like http://tomayko.com/, on entry view no navigation, bigger font...
 
 
-** Tag Cloud
+* look at danjac about custom query object (because of month query in helper should be in Post class omehow)
+* Style archives page
 * Page creation
 ** Add field `comments_allowed' to Entry model
 ** Just Convention: Put your "pages" in category pages and harcode their link
@@ -35,7 +36,6 @@
 
 ----------------
 
-* rename categories
 * Tab key does indent in compose editor / embed bespin
 * Pingback/Traceback (or does Disqus already do that?)
 * Images / File Attachments (or use dropbox? or use stuff.eugenkiss.com/blog/? is that a good idea?)
@@ -49,6 +49,7 @@
 ----------------
 
 future:
+* be able to rename categories
 * Put hardcoded Messages in config file
 * statistics
 * memcache/redis

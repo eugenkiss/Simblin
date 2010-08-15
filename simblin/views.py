@@ -39,14 +39,19 @@ def show_posts(page):
 @view.route('/archive/')
 def show_archives():
     """Show the archive. That is recent posts, posts by category etc."""
-    # TODO: Tag cloud
+    # TODO: Tag cloud http://en.wikipedia.org/wiki/Tag_cloud#Creation_of_a_tag_cloud
     latest = Post.query.order_by(Post.id.desc()).limit(5)
     months = get_postmonths(Post.query.order_by(Post.published.desc()))
     tags = Tag.query.all()
+    # Needed for calculation of tag cloud
+    # TODO: Maybe Custom query object mith method `get_max_count()'
+    max_count = sorted(tags, 
+        key=lambda x: -x.posts.count())[0].posts.count() if tags else 0
     categories = sorted(Category.query.all(), key=lambda x: -x.posts.count())
     uncategorized = Post.query.filter(Post.categories==None)
     return render_template('archives.html', latest=latest, tags=tags,
-        categories=categories, uncategorized=uncategorized, months=months)
+        categories=categories, uncategorized=uncategorized, months=months,
+        max_count=max_count)
 
 
 # TODO: Test month view
