@@ -1,3 +1,4 @@
+syntax: glob
 env/
 *.db
 settings.cfg
