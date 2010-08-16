@@ -39,6 +39,7 @@ input, textarea, select {
     color: #080000;
     background-color: #DDD;
     font-family: Georgia, serif;
+    font-size: inherit;
 }
 
 label {
