@@ -31,16 +31,7 @@
     </td>
     <td>
       <div id="categories">
-        <div id="category-1">
-          <select name="category-1">
-            <option value=0>Uncategorized</option>
-            {% for category in categories %}
-            <option value={{ category.id }}>{{ category.name}}</option>
-            {% endfor %}
-          </select>
-        </div>
       </div>
-      <div style="margin-top: 0.5em"></div>
       <a id='add-category' href='#'>Add Another Category</a>
     </td>
     </tr>
@@ -84,7 +75,7 @@
     });
     
     // Add Categories
-    categoryCounter = 1;
+    categoryCounter = 0;
     $("#add-category").bind('click', function(e) {
       e.preventDefault();
       categoryCounter++;
@@ -93,10 +84,9 @@
       var categorySelect = 
         "<div id='category-"+categoryCounter+"'>" +
           "<select name='category-"+categoryCounter+"'>" +
-            "<option value=0>Uncategorized</option>" +
-          {% for category in categories %}
+            {% for category in categories %}
             "<option value={{ category.id }}>{{ category.name}}</option>" +
-          {% endfor %}
+            {% endfor %}
           "</select>" + deleteLink +
         "</div>";
       $("#categories").append(categorySelect);
@@ -113,6 +103,14 @@
       });
       return false;
     });
+    
+    // Prepopulate with categories of post
+    {% for category in post.categories %}
+    $("#add-category").trigger('click');
+    $("#categories select:last option[value='{{ category.id }}']")
+    .attr('selected', 'selected');
+    {% endfor %}
   });
 </script>
 {% endblock %}
+<!-- kate: tab-width 2; -->
