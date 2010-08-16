@@ -285,6 +285,14 @@ class TestComposing:
         assert_equal(post.published.date(), expected_date)
         assert_equal(sorted(post_tagnames), sorted(expected_tags))
         
+        # update the same post without changing the title and expect the same
+        # slug
+        
+        update_post(title=updated_title, markup=updated_markup, 
+            tags=updated_tags, slug=expected_slug)
+        post = Post.query.filter_by(id=1).first()
+        assert_equal(post.slug, expected_slug)
+        
         # Expect three rows in the posts table because three posts where
         # created and one updated. Expect only two rows in the tags table 
         # because the tag 'vil-bil' is not used anymore by an post. Also 

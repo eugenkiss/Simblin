@@ -1,19 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-<h2>Archive</h2>
-
-<h3>Recent Posts</h3>
-<ul id="recent-articles">
-{% for post in latest %}
-<li>
-  <a href="{{ url_for('show_post', slug=post.slug) }}">{{ post.title }}</a>
-  <div class="post-date">{{ post.published.strftime("%A %d. %B %Y") }}</div>
-</li>
-{% endfor %}
-</ul>
-
 <h3>Months</h3>
-<ul id="months">
+<ul class=archives id="months">
 {% for month in months %}
 <li>
   <a href="{{ url_for('show_month', year=month.year, month=month.index) }}">{{ month.year }} {{ month.name }}</a>
@@ -21,9 +9,10 @@
 </li>
 {% endfor %}
 </ul>
+<div class=spacer></div>
 
 <h3>Categories</h3>
-<ul id="categories">
+<ul class=archives id="categories">
 {% if uncategorized %}
 <li>
   <a href="{{ url_for('show_uncategorized', page=1) }}">Uncategorized</a>
@@ -43,10 +32,11 @@
 {% if session.logged_in %}
 <a id='create-category' href='#'>create category</a>
 {% endif %}
+<div class=spacer></div>
 
 <h3>Tags</h3>
 <!-- TODO: Make tag cloud -->
-<div id="tag-cloud">
+<div class=archives id="tag-cloud">
 {% for tag in tags %}
 <a href="{{ url_for('show_tag', tag=tag.name) }}" 
    title="{{ tag.posts.count() }} tagged in {{ tag.name }}"

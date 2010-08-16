@@ -63,7 +63,7 @@ class Post(db.Model):
         # Make the slug unique
         while True:
             entry = Post.query.filter_by(slug=slug).first()
-            if not entry: break
+            if not entry or entry == self: break
             slug += "-2"
         self._slug = slug
         

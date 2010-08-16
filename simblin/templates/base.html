@@ -9,36 +9,39 @@
     {% block head %}{% endblock %}
   </head>
   <body>
+    <!-- Login'n'stuff -->
+    <div id="metanav">
+    {% if not session.logged_in %}
+      <a href="{{ url_for('login', next=request.url) }}">log in</a>
+    {% else %}
+      <a href="{{ url_for('create_post') }}">compose</a>
+      <a href="{{ url_for('logout', next=request.url) }}">log out</a>
+    {% endif %}
+    </div>
     <div id="wrapper">
-      <!-- Header'n'Navigation -->
+      <!-- Header -->
+      <h1 id=header>{{ config['BLOG_TITLE'] }}</h1>
+      <!-- Navigation -->
       <div id="navigation">
         <ul>
-          <li id="header"><a href="{{ url_for('show_posts') }}">{{ config['BLOG_TITLE'] }}</a></li>
+          <li><a href="{{ url_for('show_posts') }}">Home</a></li>
           <li><a href="{{ url_for('show_archives') }}">Archives</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Projects</a></li>
-          <li><a href="#">Impressum</a></li>
+          <li><a href="{{ url_for('show_post', slug='about') }}">About</a></li>
+          <li><a href="http://bitbucket.org/eugenkiss/">Code</a></li>
+          <li><a href="{{ url_for('show_post', slug='projects') }}">Projects</a></li>
+          <li><a href="{{ url_for('show_post', slug='impressum') }}">Impressum</a></li>
         </ul>
+        <!-- Message Flashing -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class=flashes>
+            {% for category, message in messages %}
+              <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
       </div>
-      <!-- Login'n'stuff -->
-      <div id="metanav">
-      {% if not session.logged_in %}
-        <a href="{{ url_for('login', next=request.url) }}">log in</a>
-      {% else %}
-        <a href="{{ url_for('create_post') }}">compose</a>
-        <a href="{{ url_for('logout', next=request.url) }}">log out</a>
-      {% endif %}
-      </div>
-      <!-- Message Flashing -->
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class=flashes>
-          {% for category, message in messages %}
-            <p class="{{ category }}">{{ message }}</p>
-          {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
       <!-- Main Content -->
       <div id="content">
         {% block body %}{% endblock %}
@@ -50,8 +53,10 @@
         </div>
         {% endblock %}
       </div>
-    </div>
-    <!-- For Javascript -->
-    {% block bottom %}{% endblock %}
+      
+  </div>
+  <!-- For Javascript -->
+  {% block bottom %}{% endblock %}
   </body>
 </html>
+<!-- kate: tab-width 2; -->
