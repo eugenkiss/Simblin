@@ -18,7 +18,7 @@ from simblin import signals
 from simblin.extensions import db
 from simblin.models import Admin, Post, Tag, Category
 from simblin.helpers import normalize_tags, convert_markup, login_required, \
-                            normalize, get_postmonths
+                            normalize
 
 # TODO: Split to admin (here also preview and add_category), main view
 
@@ -39,9 +39,8 @@ def show_posts(page):
 @view.route('/archive/')
 def show_archives():
     """Show the archive. That is recent posts, posts by category etc."""
-    # TODO: Tag cloud http://en.wikipedia.org/wiki/Tag_cloud#Creation_of_a_tag_cloud
     latest = Post.query.order_by(Post.id.desc()).limit(5)
-    months = get_postmonths(Post.query.order_by(Post.datetime.desc()))
+    months = Post.query.get_months()
     tags = Tag.query.all()
     # Needed for calculation of tag cloud
     # TODO: Maybe Custom query object mith method `get_max_count()'
