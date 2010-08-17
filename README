@@ -1,13 +1,13 @@
+=======
 Simblin
 =======
 
-**Sim**ple **B**log Eng**in**e - A blog engine written with [Flask][] and
-[SQLAlchemy][].
+*Sim*ple *B*log Eng*in*e - A blog engine written with Flask and SQLAlchemy.
 
 Simblin is built to be used by only one author. Simblin has no dashboard, no
 plugin support and no theme support although the templates and css can be
-modified by hand of course. Simblin does not provide its own comment system
-but has support for [Disqus](http://disqus.com/).
+modified by hand, of course. Simblin does not provide its own comment system
+but has support for Disqus.
 
 On the other hand Simblin delivers most features that are needed to provide a
 good blogging experience. Simblin has 
@@ -17,16 +17,11 @@ good blogging experience. Simblin has
 * archives
 * source code highlighting
 
-Simple is not to misinterpret as minimalistic. Had Simblin been a minimalistic
-blog engine (*minblin* :)) there would have been no tags, categories etc. Only
-one page that shows the five lates posts and a possibility to see older posts.
-But that would have been a little to sparse for my taste...
-
 See the changelog to see what featueres a specific version provides.
 
 
 Configuration
--------------
+=============
 
 TODO: This needs work
 
@@ -44,51 +39,62 @@ Use a python shell to create a secret key:
 
     >>> import os
     >>> os.urandom(24)
-    '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
-
-### Tests 
+    '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8' 
 
 Use `nosetests test` to run tests
 
 
-Usage
------
+Q&A
+===
 
-### Pages
+How to create pages?
+--------------------
 
-Simblin pages are simply blog posts in the category `pages' with disabled
-comments. The order of pages is determined by their id. So to retroactively
-change the order of the pages copy their content, delete all pages and recreate
-them in the desired order. 
+Pages are just blog posts. Just "hardcode" the link to a specific blog post in
+your template. For example, if you want to have an `About` page put
 
-### Source Code Highlighting
+    "{{ url_for('show_post', slug='about') }}"
+    
+in the `href` attribute of the link in your template to the `About` page.
 
-Source code highlighting is enabled by the [CodeColor][] extension of
-[Markdown2][] and you don't have to be afraid to use underscores in your code
-thanks to [CodeFriendly].
+This is not needed but I would recommend to put all blog posts which are
+supposed to be pages in the category `Pages` and additionally I would disable
+comments on them.
 
-  [codecolor]: http://code.google.com/p/python-markdown2/wiki/CodeColor
-  [codefriendly]: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
 
-### What's the difference between categories and tags in Simblin?
+How to use source code highlighting?
+------------------------------------
 
-Tags tell you what topics are talked about in a blog post and categories tell
-you where the blog post belongs although sometimes the difference is fluent.
+Source code highlighting is enabled by the `CodeColor` extension of `Markdown2` 
+and you don't have to be afraid to use underscores in your code thanks to the
+`CodeFriendly` extension.
+
+  codecolor: http://code.google.com/p/python-markdown2/wiki/CodeColor
+  codefriendly: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
+
+
+What's the difference between categories and tags in Simblin?
+-------------------------------------------------------------
+
+Tags ought to describe the content of a blog post (what is it about?).
+Categories on the other hand ought to state where a blog post belongs in.
+Sometimes, however, the distinction between categories and tags is not clear.
  
-Suppose you create a programming tutorial. The blog post could not be in a
-category at all and have the tags `programming` and `tutorial`. Or it could be
-in the category `programming` and have the tag `tutorial`. I, however, would put
-the post in the categories `programming` and `tutorial` and add tags like
-`django` if the tutorial would be about django.
+Suppose you create a programming tutorial. One possibility is to not put it in a
+category at all and instead tag it with `programming` and `tutorial`. Another
+possiblity is to put it in the category `programming` and tag it with
+`tutorial`. I, however, would put the post in the categories `programming` *and*
+`tutorial` and add tags like `django` if, for instance, the tutorial is about
+django.
 
-Since a blog post, in my world view, can belong in different places a blog post
-should be able to have several categories, too. Therefore categories are
+Since a blog post, in my world view, can belong in different places it should be
+able to be attached to several categories, too. Therefore categories are
 essentially implemented like tags. However, tags are deleted automatically when
 no posts reference a tag anymore. Categories are not.
-  
+
   
 Why another Blog engine?
-------------------------
+========================
 
 1. Learn about web programming in general
 2. Become more experienced with the excellent Flask framework 
@@ -96,12 +102,8 @@ Why another Blog engine?
 
 
 Used Libraries/Frameworks
--------------------------
+=========================
 
-* [Flask][]
-* [SQLAlchemy][]
-* [Markdown2][]
-
-  [markdown2]: http://code.google.com/p/python-markdown2/
-  [flask]: http://flask.pocoo.org/
-  [sqlalchemy]: http://www.sqlalchemy.org/
+* markdown2: http://code.google.com/p/python-markdown2/
+* flask: http://flask.pocoo.org/
+* sqlalchemy: http://www.sqlalchemy.org/
