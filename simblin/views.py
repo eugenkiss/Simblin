@@ -306,6 +306,7 @@ def register():
     error = None
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
         password2 = request.form['password2']
         if username == '':
@@ -315,7 +316,7 @@ def register():
         elif not password == password2:
             error = "Passwords must match"
         else:
-            db.session.add(Admin(username, password))
+            db.session.add(Admin(username, email, password))
             db.session.commit()
             session['logged_in'] = True
             flash('You are the new master of this blog')

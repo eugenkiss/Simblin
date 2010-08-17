@@ -9,10 +9,16 @@ duty to choose a username and a password.
 Since you will be the sole author of this blog these credentials' only purpose 
 is to keep away other, potentially sinister people from submitting here.
 </p>
+<p>
+You can enter your e-mail adress if you want to be notified about certain events.
+</p>
 <form action="{{ url_for('register') }}" method="post">
   <div style="margin: 0 auto;">
     <label for=username>Username:</label> 
     <input type="text" name="username">
+    <div style="margin-top: 1em"></div>
+    <label for=email>Email:</label> 
+    <input type="text" name="email">
     <div style="margin-top: 1em"></div>
     <label for=password>Password:</label> 
     <input type="password" name="password">
