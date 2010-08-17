@@ -10,6 +10,7 @@
 """
 from datetime import datetime
 from werkzeug import check_password_hash, generate_password_hash
+from flaskext.sqlalchemy import BaseQuery
 
 from simblin.helpers import normalize, convert_markup
 from simblin.extensions import db
@@ -35,9 +36,30 @@ class Admin(db.Model):
         return check_password_hash(self.pw_hash, password)
 
 
+class PostQuery(BaseQuery):
+    
+    # TODO: Test
+    def get_months(self):
+        """Group by month and year and return month dict."""
+        from itertools import groupby
+        from calendar import month_name
+        months = []
+        def group_key(item): 
+            return item.datetime.year, item.datetime.month
+        for ((year, month), items) in groupby(self, group_key):
+            months.append(dict(
+                year=year,
+                index=month,
+                name=month_name[month],
+                count=len(list(items)),
+            ))
+        return months
+    
+
 class Post(db.Model):
     
     __tablename__ = 'posts'
+    query_class = PostQuery
     id = db.Column(db.Integer, primary_key=True)
     _slug = db.Column(db.String(255), unique=True, nullable=False)
     _title = db.Column(db.String(255), nullable=False)
@@ -161,9 +183,18 @@ post_categories = db.Table('post_categories', db.Model.metadata,
               db.ForeignKey('categories.id', ondelete='CASCADE')))
 
 
+class TagQuery(BaseQuery):
+    
+    def get_maxcount(self):
+        """Return the most used tag's number of associations. This is needed
+        for the calculation of the tag cloud"""
+        return max(tag.posts.count() for tag in self) if self.count() else 0
+
+
 class Tag(db.Model):
     
     __tablename__ = 'tags'
+    query_class = TagQuery
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True, nullable=False)
     
