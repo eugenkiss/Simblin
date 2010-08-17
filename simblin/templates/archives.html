@@ -4,7 +4,7 @@
 <ul class=archives id="months">
 {% for month in months %}
 <li>
-  <a href="{{ url_for('show_month', year=month.year, month=month.index) }}">{{ month.year }} {{ month.name }}</a>
+  <a href="{{ url_for('main.show_month', year=month.year, month=month.index) }}">{{ month.year }} {{ month.name }}</a>
   <div class="post-count">({{ month.count }})</div>
 </li>
 {% endfor %}
@@ -15,13 +15,13 @@
 <ul class=archives id="categories">
 {% if uncategorized %}
 <li>
-  <a href="{{ url_for('show_uncategorized', page=1) }}">Uncategorized</a>
+  <a href="{{ url_for('main.show_uncategorized', page=1) }}">Uncategorized</a>
   <div class="post-count">({{ uncategorized.count() }})</div>
 </li>
 {% endif %}
 {% for category in categories %}
 <li>
-  <a href="{{ url_for('show_category', category=category.name) }}">{{ category.name }}</a>
+  <a href="{{ url_for('main.show_category', category=category.name) }}">{{ category.name }}</a>
   <div class="post-count">({{ category.posts.count() }})</div>
   {% if session.logged_in %}
   <a class="delete-category" href=# category-id="{{ category.id }}">delete</a>
@@ -38,7 +38,7 @@
 <!-- TODO: Make tag cloud -->
 <div class=archives id="tag-cloud">
 {% for tag in tags %}
-<a href="{{ url_for('show_tag', tag=tag.name) }}" 
+<a href="{{ url_for('main.show_tag', tag=tag.name) }}" 
    title="{{ tag.posts.count() }} tagged in {{ tag.name }}"
    style="font-size:{{ 50 + 150 * tag.posts.count() / max_count }}%; margin-right:1em;">{{ tag.name }}</a>
 {% endfor %}

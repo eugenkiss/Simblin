@@ -40,10 +40,10 @@
     <!-- Login'n'stuff -->
     <div id="metanav">
     {% if not session.logged_in %}
-      <a href="{{ url_for('login', next=request.url) }}">log in</a>
+      <a href="{{ url_for('admin.login', next=request.url) }}">log in</a>
     {% else %}
-      <a href="{{ url_for('create_post') }}">compose</a>
-      <a href="{{ url_for('logout', next=request.url) }}">log out</a>
+      <a href="{{ url_for('admin.create_post') }}">compose</a>
+      <a href="{{ url_for('admin.logout', next=request.url) }}">log out</a>
     {% endif %}
     </div>
     <div id="wrapper">
@@ -52,12 +52,12 @@
       <!-- Navigation -->
       <div id="navigation">
         <ul>
-          <li><a href="{{ url_for('show_posts') }}">Home</a></li>
-          <li><a href="{{ url_for('show_archives') }}">Archives</a></li>
-          <li><a href="{{ url_for('show_post', slug='about') }}">About</a></li>
+          <li><a href="{{ url_for('main.show_posts') }}">Home</a></li>
+          <li><a href="{{ url_for('main.show_archives') }}">Archives</a></li>
+          <li><a href="{{ url_for('main.show_post', slug='about') }}">About</a></li>
           <li><a href="http://bitbucket.org/eugenkiss/">Code</a></li>
-          <li><a href="{{ url_for('show_post', slug='projects') }}">Projects</a></li>
-          <li><a href="{{ url_for('show_post', slug='impressum') }}">Impressum</a></li>
+          <li><a href="{{ url_for('main.show_post', slug='projects') }}">Projects</a></li>
+          <li><a href="{{ url_for('main.show_post', slug='impressum') }}">Impressum</a></li>
         </ul>
         <!-- Message Flashing -->
         {% with messages = get_flashed_messages(with_categories=true) %}

@@ -134,7 +134,7 @@ def update_post(slug, title, markup, tags=None, categories=[]):
 
 def delete_post(slug):
     """Helper function to delete a blog post"""
-    return client.post('/delete/%s' % slug, data=dict(next=''), 
+    return client.post('/_delete/%s' % slug, data=dict(next=''), 
         follow_redirects=True)
         
         
@@ -334,6 +334,7 @@ class TestDeletion:
         assert_equal(len(tags), 1)
         
         rv = delete_post(slug='idontexist')
+        print rv.data
         assert 'No such post' in rv.data
         rv = delete_post(slug='title')
         assert 'Post deleted' in rv.data

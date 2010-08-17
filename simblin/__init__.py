@@ -12,7 +12,8 @@
 from flask import Flask
 
 from simblin.extensions import db
-from simblin.views import view
+from simblin.views.admin import admin
+from simblin.views.main import main
 
 
 def create_app(config=None):
@@ -32,6 +33,7 @@ def create_app(config=None):
     
     db.init_app(app)
         
-    app.register_module(view)
+    app.register_module(admin)
+    app.register_module(main)
     
     return app

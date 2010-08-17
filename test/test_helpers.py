@@ -41,7 +41,3 @@ def test_tags_normalizing():
         helpers.normalize_tags("django, franz und bertha,vil/bil"),
         ['django','franz-und-bertha','vil-bil'])
 
-
-def test_postmonths():
-    """Test the correct grouping of posts by month and year"""
-    # TODO

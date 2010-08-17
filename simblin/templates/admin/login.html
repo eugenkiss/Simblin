@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
   <h3>Login</h3>
-  <form action="{{ url_for('login') }}" method=post>
+  <form action="{{ url_for('admin.login') }}" method=post>
   <label for=username>Username:</label>
   <input type=text name=username>
   <div style="margin-top: 1em"></div>

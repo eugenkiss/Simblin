@@ -2,7 +2,7 @@
 <div class="post">
   <h1 class="post-title">
   {% if not is_preview %}
-    <a href="{{ url_for('show_post', slug=post.slug) }}">
+    <a href="{{ url_for('main.show_post', slug=post.slug) }}">
   {% else %}
     <a href=#>
   {% endif %}
@@ -18,7 +18,7 @@
       <span class="categories">
       {% for category in post.categories %}
         {% if not is_preview %}
-          <a href="{{ url_for('show_category', category=category.name) }}">
+          <a href="{{ url_for('main.show_category', category=category.name) }}">
         {% else %}
           <a href=#>
         {% endif %}
@@ -32,7 +32,7 @@
       <div class="tags">Tags: 
       {% for tag in post.tags %}
         {% if not is_preview %}
-          <a href="{{ url_for('show_tag', tag=tag.name) }}">
+          <a href="{{ url_for('main.show_tag', tag=tag.name) }}">
         {% else %}
           <a href=#>
         {% endif %}
@@ -44,8 +44,8 @@
     
   {% if session.logged_in and not is_preview %}
     <div class="admin">
-      <a class="edit-post-link" href="{{ url_for('create_post', slug=post.slug, next=request.url) }}">Edit</a>
-      <a class="delete-post-link" href="{{ url_for('delete_post', slug=post.slug, next=request.url) }}">Delete</a>
+      <a class="edit-post-link" href="{{ url_for('admin.create_post', slug=post.slug, next=request.url) }}">Edit</a>
+      <a class="delete-post-link" href="{{ url_for('admin.delete_post', slug=post.slug, next=request.url) }}">Delete</a>
     </div>
   {% endif %}
   

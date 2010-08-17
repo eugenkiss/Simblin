@@ -16,7 +16,6 @@ from simblin.helpers import normalize, convert_markup
 from simblin.extensions import db
 from simblin import signals
 
-# TODO: Comments! Danjac, look at cached_property!
 
 class Admin(db.Model):
     """There should ever only be one admin"""

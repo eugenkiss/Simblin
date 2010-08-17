@@ -7,12 +7,12 @@
   <div id=adjacent-posts>
     <div id="prev-post">
     {% if prev %}
-      <a href="{{ url_for('show_post', slug=prev.slug) }}">&laquo; {{ prev.title }}</a>
+      <a href="{{ url_for('main.show_post', slug=prev.slug) }}">&laquo; {{ prev.title }}</a>
     {% endif %}
     </div>
     <div id="next-post">
     {% if next %}
-      <a href="{{ url_for('show_post', slug=next.slug) }}">{{ next.title }} &raquo;</a>
+      <a href="{{ url_for('main.show_post', slug=next.slug) }}">{{ next.title }} &raquo;</a>
     {% endif %}
     </div>
     <div style='clear:both'></div>
