@@ -183,9 +183,18 @@ post_categories = db.Table('post_categories', db.Model.metadata,
               db.ForeignKey('categories.id', ondelete='CASCADE')))
 
 
+class TagQuery(BaseQuery):
+    
+    def get_maxcount(self):
+        """Return the most used tag's number of associations. This is needed
+        for the calculation of the tag cloud"""
+        return max(tag.posts.count() for tag in self) if self.count() else 0
+
+
 class Tag(db.Model):
     
     __tablename__ = 'tags'
+    query_class = TagQuery
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True, nullable=False)
     
