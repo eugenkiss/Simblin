@@ -26,7 +26,6 @@
               url: $(this).attr('href'),
               data: '',
               success: function(redirect) {
-                alert(redirect);
                 location.reload();
               }
             });
@@ -74,14 +73,14 @@
       <!-- Main Content -->
       <div id="content">
         {% block body %}{% endblock %}
-        <!-- Search Block -->
-        {% block search %}
-        <div id="search">
-          <input id="search-field" name="search" type="text"/> 
-          <a id="search-button" class="submit" href='#'>Search</a>
-        </div>
-        {% endblock %}
       </div>
+      <!-- Search Block -->
+      {% block search %}
+      <div id="search">
+        <input id="search-field" name="search" type="text"/> 
+        <a id="search-button" class="submit" href='#'>Search</a>
+      </div>
+      {% endblock %}
       
   </div>
   <!-- For Javascript -->

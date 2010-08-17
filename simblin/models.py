@@ -44,7 +44,7 @@ class Post(db.Model):
     _markup = db.Column(db.Text)
     _html = db.Column(db.Text)
     comments_allowed = db.Column(db.Boolean)
-    published = db.Column(db.DateTime)
+    datetime = db.Column(db.DateTime)
     
     # Many to many Post <-> Tag
     _tags = db.relationship('Tag', secondary='post_tags', 
@@ -57,7 +57,7 @@ class Post(db.Model):
     def __init__(self, title, markup, comments_allowed=True):
         self.title = title
         self.markup = markup
-        self.published = datetime.now()
+        self.datetime = datetime.now()
         self.comments_allowed = comments_allowed;
     
     def _set_title(self, title):
@@ -135,10 +135,10 @@ class Post(db.Model):
         _set_categories))
     
     def get_year(self):
-        return self.published.year
+        return self.datetime.year
     
     def get_month(self):
-        return self.published.month
+        return self.datetime.month
     
     def __repr__(self):
         return '<Post: %s>' % self.slug

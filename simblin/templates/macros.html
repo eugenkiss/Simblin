@@ -11,7 +11,7 @@
   </h1>
   <div class="body">{{ post.html|safe }}</div>
   <div class="info">
-    <span class="date">{{ post.published.strftime("%A %d. %B %Y") }}</span>
+    <span class="date">{{ post.datetime.strftime("%A %d. %B %Y") }}</span>
     
     {% if post.categories %}
       in

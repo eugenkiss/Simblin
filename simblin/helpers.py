@@ -37,7 +37,7 @@ def get_postmonths(posts):
     from calendar import month_name
     months = []
     def group_key(item): 
-        return item.published.year, item.published.month
+        return item.datetime.year, item.datetime.month
     for ((year, month), items) in groupby(posts, group_key):
         months.append(dict(
             year=year,

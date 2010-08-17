@@ -41,7 +41,7 @@ def show_archives():
     """Show the archive. That is recent posts, posts by category etc."""
     # TODO: Tag cloud http://en.wikipedia.org/wiki/Tag_cloud#Creation_of_a_tag_cloud
     latest = Post.query.order_by(Post.id.desc()).limit(5)
-    months = get_postmonths(Post.query.order_by(Post.published.desc()))
+    months = get_postmonths(Post.query.order_by(Post.datetime.desc()))
     tags = Tag.query.all()
     # Needed for calculation of tag cloud
     # TODO: Maybe Custom query object mith method `get_max_count()'
@@ -62,8 +62,8 @@ def show_month(year, month, page):
     from calendar import month_name
     per_page = current_app.config['POSTS_PER_PAGE']
     # TODO: why extract?
-    posts = Post.query.filter(db.extract('year', Post.published)==year)
-    posts = posts.filter(db.extract('month', Post.published)==month)
+    posts = Post.query.filter(db.extract('year', Post.datetime)==year)
+    posts = posts.filter(db.extract('month', Post.datetime)==month)
     posts = posts.order_by(Post.id.desc()) 
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
@@ -171,7 +171,7 @@ def preview():
         title=args['title'],
         markup=args['markup'],
         html=convert_markup(args['markup']),
-        published=datetime.datetime.now(),
+        datetime=datetime.datetime.now(),
         # Mimic the tag relationship field of post
         tags=[dict(name=tag) for tag in normalize_tags(args['tags'])],
     )

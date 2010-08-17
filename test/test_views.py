@@ -225,7 +225,7 @@ class TestComposing:
         assert_equal(post.markup, expected_markup)
         assert_equal(post.slug, expected_slug)
         assert expected_html in post.html
-        assert_equal(post.published.date(), expected_date)
+        assert_equal(post.datetime.date(), expected_date)
         assert_equal(sorted(post_tagnames), sorted(expected_tags))
         assert_equal([], post.categories)
         
@@ -284,7 +284,7 @@ class TestComposing:
         assert_equal(post.markup, expected_markup)
         assert_equal(post.slug, expected_slug)
         assert expected_html in post.html
-        assert_equal(post.published.date(), expected_date)
+        assert_equal(post.datetime.date(), expected_date)
         assert_equal(sorted(post_tagnames), sorted(expected_tags))
         
         # update the same post without changing the title and expect the same

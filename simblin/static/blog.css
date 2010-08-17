@@ -88,7 +88,8 @@ label {
 
 #wrapper {
     max-width: 44em;
-    margin: 0 auto; 
+    margin: 0 auto;
+    margin-top: 2em;
 }
 
 #header {
@@ -135,6 +136,7 @@ label {
 #content {
     /*margin-top: 1em;*/
     padding-right: 12em;
+    padding-bottom: 5em;
 }
 
 #adjacent-posts {
@@ -149,7 +151,6 @@ label {
 }
 
 #search {
-    margin-top: 5em;
     text-align: center;
 }
 
