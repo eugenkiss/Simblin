@@ -92,6 +92,15 @@ able to be attached to several categories, too. Therefore categories are
 essentially implemented like tags. However, tags are deleted automatically when
 no posts reference a tag anymore. Categories are not.
 
+
+How to change username/password/email?
+--------------------------------------
+
+Once you registered you can go to `http://yourblog.com/register` to "reregister"
+with new credentials. You must be logged in to do this. Beware: If you forget
+to register with new credentials anybody who visits the blog can register as
+the admin.
+
   
 Why another blog engine?
 ========================

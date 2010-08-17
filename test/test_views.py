@@ -75,12 +75,13 @@ class faked_request:
         ctx.pop()
 
 
-def register(username, password, password2=''):
+def register(username, password, password2='', email=''):
     """Helper function to register a user"""
     return client.post('/register', data=dict(
         username=username,
         password=password,
-        password2=password2
+        password2=password2,
+        email=email,
     ), follow_redirects=True)
 
 
@@ -159,6 +160,7 @@ class TestRegistration:
             rv = register('barney', 'abc', 'abc')
             assert 'You are the new master of this blog' in rv.data
             assert flask.session['logged_in']
+        logout()            
         rv = register('barney', 'abc', 'abc')
         assert 'There can only be one admin' in rv.data
         

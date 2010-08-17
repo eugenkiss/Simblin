@@ -290,15 +290,21 @@ def logout():
     next = request.values.get('next', '')
     return redirect(next or url_for('show_posts'))
 
-# TODO: Allow reregistering and add e-mail field (for e-mail notification)
+
 @view.route('/register', methods=['GET', 'POST'])
 def register():
-    """Register the first visitor of the page. After that don't allow any
-    registrations anymore"""
+    """Register the first visitor of the page as the admin. The admin can
+    'reregister' to change his/her password, email etc."""
     admin = Admin.query.first()
     if admin:
-        flash('There can only be one admin', 'error')
-        return redirect(url_for('show_posts'))
+        if not session.get('logged_in'):
+            flash('There can only be one admin', 'error')
+            return redirect(url_for('show_posts'))
+        # Reregister
+        db.session.delete(admin)
+        db.session.commit()
+        flash('Reregister with your new credentials')
+        return redirect(url_for('register'))
     
     if request.method == 'GET':
         return render_template('register.html')
