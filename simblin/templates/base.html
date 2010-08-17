@@ -6,6 +6,18 @@
     <link rel="stylesheet" href="{{ url_for('.static', filename='blog.css') }}" type="text/css"/>
     <link rel="stylesheet" href="{{ url_for('.static', filename='codehilite.css') }}" type="text/css"/>
     <script type=text/javascript src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <!-- Show login etc. only on mouseover -->
+    <script type=text/javascript>
+      $(function() {
+        $("#metanav").fadeTo(0, 0);
+        $("#metanav").mouseenter(function() {
+          $(this).fadeTo('normal', 1);
+        });
+        $("#metanav").mouseleave(function() {
+          $(this).fadeTo('normal', 0);
+        });
+      });
+    </script>
     {% block head %}{% endblock %}
   </head>
   <body>

@@ -72,7 +72,7 @@ label {
 
 #metanav {
     text-align: right;
-    padding-right: 1px;
+    padding: 2px 6px 3em 4em;
     font-size: small;
     position: absolute;
     top: 0;

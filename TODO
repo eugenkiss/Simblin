@@ -9,7 +9,6 @@
   Reregistration if logged in user puts right password in (that is: simply
   delete admin from db and relink to register page)
 * Link "Show source" (only on entry page) that opens the pure mkd source of the blog post in a new window
-* Only show login/compose on mouseover (resp. when the mouse is near the top right area)
 * Refactor post.published to post.datetime
 * grep TODOs
 * Look with epydoc where forgot comments, look with pyflakes
