@@ -105,11 +105,13 @@
     });
     
     // Prepopulate with categories of post
+    {% if post %}
     {% for category in post.categories %}
     $("#add-category").trigger('click');
     $("#categories select:last option[value='{{ category.id }}']")
     .attr('selected', 'selected');
     {% endfor %}
+    {% endif %}
   });
 </script>
 {% endblock %}
