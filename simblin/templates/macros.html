@@ -44,8 +44,8 @@
     
   {% if session.logged_in and not is_preview %}
     <div class="admin">
-      <a href="{{ url_for('create_post', slug=post.slug, next=request.url) }}">Edit</a>
-      <a href="{{ url_for('delete_post', slug=post.slug, next=request.url) }}">Delete</a>
+      <a class="edit-post-link" href="{{ url_for('create_post', slug=post.slug, next=request.url) }}">Edit</a>
+      <a class="delete-post-link" href="{{ url_for('delete_post', slug=post.slug, next=request.url) }}">Delete</a>
     </div>
   {% endif %}
   

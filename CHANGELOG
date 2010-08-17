@@ -1,8 +1,18 @@
+=================
 Simblin Changelog
 =================
 
+v0.2
+====
+* major site redesign
+* category support
+* archives
+** create categories on archives page
+** tag cloud
+* ajax post deletion
+
 v0.1
-----
+====
 * registering (only one user)
 ** secure password storing
 * login/logout

@@ -6,15 +6,32 @@
     <link rel="stylesheet" href="{{ url_for('.static', filename='blog.css') }}" type="text/css"/>
     <link rel="stylesheet" href="{{ url_for('.static', filename='codehilite.css') }}" type="text/css"/>
     <script type=text/javascript src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <!-- Show login etc. only on mouseover -->
     <script type=text/javascript>
       $(function() {
+        // Show login etc. only on mouseover
         $("#metanav").fadeTo(0, 0);
         $("#metanav").mouseenter(function() {
           $(this).fadeTo('normal', 1);
         });
         $("#metanav").mouseleave(function() {
           $(this).fadeTo('normal', 0);
+        });
+        
+        // Show javascript confirmation dialog when deleting post
+        $(".delete-post-link").bind('click', function(e) {
+          e.preventDefault();
+          if (confirm("Really delete this post?")) {
+            $.ajax({
+              type: "POST",
+              url: $(this).attr('href'),
+              data: '',
+              success: function(redirect) {
+                alert(redirect);
+                location.reload();
+              }
+            });
+          }
+          return false;
         });
       });
     </script>

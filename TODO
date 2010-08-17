@@ -1,5 +1,4 @@
 * look at danjac about custom query object (because of month query in helper should be in Post class omehow)
-* Javascript confirmation dialog when clicking delete entry instead of separate page
 * Reregistration; don't show (if loggend in): "there can only be one" but allow
   Reregistration if logged in user puts right password in (that is: simply
   delete admin from db and relink to register page)
