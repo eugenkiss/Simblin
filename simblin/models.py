@@ -21,6 +21,7 @@ class Admin(db.Model):
     """There should ever only be one admin"""
     
     __tablename__ = 'admin'
+    
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(), unique=True)
     email = db.Column(db.String(), unique=True)
@@ -59,6 +60,7 @@ class Post(db.Model):
     
     __tablename__ = 'posts'
     query_class = PostQuery
+    
     id = db.Column(db.Integer, primary_key=True)
     _slug = db.Column(db.String(255), unique=True, nullable=False)
     _title = db.Column(db.String(255), nullable=False)
@@ -216,6 +218,7 @@ class Tag(db.Model):
 class Category(db.Model):
     
     __tablename__ = 'categories'
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True, nullable=False)
     
