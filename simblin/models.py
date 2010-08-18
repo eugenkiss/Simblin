@@ -38,15 +38,15 @@ class Admin(db.Model):
 
 class PostQuery(BaseQuery):
     
-    # TODO: Test
     def get_months(self):
-        """Group by month and year and return month dict."""
+        """Group by month and year and return month dict"""
         from itertools import groupby
         from calendar import month_name
         months = []
+        ordered_posts = self.order_by(Post.id.desc())
         def group_key(item): 
             return item.datetime.year, item.datetime.month
-        for ((year, month), items) in groupby(self, group_key):
+        for ((year, month), items) in groupby(ordered_posts, group_key):
             months.append(dict(
                 year=year,
                 index=month,
