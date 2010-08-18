@@ -1,6 +1,14 @@
-from simblin import create_app
-
-activate_this = '/var/www/blog/env/bin/activate_this.py'
-execfile(activate_this, dict(__file__=activate_this))
-
-application = create_app()
+import sys 
+import os 
+import site 
+ 
+sys.stdin = sys.stdout 
+ 
+site.addsitedir("/var/www/blog/env/lib/python2.5/site-packages") 
+ 
+BASE_DIR = os.path.join(os.path.dirname(__file__)) 
+sys.path.append(BASE_DIR) 
+ 
+from simblin import create_app 
+ 
+application = create_app() 
