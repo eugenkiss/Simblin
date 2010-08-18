@@ -163,14 +163,12 @@ class Post(db.Model):
     
 # Association tables
 
-# TODO: Explain ondelete='Cascade'
 post_tags = db.Table('post_tags', db.Model.metadata,
     db.Column('post_id', db.Integer, 
               db.ForeignKey('posts.id', ondelete='CASCADE')),
     db.Column('tag_id', db.Integer,
               db.ForeignKey('tags.id', ondelete='CASCADE')))
 
-# TODO: Explain ondelete='Cascade'
 post_categories = db.Table('post_categories', db.Model.metadata,
     db.Column('post_id', db.Integer, 
               db.ForeignKey('posts.id', ondelete='CASCADE')),

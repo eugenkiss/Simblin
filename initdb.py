@@ -4,8 +4,8 @@ from simblin import create_app
 
 app = create_app()
 
-# TODO: Explain why the need for request context
 with app.test_request_context():
+    # The context is needed so db can access the configuration of the app
     db.create_all()
 
 print "Initialized new empty database"

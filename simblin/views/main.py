@@ -107,7 +107,6 @@ def show_month(year, month, page):
     """Show all posts from a specific year and month"""
     from calendar import month_name
     per_page = current_app.config['POSTS_PER_PAGE']
-    # TODO: why extract?
     posts = Post.query.filter(db.extract('year', Post.datetime)==year)
     posts = posts.filter(db.extract('month', Post.datetime)==month)
     posts = posts.order_by(Post.id.desc()) 

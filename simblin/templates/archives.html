@@ -35,7 +35,6 @@
 <div class=spacer></div>
 
 <h3>Tags</h3>
-<!-- TODO: Make tag cloud -->
 <div class=archives id="tag-cloud">
 {% for tag in tags %}
 <a href="{{ url_for('main.show_tag', tag=tag.name) }}" 
