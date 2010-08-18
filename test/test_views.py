@@ -18,7 +18,6 @@ from simblin import create_app
 from simblin.extensions import db
 from simblin.models import Post, Tag, Category, post_tags, post_categories
 
-# TODO: Test Models separately (see danjac)
 # TODO: Test archive view, Test month view
 
 # Configuration
@@ -54,6 +53,7 @@ def teardown():
 def clear_db():
     """Remove all rows inside the database"""
     ctx.push() # If I remove this test_registering won't work?
+    db.session.remove()
     db.drop_all()
     db.create_all()
     
@@ -143,7 +143,8 @@ def add_category(name):
     return flask.json.loads(
         client.post('/_add_category', data=dict(name=name)).data)['id']
     
-        
+
+# Tests
         
 class TestRegistration:
     
