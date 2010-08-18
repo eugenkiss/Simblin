@@ -1,7 +1,8 @@
 Simblin
 =======
 
-*Sim*ple *B*log Eng*in*e - A blog engine written with Flask and SQLAlchemy.
+*Sim*ple *B*log Eng*in*e - A blog engine written with [Flask][] and 
+[SQLAlchemy][].
 
 Simblin is built to be used by only one author. Simblin has no dashboard, no
 plugin support and no theme support although the templates and css can be
@@ -72,9 +73,9 @@ comments on them.
 How to use source code highlighting?
 ------------------------------------
 
-Source code highlighting is enabled by the `CodeColor` extension of `Markdown2` 
-and you don't have to be afraid to use underscores in your code thanks to the
-`CodeFriendly` extension.
+Source code highlighting is enabled by the [CodeColor][] extension of
+[Markdown2][] and you don't have to be afraid to use underscores in your code
+thanks to the [CodeFriendly][] extension.
 
   [codecolor]: http://code.google.com/p/python-markdown2/wiki/CodeColor
   [codefriendly]: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
