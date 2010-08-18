@@ -121,6 +121,10 @@ Why another blog engine?
 Used libraries/frameworks
 =========================
 
+* [Flask][]
+* [SQLAlchemy][]
+* [Markdown2][]
+
   [markdown2]: http://code.google.com/p/python-markdown2/
   [flask]: http://flask.pocoo.org/
   [sqlalchemy]: http://www.sqlalchemy.org/
