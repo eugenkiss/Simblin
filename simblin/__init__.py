@@ -20,14 +20,8 @@ def create_app(config=None):
     app = Flask(__name__)
     app.config.from_pyfile('default-settings.cfg')
     
-    try:    
-        app.config.from_pyfile('../settings.cfg')
-    except IOError:
-        pass
-    
     app.config.from_envvar('SIMBLIN_SETTINGS', silent=True)
     
-    # Specially for unit tests
     if config:
         app.config.from_object(config)
     

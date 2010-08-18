@@ -1,5 +1,4 @@
-syntax: glob
 env/
 *.db
-settings.cfg
+settings.py
 distribute-0.6.10.tar.gz
