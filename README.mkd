@@ -46,6 +46,14 @@ Use `nosetests test` to run tests
 Q&A
 ===
 
+How do I login/create a post?
+-----------------------------
+
+If you didn't change the default template you can drive your mouse to the top
+right corner of the web page and a login link should appear. Once logged in you
+can find a compose and a logout link there.
+
+
 How to create pages?
 --------------------
 
@@ -68,8 +76,8 @@ Source code highlighting is enabled by the `CodeColor` extension of `Markdown2`
 and you don't have to be afraid to use underscores in your code thanks to the
 `CodeFriendly` extension.
 
-  codecolor: http://code.google.com/p/python-markdown2/wiki/CodeColor
-  codefriendly: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
+  [codecolor]: http://code.google.com/p/python-markdown2/wiki/CodeColor
+  [codefriendly]: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
 
 
 What's the difference between categories and tags in Simblin?
@@ -112,6 +120,6 @@ Why another blog engine?
 Used libraries/frameworks
 =========================
 
-* markdown2: http://code.google.com/p/python-markdown2/
-* flask: http://flask.pocoo.org/
-* sqlalchemy: http://www.sqlalchemy.org/
+  [markdown2]: http://code.google.com/p/python-markdown2/
+  [flask]: http://flask.pocoo.org/
+  [sqlalchemy]: http://www.sqlalchemy.org/
