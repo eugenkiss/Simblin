@@ -134,17 +134,21 @@ class TestComposing(ViewTestCase):
     
     def test_validation(self):
         """Check if form validation and validation in general works"""
+        self.clear_db()
         self.register_and_login('barney', 'abc')
         rv = self.add_post(title='', markup='a', tags='b')
         assert 'You must provide a title' in rv.data
         rv = self.update_post(title='a', markup='', tags='', slug='999x00')
         assert 'Invalid slug' in rv.data
+        rv = self.add_post(title='a', markup='', tags='')
+        assert 'New post was successfully posted' in rv.data
         
     def test_creation(self):
         """ Test the blog post's fields' correctness after adding/updating an 
         post and test the proper creation and automatic tidying of tags and
         tag mappings.
         """
+        self.clear_db()
         self.register_and_login('barney', 'abc')
         
         title = "My post"
@@ -158,8 +162,7 @@ class TestComposing(ViewTestCase):
         first_slug = expected_slug
         expected_html = "<h1>Title</h1>"
         expected_date = datetime.date.today()
-        rv = self.add_post(title=title, markup=markup, tags=tags)
-        assert 'New post was successfully posted' in rv.data
+        self.add_post(title=title, markup=markup, tags=tags)
         post = Post.query.first()
         post_tagnames = [tag.name for tag in post.tags]
         

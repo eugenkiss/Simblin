@@ -26,6 +26,10 @@ class TestCase(_TestCase):
     def create_app(self):
         return create_app(self)
     
+    def clear_db(self):
+        db.drop_all()
+        db.create_all()
+    
     def setUp(self):
         db.create_all()
 
