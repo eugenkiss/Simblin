@@ -124,13 +124,7 @@ class Post(db.Model):
         # Remove all previous tags
         self._tags = []
         for tag_name in taglist:
-            exists = Tag.query.filter(Tag.name==tag_name).first()
-            # Only add tags to the database that don't exist yet
-            # TODO: Put this in the init method of Tag (if possible)
-            if not exists:
-                self._tags.append(Tag(tag_name))
-            else:
-                self._tags.append(exists)
+            self._tags.append(Tag.get_or_create(tag_name))
                 
         
     def _get_tags(self):
@@ -194,12 +188,20 @@ class Tag(db.Model):
     
     __tablename__ = 'tags'
     query_class = TagQuery
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True, nullable=False)
     
+    @classmethod
+    def get_or_create(cls, tag_name):
+        """Only add tags to the database that don't exist yet. If tag already
+        exists return a reference to the tag otherwise a new instance"""
+        tag = cls.query.filter(cls.name==tag_name).first()
+        if not tag:
+            tag = cls(tag_name)
+        return tag
+    
     def __init__(self, name):
-        # TODO: only create new row if name does not exist yet (ask IRC how)
-        #       __new__ to the rescue?
         self.name = name
     
     @property
