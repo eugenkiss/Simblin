@@ -1,9 +1,14 @@
+* put slug normalization in Tag model and remove from view
 * grep TODOs
 * Look with epydoc where forgot comments, look with pyflakes
 * Refactor
 ** how to improve test suite? see danjac (add test_models)
-** how to prevent duplicates in database upon sqlalchemy object creation (__new__)
 ** Comments/Documentation/Style of Coding ok?
+** Why
+   def tearDown(self):
+        db.session.remove()
+        self._ctx.push() # TODO: Why do I need this line?
+        db.drop_all()
 * Document/Readme/Changelog
 
 -> v0.2

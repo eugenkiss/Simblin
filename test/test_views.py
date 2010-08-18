@@ -12,190 +12,132 @@ from __future__ import with_statement
 import datetime
 import flask
 
-from nose.tools import assert_equal
-
 from simblin import create_app
 from simblin.extensions import db
 from simblin.models import Post, Tag, Category, post_tags, post_categories
 
-# TODO: Test archive view, Test month view
+from nose.tools import assert_equal
+from test import TestCase
 
-# Configuration
+# TODO: Test archive view, Test month view 
 
-#: Inmemory database
-SQLALCHEMY_DATABASE_URI = 'sqlite://'
+class ViewTestCase(TestCase):
+    """Base TestClass for views"""
 
-# Globals
-#: The application
-app = None
-#: The test client   
-client = None
-#: The context of the application
-ctx = None
-    
-    
-def setUp():
-    """Initalize application and temporary database"""
-    global app, client, ctx
-    app = create_app(__name__)
-    client = app.test_client()
-    ctx = app.test_request_context()
-    ctx.push()
-    db.init_app(app)
-    db.create_all()
+    def register(self, username, password, password2='', email=''):
+        """Helper function to register a user"""
+        return self.client.post('/register', data=dict(
+            username=username,
+            password=password,
+            password2=password2,
+            email=email,
+        ), follow_redirects=True)
 
 
-def teardown():
-    """Get rid of the context"""
-    ctx.pop()
-    
-    
-def clear_db():
-    """Remove all rows inside the database"""
-    ctx.push() # If I remove this test_registering won't work?
-    db.session.remove()
-    db.drop_all()
-    db.create_all()
-    
-    
-# Helper functions
-
-class faked_request:
-    """Use with the `with` statement. Simulates the `before_request` and 
-    `after_request` actions."""
-    
-    def __enter__(self):
-        """Initialize db connections, g, request etc."""
-        ctx.push()
-        app.preprocess_request()
-        
-    def __exit__(self, type, value, traceback):
-        """Close db connections, g, request etc."""
-        app.process_response(app.response_class())
-        ctx.pop()
-
-
-def register(username, password, password2='', email=''):
-    """Helper function to register a user"""
-    return client.post('/register', data=dict(
-        username=username,
-        password=password,
-        password2=password2,
-        email=email,
-    ), follow_redirects=True)
-
-
-def login(username, password):
-    """Helper function to login"""
-    return client.post('/login', data=dict(
-        username=username,
-        password=password
-    ), follow_redirects=True)
-    
-    
-def register_and_login(username, password):
-    """Register and login in one go"""
-    register(username, password, password)
-    login(username, password)
-
-
-def logout():
-    """Helper function to logout"""
-    return client.get('/logout', follow_redirects=True)
-
-
-def add_post(title, markup, tags=None, categories=[]):
-    """Helper functions to create a blog post"""
-    data=dict(
-        title=title,
-        markup=markup,
-        tags=tags,
-        action='Publish',
-    )
-    # Mimic select form fields
-    for i, category_id in enumerate(categories):
-        data['category-%d' % i] = category_id
-    return client.post('/compose', data=data, follow_redirects=True)
-
-
-def update_post(slug, title, markup, tags=None, categories=[]):
-    """Helper functions to create a blog post"""
-    data=dict(
-        title=title,
-        markup=markup,
-        tags=tags,
-        action='Update',
-    )
-    # Mimic select form fields
-    for i, category_id in enumerate(categories):
-        data['category-%d' % i] = category_id
-    return client.post('/update/%s' % slug, data=data, follow_redirects=True)
-    
-
-def delete_post(slug):
-    """Helper function to delete a blog post"""
-    return client.post('/_delete/%s' % slug, data=dict(next=''), 
-        follow_redirects=True)
+    def login(self, username, password):
+        """Helper function to login"""
+        return self.client.post('/login', data=dict(
+            username=username,
+            password=password
+        ), follow_redirects=True)
         
         
-def add_category(name):
-    """Register category in the database and return its id"""
-    return flask.json.loads(
-        client.post('/_add_category', data=dict(name=name)).data)['id']
+    def register_and_login(self, username, password):
+        """Register and login in one go"""
+        self.register(username, password, password)
+        self.login(username, password)
+
+
+    def logout(self):
+        """Helper function to logout"""
+        return self.client.get('/logout', follow_redirects=True)
+
+
+    def add_post(self, title, markup, tags=None, categories=[]):
+        """Helper functions to create a blog post"""
+        data=dict(
+            title=title,
+            markup=markup,
+            tags=tags,
+            action='Publish',
+        )
+        # Mimic select form fields
+        for i, category_id in enumerate(categories):
+            data['category-%d' % i] = category_id
+        return self.client.post('/compose', data=data, follow_redirects=True)
+
+
+    def update_post(self, slug, title, markup, tags=None, categories=[]):
+        """Helper functions to create a blog post"""
+        data=dict(
+            title=title,
+            markup=markup,
+            tags=tags,
+            action='Update',
+        )
+        # Mimic select form fields
+        for i, category_id in enumerate(categories):
+            data['category-%d' % i] = category_id
+        return self.client.post('/update/%s' % slug, data=data, 
+                                follow_redirects=True)
+        
+
+    def delete_post(self, slug):
+        """Helper function to delete a blog post"""
+        return self.client.post('/_delete/%s' % slug, data=dict(next=''), 
+            follow_redirects=True)
+            
+            
+    def add_category(self, name):
+        """Register category in the database and return its id"""
+        return flask.json.loads(
+            self.client.post('/_add_category', data=dict(name=name)).data)['id']
     
 
-# Tests
-        
-class TestRegistration:
+class TestRegistration(ViewTestCase):
     
     def test_registering(self):
         """Test form validation and successful registering"""
-        clear_db()
-        rv = register('', 'password')
+        rv = self.register('', 'password')
         assert 'You have to enter a username' in rv.data
-        rv = register('britney spears', '')
+        rv = self.register('britney spears', '')
         assert 'You have to enter a password' in rv.data
-        rv = register('barney', 'abv', 'abc')
+        rv = self.register('barney', 'abv', 'abc')
         assert 'Passwords must match' in rv.data
-        with client:
-            rv = register('barney', 'abc', 'abc')
+        with self.client:
+            rv = self.register('barney', 'abc', 'abc')
             assert 'You are the new master of this blog' in rv.data
             assert flask.session['logged_in']
-        logout()            
-        rv = register('barney', 'abc', 'abc')
+        self.logout()            
+        rv = self.register('barney', 'abc', 'abc')
         assert 'There can only be one admin' in rv.data
         
 
-class TestLogin:
+class TestLogin(ViewTestCase):
     
     def test_login(self):
-        clear_db()
-        register('barney', 'abc', 'abc')
-        rv = login('borney', 'abc')
+        self.register('barney', 'abc', 'abc')
+        rv = self.login('borney', 'abc')
         assert 'Invalid username' in rv.data
-        rv = login('barney', 'abd')
+        rv = self.login('barney', 'abd')
         assert 'Invalid password' in rv.data
-        # In order to keep the context around
-        with client:   
-            rv = login('barney', 'abc')
+        with self.client:   
+            rv = self.login('barney', 'abc')
             assert 'You have been successfully logged in' in rv.data
             assert flask.session['logged_in']
-            rv = logout()
+            rv = self.logout()
             assert 'You have been successfully logged out' in rv.data
             assert 'logged_in' not in flask.session
         
         
-class TestComposing:
+class TestComposing(ViewTestCase):
     
     def test_validation(self):
         """Check if form validation and validation in general works"""
-        clear_db()
-        register_and_login('barney', 'abc')
-        rv = add_post(title='', markup='a', tags='b')
+        self.register_and_login('barney', 'abc')
+        rv = self.add_post(title='', markup='a', tags='b')
         assert 'You must provide a title' in rv.data
-        rv = add_post(title='a', markup='', tags='')
-        assert 'New post was successfully posted' in rv.data
-        rv = update_post(title='a', markup='', tags='', slug='999x00')
+        rv = self.update_post(title='a', markup='', tags='', slug='999x00')
         assert 'Invalid slug' in rv.data
         
     def test_creation(self):
@@ -203,8 +145,7 @@ class TestComposing:
         post and test the proper creation and automatic tidying of tags and
         tag mappings.
         """
-        clear_db()
-        register_and_login('barney', 'abc')
+        self.register_and_login('barney', 'abc')
         
         title = "My post"
         markup = "# Title"
@@ -217,7 +158,8 @@ class TestComposing:
         first_slug = expected_slug
         expected_html = "<h1>Title</h1>"
         expected_date = datetime.date.today()
-        add_post(title=title, markup=markup, tags=tags)
+        rv = self.add_post(title=title, markup=markup, tags=tags)
+        assert 'New post was successfully posted' in rv.data
         post = Post.query.first()
         post_tagnames = [tag.name for tag in post.tags]
         
@@ -235,7 +177,8 @@ class TestComposing:
         
         expected_slug2 = expected_slug + '-2'
         tags2 = "django, franz und bertha"
-        add_post(title=title, markup=markup, tags=tags2)
+        rv = self.add_post(title=title, markup=markup, tags=tags2)
+        assert 'New post was successfully posted' in rv.data
         post = Post.query.filter_by(id=2).first()
         all_tags = Tag.query.all()
         
@@ -246,10 +189,10 @@ class TestComposing:
         # Add yet another post with the same title and expect a different slug
         # Add some categories
         
-        category1_id = add_category('cool')
-        category2_id = add_category('cooler')
+        category1_id = self.add_category('cool')
+        category2_id = self.add_category('cooler')
         expected_slug3 = expected_slug2 + '-2'
-        add_post(title=title, markup=markup, tags=tags2, 
+        self.add_post(title=title, markup=markup, tags=tags2, 
             categories=[category1_id, category1_id, category1_id, category2_id])
         post = Post.query.filter_by(id=3).first()
         category_names = [x.name for x in post.categories]
@@ -276,7 +219,7 @@ class TestComposing:
         expected_html = '<h2>Title</h2>'
         expected_date = datetime.date.today()
         # Update the first post (slug=first_slug)
-        update_post(title=updated_title, markup=updated_markup, 
+        self.update_post(title=updated_title, markup=updated_markup, 
             tags=updated_tags, slug=first_slug)
         post = Post.query.filter_by(id=1).first()
         post_tagnames = [tag.name for tag in post.tags]
@@ -291,7 +234,7 @@ class TestComposing:
         # update the same post without changing the title and expect the same
         # slug
         
-        update_post(title=updated_title, markup=updated_markup, 
+        self.update_post(title=updated_title, markup=updated_markup, 
             tags=updated_tags, slug=expected_slug)
         post = Post.query.filter_by(id=1).first()
         assert_equal(post.slug, expected_slug)
@@ -319,25 +262,24 @@ class TestComposing:
         #       * validation * creation * updating * deletion * tags * categories
 
 
-class TestDeletion:
+class TestDeletion(ViewTestCase):
     
     def test_deletion(self):
         """Test the deletion of a blog post and the accompanying deletion of
         tags"""
-        clear_db()
-        register_and_login('barney', 'abc')
+        self.register_and_login('barney', 'abc')
         
-        add_post(title='Title', markup='', tags='cool')
+        self.add_post(title='Title', markup='', tags='cool')
         posts = Post.query.all()
         tags = Tag.query.all()
         
         assert_equal(len(posts), 1)
         assert_equal(len(tags), 1)
         
-        rv = delete_post(slug='idontexist')
+        rv = self.delete_post(slug='idontexist')
         print rv.data
         assert 'No such post' in rv.data
-        rv = delete_post(slug='title')
+        rv = self.delete_post(slug='title')
         assert 'Post deleted' in rv.data
         
         posts = Post.query.all()
@@ -347,13 +289,12 @@ class TestDeletion:
         assert_equal(len(tags), 0)
 
 
-class TestPostView:
+class TestPostView(ViewTestCase):
     
     def test_postview(self):
         """Test the displaying of one blog post"""
-        clear_db()
-        register_and_login('barney', 'abc')
+        self.register_and_login('barney', 'abc')
         
-        add_post(title='Title', markup='', tags='')
-        rv = client.get('/post/title')
+        self.add_post(title='Title', markup='', tags='')
+        rv = self.client.get('/post/title')
         assert 'Title' in rv.data
