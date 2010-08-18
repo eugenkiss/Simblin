@@ -1,4 +1,9 @@
-* put slug normalization in Tag model and remove from view
+-> Deployment http://clemesha.org/blog/2009/jul/05/modern-python-hacker-tools-virtualenv-fabric-pip/
+   http://flask.pocoo.org/docs/patterns/fabric/
+   http://flask.pocoo.org/docs/config/#config
+   http://flask.pocoo.org/docs/deploying/mod_wsgi/
+   
+
 * grep TODOs
 * Look with epydoc where forgot comments, look with pyflakes
 * Refactor
@@ -12,10 +17,6 @@
 * Document/Readme/Changelog
 
 -> v0.2
--> Deployment http://clemesha.org/blog/2009/jul/05/modern-python-hacker-tools-virtualenv-fabric-pip/
-   http://flask.pocoo.org/docs/patterns/fabric/
-   http://flask.pocoo.org/docs/config/#config
-   http://flask.pocoo.org/docs/deploying/mod_wsgi/
 
 ----------------
 
