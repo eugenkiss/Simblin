@@ -3,7 +3,8 @@
    http://flask.pocoo.org/docs/config/#config
    http://flask.pocoo.org/docs/deploying/mod_wsgi/
    
-
+* Bug: Categories are not shown on preview!
+* rename default-settings.cfg to default-settings.py and use it like that, too
 * grep TODOs
 * Look with epydoc where forgot comments, look with pyflakes
 * Refactor
@@ -15,6 +16,7 @@
         self._ctx.push() # TODO: Why do I need this line?
         db.drop_all()
 * Document/Readme/Changelog
+** Add Section about deploying in Readme (settings.py, initdb.py etc.)
 
 -> v0.2
 

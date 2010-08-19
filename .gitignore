@@ -1,4 +1,7 @@
 env/
+dist/
+simblin.egg-info/
 *.db
 settings.py
+fabfile.py
 distribute-0.6.10.tar.gz
