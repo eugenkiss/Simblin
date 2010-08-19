@@ -9,4 +9,4 @@ with app.test_request_context():
     # The context is needed so db can access the configuration of the app
     db.create_all()
 
-print "Initialized new empty database"
+print "Initialized new empty database in %s" % app.config['SQLALCHEMY_DATABASE_URI']
