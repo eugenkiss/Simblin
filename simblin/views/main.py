@@ -119,7 +119,7 @@ def show_month(year, month, page):
         page=x))
         
         
-@main.route('/archive/')
+@main.route('/archives/')
 def show_archives():
     """Show the archive. That is recent posts, posts by category etc."""
     latest = Post.query.order_by(Post.id.desc()).limit(5)
