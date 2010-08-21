@@ -13,10 +13,10 @@
 
 <h3>Categories</h3>
 <ul class=archives id="categories">
-{% if uncategorized %}
+{% if uncategorized_count %}
 <li>
   <a href="{{ url_for('main.show_uncategorized', page=1) }}">Uncategorized</a>
-  <div class="post-count">({{ uncategorized.count() }})</div>
+  <div class="post-count">({{ uncategorized_count }})</div>
 </li>
 {% endif %}
 {% for category in categories %}
