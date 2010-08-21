@@ -3,7 +3,7 @@
     Simblin Main Views
     ~~~~~~~~~~~~~~~~~~
 
-    The different views of the blogging application that are accesible by every
+    The different views of the blogging application that are accessible by every
     visitor.
 
     :copyright: (c) 2010 by Eugen Kiss.
