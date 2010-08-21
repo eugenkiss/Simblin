@@ -124,7 +124,7 @@ def delete_category():
 @admin.route('/_preview', methods=['POST'])
 @login_required
 def preview():
-    """Returns a preview of a blog post. Used with an Ajax request"""
+    """Returns a preview of a blog post. Use with an Ajax request"""
     args = request.form
     # Mimic post object
     post = dict(
@@ -135,6 +135,9 @@ def preview():
         datetime=datetime.datetime.now(),
         # Mimic the tag relationship field of post
         tags=[dict(name=tag) for tag in normalize_tags(args['tags'])],
+        # Mimic the category relationship field of post
+        categories=[dict(name=name) for name in 
+            set(args['categories'].split(','))],
     )
     return render_template('admin/_preview.html', post=post)
 

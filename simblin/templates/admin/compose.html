@@ -60,7 +60,10 @@
       var data = {
         'title': $("input[name$='title']").val(),
         'markup': $("textarea[name$='markup']").val(),
-        'tags': $("input[name$='tags']").val()
+        'tags': $("input[name$='tags']").val(),
+        // Get all the names of the categories as a comma separated list
+        'categories': $("#categories div select option:selected").map(
+          function() { return $(this).text(); }).get().join(',')
       }
       $.ajax({
         type: "POST",

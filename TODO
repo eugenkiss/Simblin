@@ -3,7 +3,6 @@
    http://flask.pocoo.org/docs/config/#config
    http://flask.pocoo.org/docs/deploying/mod_wsgi/
    
-* Bug: Categories are not shown on preview!
 * rename default-settings.cfg to default-settings.py and use it like that, too
 * grep TODOs
 * Look with epydoc where forgot comments, look with pyflakes
@@ -46,7 +45,7 @@ future:
 * bespin embedded for textarea
 * search (http://pypi.python.org/pypi/Whoosh/)
 * feeds
-* profiling (how?) in order to improve performance (archives view esp.)
+* profiling (with google profiling tools) in order to improve performance (archives view esp.)
 * Javascript Tag suggestion
 * mail notification (optional angabe of e-mail upon registration)
 * modal dialogs form confirmations (with jquery)
