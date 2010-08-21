@@ -21,7 +21,7 @@ See the changelog to see what featueres a specific version provides.
 
 
 Configuration
-=============
+-------------
 
 TODO: This needs work
 
@@ -45,18 +45,16 @@ Use `nosetests test` to run tests
 
 
 Q&A
-===
+---
 
-How do I login/create a post?
------------------------------
+### How do I login/create a post?
 
 If you didn't change the default template you can drive your mouse to the top
 right corner of the web page and a login link should appear. Once logged in you
 can find a compose and a logout link there.
 
 
-How to create pages?
---------------------
+### How to create pages?
 
 Pages are just blog posts. Just "hardcode" the link to a specific blog post in
 your template. For example, if you want to have an `About` page put
@@ -70,8 +68,7 @@ supposed to be pages in the category `Pages` and additionally I would disable
 comments on them.
 
 
-How to use source code highlighting?
-------------------------------------
+### How to use source code highlighting?
 
 Source code highlighting is enabled by the [CodeColor][] extension of
 [Markdown2][] and you don't have to be afraid to use underscores in your code
@@ -81,8 +78,7 @@ thanks to the [CodeFriendly][] extension.
   [codefriendly]: http://code.google.com/p/python-markdown2/wiki/CodeFriendly
 
 
-What's the difference between categories and tags in Simblin?
--------------------------------------------------------------
+### What's the difference between categories and tags in Simblin?
 
 Tags ought to describe the content of a blog post (what is it about?).
 Categories on the other hand ought to state where a blog post belongs in.
@@ -101,8 +97,7 @@ essentially implemented like tags. However, tags are deleted automatically when
 no posts reference a tag anymore. Categories are not.
 
 
-How to change username/password/email?
---------------------------------------
+### How to change username/password/email?
 
 Once you registered you can go to `http://yourblog.com/register` to "reregister"
 with new credentials. You must be logged in to do this. Beware: If you forget
@@ -111,7 +106,7 @@ the admin.
 
   
 Why another blog engine?
-========================
+------------------------
 
 1. Learn about web programming in general
 2. Become more experienced with the excellent Flask framework 
@@ -119,7 +114,7 @@ Why another blog engine?
 
 
 Used libraries/frameworks
-=========================
+-------------------------
 
 * [Flask][]
 * [SQLAlchemy][]
