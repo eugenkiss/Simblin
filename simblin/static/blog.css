@@ -76,7 +76,7 @@ label {
     font-size: small;
     position: absolute;
     top: 0;
-    right: -1px;
+    right: 1px;
 }
 
 #metanav a {
