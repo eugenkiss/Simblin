@@ -234,6 +234,10 @@ ul.archives li {
     display: inline;
 }
 
+#tag-cloud {
+    line-height: 2em;
+}
+
 .codehilite {
     background: ghostwhite;
     padding: 0.25em 0.5em;
