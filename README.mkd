@@ -19,21 +19,19 @@ good blogging experience. Simblin has
 
 See the changelog to see what featueres a specific version provides.
 
+In order to run Simblin locally first create a database by running
+`python initdb.py` and after that run `python run.py` and head over to
+`http://localhost:5000/`. Drive your mouse to the top right corner to login.
+You are going to be redirected to a registration page. Once registered you are
+logged in with your credentials.
 
-Configuration
--------------
 
-TODO: This needs work
+Deployment
+----------
 
-Don't forget version numbers!
-* Link to deployment section of flask
-
-requires flask and everything that flask requires
-
-first run `python initdb.py` then run `python run.py`
-
-put your real settings in a file called `settings.cfg`. You can look at
-`default-settings.cfg` to get an idea.
+At first put your real settings in a file `settings.py` in the same folder where
+the README is. You can look at `simblin/default-settings.cfg` to get an idea on
+how to structure it.
 
 Use a python shell to create a secret key:
 
@@ -41,7 +39,70 @@ Use a python shell to create a secret key:
     >>> os.urandom(24)
     '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8' 
 
-Use `nosetests test` to run tests
+`setup.py` and `MANIFEST.in` are already configured for use with distribute.
+
+Before you deploy Simblin you should create a virtual environment in your
+server's project folder. Then you can use
+[Fabric](http://flask.pocoo.org/docs/patterns/fabric/) to deploy Simblin. An
+exemplary fabfile can look like this:
+
+    from fabric.api import *
+
+    # the user to use for the remote commands
+    env.user = 'youruser'
+    # the servers where the commands are executed
+    env.hosts = ['yourhost']
+    # the project dir (should be an absolute path)
+    project_dir = '/var/www/simblin/'
+
+    def pack():
+        # create a new source distribution as tarball
+        local('python setup.py sdist --formats=gztar', capture=False)
+
+    def deploy():
+        # figure out the release name and version
+        dist = local('python setup.py --fullname').strip()
+        # upload the source tarball to the temporary folder on the server
+        put('dist/%s.tar.gz' % dist, '/tmp/simblin.tar.gz')
+        
+        # create a place where we can unzip the tarball, then enter
+        # that directory and unzip it
+        run('mkdir -p /tmp/simblin')
+        with cd('/tmp/simblin'):
+            run('tar xzf /tmp/simblin.tar.gz')
+        # You have to be inside the folder where 'setup.py' resides
+        with cd('/tmp/simblin/%s' % dist):
+            # now setup the package with our virtual environment's
+            # python interpreter
+            run(project_dir+'env/bin/python setup.py install')
+        # now that all is set up, delete the folder again
+        run('rm -rf /tmp/simblin /tmp/simblin.tar.gz')
+        
+        ### Configuration files ###
+        put('initdb.py', project_dir+'initdb.py')
+        put('settings.py', project_dir+'settings.py')
+        put('simblin.wsgi', project_dir+'simblin.wsgi')
+        ### Database initialization ###
+        # the environment variable needs to be set to create the database
+        # at the specified uri in settings.py
+        # note that the run command cannot be split into two commands because
+        # the environment variable will not be preserved
+        run('export SIMBLIN_SETTINGS='+project_dir+'settings.py;'+
+            project_dir+'env/bin/python '+project_dir+'initdb.py')
+        # so that the database is writable!!
+        run('chmod -R g+w %s*' % project_dir)
+        
+        # finally touch the .wsgi file so that mod_wsgi triggers
+        # a reload of the application
+        run('touch '+project_dir+'simblin.wsgi')
+
+Run `fab pack deploy` to deploy Simblin on your server. Of course you can do it
+manually, too, so you don't need to hassle with fabric.
+
+Use `nosetests test` to run tests.
+
+If you want to learn more about deployment and configuration of flask apps head
+over to the [Flask Documentation](http://flask.pocoo.org/docs/).
 
 
 Q&A
@@ -104,22 +165,36 @@ with new credentials. You must be logged in to do this. Beware: If you forget
 to register with new credentials anybody who visits the blog can register as
 the admin.
 
-  
-Why another blog engine?
-------------------------
+
+### Why another blog engine?
 
 1. Learn about web programming in general
 2. Become more experienced with the excellent Flask framework 
 3. Have a perfectly tailored blog for my website
 
 
+### Do you really think anybody but you will use this shit?
+
+No :), but I like to document my projects in a way as if they were meant for
+others. This way I write more precise documentation which will be invaluable
+for me after several weeks without working on the project.
+
+
 Used libraries/frameworks
 -------------------------
 
 * [Flask][]
+    * [Flask SQLAlchemy][]
+    * [Flask Testing][]
+    * [blinker][]
 * [SQLAlchemy][]
 * [Markdown2][]
+    * [Pygments][]
 
   [markdown2]: http://code.google.com/p/python-markdown2/
   [flask]: http://flask.pocoo.org/
   [sqlalchemy]: http://www.sqlalchemy.org/
+  [flask sqlalchemy]: http://packages.python.org/Flask-SQLAlchemy/
+  [flask testing]: http://packages.python.org/Flask-Testing/
+  [blinker]: http://discorporate.us/projects/Blinker/
+  [pygments]: http://pygments.org/

@@ -15,10 +15,12 @@ from simblin.extensions import db
 from simblin.views.admin import admin
 from simblin.views.main import main
 
+import default_settings
+
 
 def create_app(config=None):
     app = Flask(__name__)
-    app.config.from_pyfile('default-settings.cfg')
+    app.config.from_object(default_settings)
     
     app.config.from_envvar('SIMBLIN_SETTINGS', silent=True)
     

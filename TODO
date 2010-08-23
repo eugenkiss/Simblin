@@ -1,8 +1,3 @@
--> Deployment http://clemesha.org/blog/2009/jul/05/modern-python-hacker-tools-virtualenv-fabric-pip/
-   http://flask.pocoo.org/docs/patterns/fabric/
-   http://flask.pocoo.org/docs/config/#config
-   http://flask.pocoo.org/docs/deploying/mod_wsgi/
-   
 * rename default-settings.cfg to default-settings.py and use it like that, too
 * grep TODOs
 * Look with epydoc where forgot comments, look with pyflakes
@@ -24,10 +19,12 @@
 * Proper Logging (read flask logging docs)
 * Tab key does indent in compose editor / embed bespin
 * Pingback/Traceback (or does Disqus already do that?)
-* Images / File Attachments (or use dropbox? or use stuff.eugenkiss.com/blog/? is that a good idea?)
+* Images / File Attachments (or use dropbox? or use ftp.eugenkiss.com/blog/? is that a good idea?)
 ** How to store them?
 ** Write Q&A that images/files should be just uploaded to a folder and linked in a blog post
 * Comments (Disqus)
+* .ico icon
+* robots.txt?
 * Refactor/Tests/Document/Readme/Changelog
 
 -> v0.3
