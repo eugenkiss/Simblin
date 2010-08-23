@@ -1,20 +1,19 @@
-Simblin Changelog
-=================
+Simblin v0.2
+------------
 
-v0.2
-====
 * major site redesign
 * category support
 * archives
-** create categories on archives page
-** tag cloud
+    * create categories on archives page
+    * tag cloud
 * ajax post deletion
 * reregistration
 
-v0.1
-====
+
+Simblin v0.1
+------------
+
 * registering (only one user)
-** secure password storing
 * login/logout
 * blog post creation
 * view all blog posts
@@ -22,8 +21,8 @@ v0.1
 * update a blog post
 * delete a blog post
 * associate tags with blogpost
-** automatically delete unused tags
-** uniqueness of tags
+    * automatically delete unused tags
+    * ensured uniqueness of tags
 * message flashing (feedback)
 * simple design
 * redirection to last visited page after login/logout/...
