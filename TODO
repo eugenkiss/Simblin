@@ -9,41 +9,65 @@
         self._ctx.push() # TODO: Why do I need this line?
         db.drop_all()
 * Document/Readme/Changelog
-** Add Section about deploying in Readme (settings.py, initdb.py etc.)
 
 -> v0.2
 
 ----------------
 
-* Proper Logging (read flask logging docs)
-* Tab key does indent in compose editor / embed bespin
-* Pingback/Traceback (or does Disqus already do that?)
-* Images / File Attachments (or use dropbox? or use ftp.eugenkiss.com/blog/? is that a good idea?)
-** How to store them?
-** Write Q&A that images/files should be just uploaded to a folder and linked in a blog post
+* Add checkbox `comments_allowed` on compose page
+* Add `Comments (number)` to post macro and on click scroll to comments
 * Comments (Disqus)
+** Pingback/Traceback (or does Disqus already do that?)
+** respect `comments_allowed`
+* Images / File Attachments (or use dropbox? or use ftp.eugenkiss.com/blog/? is that a good idea?)
+** Write Q&A that images/files should be just uploaded to a folder and linked in a blog post
+* Tab key does indent in compose editor / embed bespin
 * .ico icon
 * robots.txt?
+* Add to config sqlalchemy pw and username for other db engines than sqlite
+* Proper Logging (read flask logging docs) (maybe)
 * Refactor/Tests/Document/Readme/Changelog
 
 -> v0.3
 
 ----------------
 
-future:
-* be able to rename categories
-* Add to config sqlalchemy pw and username for other db engines than sqlite
-* Put hardcoded Messages in config file
-* statistics
-* memcache/redis
-* "high level" documentation (use github wiki support! http://github.com/blog/699-making-github-more-open-git-backed-wikis)
-* own comments?
-* bespin embedded for textarea
 * search (http://pypi.python.org/pypi/Whoosh/)
 * feeds
-* profiling (with google profiling tools) in order to improve performance (archives view esp.)
+* Refactor/Tests/Document/Readme/Changelog
+
+-> v0.4
+
+----------------
+
+* be able to rename categories
 * Javascript Tag suggestion
-* mail notification (optional angabe of e-mail upon registration)
-* modal dialogs form confirmations (with jquery)
-* Add smarty pants ``''
+* Put hardcoded Messages in config file
+* Refactor/Tests/Document/Readme/Changelog
+
+-> v0.5
+
+----------------
+
+* statistics (or can I use google statitstsic or how that is called for that?)
+* mail notification (summary once per day of comments, or can disqus to that?)
+* Refactor/Tests/Document/Readme/Changelog
+
+-> v0.6
+
+----------------
+
+* improve performance
+** profiling (with google profiling tools) in order to improve performance (archives view esp.)
+** caching with pure python?
+* Refactor/Tests/Document/Readme/Changelog
+
+-> v0.7
+
+----------------
+
 * Update markdown2 lib
+* Refactor/Tests/Document/Readme/Changelog
+* Wait a little
+
+-> v1.0
