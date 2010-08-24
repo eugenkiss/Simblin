@@ -21,8 +21,6 @@ from test import TestCase
 
 # TODO: Test archive view, Test month view 
 # TODO: Test category view, test category deletion
-# TODO: Make this leaner and put Model specific tests to test_models
-#       Also look at danjac what he tests in test_views
 
 class ViewTestCase(TestCase):
     """Base TestClass for views"""
@@ -56,7 +54,7 @@ class ViewTestCase(TestCase):
         return self.client.get('/logout', follow_redirects=True)
 
 
-    def add_post(self, title, markup, tags=None, categories=[]):
+    def add_post(self, title, markup='', tags='', categories=[]):
         """Helper functions to create a blog post"""
         data=dict(
             title=title,
@@ -156,7 +154,8 @@ class TestLogin(ViewTestCase):
             assert 'logged_in' not in flask.session
         
         
-class TestComposing(ViewTestCase):
+class TestPostsInteraction(ViewTestCase):
+    """Tags and categories are tested alongside"""
     
     def test_validation(self):
         """Check if form validation and validation in general works"""
@@ -170,127 +169,85 @@ class TestComposing(ViewTestCase):
         assert 'New post was successfully posted' in rv.data
         
     def test_creation(self):
-        """ Test the blog post's fields' correctness after adding/updating an 
-        post and test the proper creation and automatic tidying of tags and
-        tag mappings.
-        """
+        """Test the blog post's fields' correctness after adding an 
+        post and test proper category association"""
         self.clear_db()
         self.register_and_login('barney', 'abc')
         
         title = "My post"
         markup = "# Title"
         tags = "django, franz und bertha,vil/bil"
-        expected_id = 1
-        expected_title = title
-        expected_markup = markup
-        expected_tags = ['django','franz-und-bertha','vil-bil']
-        expected_slug = "my-post"
-        first_slug = expected_slug
-        expected_html = "<h1>Title</h1>"
-        expected_date = datetime.date.today()
-        self.add_post(title=title, markup=markup, tags=tags)
-        post = Post.query.first()
-        post_tagnames = [tag.name for tag in post.tags]
-        
-        assert_equal(post.id, expected_id)
-        assert_equal(post.title, expected_title)
-        assert_equal(post.markup, expected_markup)
-        assert_equal(post.slug, expected_slug)
-        assert expected_html in post.html
-        assert_equal(post.datetime.date(), expected_date)
-        assert_equal(sorted(post_tagnames), sorted(expected_tags))
-        assert_equal([], post.categories)
-        
-        # Add another post with the same fields but expect a different slug
-        # and the same number of tags inside the database
-        
-        expected_slug2 = expected_slug + '-2'
-        tags2 = "django, franz und bertha"
-        rv = self.add_post(title=title, markup=markup, tags=tags2)
-        assert 'New post was successfully posted' in rv.data
-        post = Post.query.filter_by(id=2).first()
-        all_tags = Tag.query.all()
-        
-        assert_equal(post.title, expected_title) 
-        assert_equal(post.slug, expected_slug2)
-        assert_equal(len(all_tags), 3)    
-        
-        # Add yet another post with the same title and expect a different slug
-        # Add some categories
-        
         category1_id = self.add_category('cool')
         category2_id = self.add_category('cooler')
-        expected_slug3 = expected_slug2 + '-2'
-        self.add_post(title=title, markup=markup, tags=tags2, 
-            categories=[category1_id, category1_id, category1_id, category2_id])
-        post = Post.query.filter_by(id=3).first()
+        self.add_post(title=title, markup=markup, tags=tags,
+            categories=[category1_id, category1_id, category2_id])
+            
+        post = Post.query.get(1)
+        post_tagnames = [tag.name for tag in post.tags]
         category_names = [x.name for x in post.categories]
         
-        assert_equal(post.slug, expected_slug3)
+        assert_equal(post.id, 1)
+        assert_equal(post.title, title)
+        assert_equal(post.markup, markup)
+        assert_equal(post.slug, 'my-post')
+        assert '<h1>Title</h1>' in post.html
+        assert_equal(post.datetime.date(), datetime.date.today())
+        assert_equal(sorted(post_tagnames), 
+            sorted(['django','franz-und-bertha','vil-bil']))
+        assert_equal(sorted(category_names), sorted(['cool', 'cooler']))
+        
+        assert_equal(Tag.query.count(), 3)
         assert_equal(Category.query.count(), 2)
-        assert_equal(sorted(category_names), 
-            sorted(['cool', 'cooler']))
+        assert_equal(db.session.query(post_tags).count(), 3)
+        # Expect only two mappings although the mapping to category1
+        # has been added twice  
+        assert_equal(db.session.query(post_categories).count(), 2)
         
-        # Expect only two mappings although the mapping to the same category
-        # has been added three times and to the other category once    
-        post_category_mappings = db.session.query(post_categories).all()
-        assert_equal(len(post_category_mappings), 2)
+        # Add another post
+        self.add_post(title=post.title, tags=['django'])
+        post2 = Post.query.get(2)
         
-        # Now test updating an post
+        assert_equal(post2.title, post.title) 
+        assert_equal(post2.slug, post.slug + '-2')
+        assert_equal(post2.categories, [])
+        assert_equal(Tag.query.count(), 3)
         
-        updated_title = 'cool'
-        updated_markup = '## Title'
-        updated_tags = ''
-        expected_title = updated_title
-        expected_markup = updated_markup
-        expected_tags = []
-        expected_slug = 'cool'
-        expected_html = '<h2>Title</h2>'
-        expected_date = datetime.date.today()
-        # Update the first post (slug=first_slug)
-        self.update_post(title=updated_title, markup=updated_markup, 
-            tags=updated_tags, slug=first_slug)
-        post = Post.query.filter_by(id=1).first()
-        post_tagnames = [tag.name for tag in post.tags]
+        return post
+    
+    def test_updating(self):
+        """Test the blog post's fields' correctness after updating a post and
+        test the proper creation and automatic tidying of tags and tag
+        mappings and category associations"""
+        post = self.test_creation()
+        datetime = post.datetime
         
-        assert_equal(post.title, expected_title)
-        assert_equal(post.markup, expected_markup)
-        assert_equal(post.slug, expected_slug)
-        assert expected_html in post.html
-        assert_equal(post.datetime.date(), expected_date)
-        assert_equal(sorted(post_tagnames), sorted(expected_tags))
+        self.update_post(title='cool', markup='## Title', slug=post.slug, 
+            tags=['django'])
+        updated_post = Post.query.get(1)
         
-        # update the same post without changing the title and expect the same
-        # slug
+        assert_equal(updated_post.title, 'cool')
+        assert_equal(updated_post.markup, '## Title')
+        assert_equal(updated_post.slug, 'cool')
+        assert '<h2>Title</h2>' in updated_post.html
+        assert_equal(updated_post.datetime, datetime)
+        assert_equal([x.name for x in updated_post.tags], ['django'])
         
-        self.update_post(title=updated_title, markup=updated_markup, 
-            tags=updated_tags, slug=expected_slug)
-        post = Post.query.filter_by(id=1).first()
-        assert_equal(post.slug, expected_slug)
+        # Expect two rows in the posts table because two posts were
+        # created and one updated. Expect only one row in the tags table 
+        # because only 'django' is used as a tag.
         
-        # Expect three rows in the posts table because three posts where
-        # created and one updated. Expect only two rows in the tags table 
-        # because the tag 'vil-bil' is not used anymore by an post. Also 
-        # expect four posts in the post_tags table because it should look
-        # like this:
-        # post_id | tag_id
-        # 2          1
-        # 2          2
-        # 3          1
-        # 3          2
+        assert_equal(Post.query.count(), 2)
+        assert_equal(Tag.query.count(), 1)
         
-        posts = Post.query.all()
-        tags = Tag.query.all()
-        post_tag_mappings = db.session.query(post_tags).all()
-        assert_equal(len(posts), 3)
-        assert_equal(len(tags), 2)
-        assert_equal(len(post_tag_mappings), 4)
+        # Because there are two post with a tag expect two rows
+        # in the post_tag association table
         
-        # TODO: Make class TestEntries and split actions to
-        #       * validation * creation * updating * deletion * tags * categories
-
-
-class TestDeletion(ViewTestCase):
+        assert_equal(db.session.query(post_tags).count(), 2)
+        
+        # Because there is no post in a category anymore expect not rows
+        # in the post_categories association table
+        
+        assert_equal(db.session.query(post_categories).count(), 0)
     
     def test_deletion(self):
         """Test the deletion of a blog post and the accompanying deletion of
@@ -314,8 +271,8 @@ class TestDeletion(ViewTestCase):
         
         assert_equal(len(posts), 0)
         assert_equal(len(tags), 0)
-
-
+    
+    
 class TestPostView(ViewTestCase):
     
     def test_postview(self):
