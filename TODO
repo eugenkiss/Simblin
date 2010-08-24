@@ -32,11 +32,17 @@
 
 ----------------
 
-* search (http://pypi.python.org/pypi/Whoosh/)
 * feeds
 * Refactor/Tests/Document/Readme/Changelog
 
 -> v0.4
+
+----------------
+
+* search (http://pypi.python.org/pypi/Whoosh/)
+* Refactor/Tests/Document/Readme/Changelog
+
+-> v0.5
 
 ----------------
 
@@ -45,7 +51,7 @@
 * Put hardcoded Messages in config file
 * Refactor/Tests/Document/Readme/Changelog
 
--> v0.5
+-> v0.6
 
 ----------------
 
@@ -53,7 +59,7 @@
 * mail notification (summary once per day of comments, or can disqus to that?)
 * Refactor/Tests/Document/Readme/Changelog
 
--> v0.6
+-> v0.7
 
 ----------------
 
@@ -62,7 +68,7 @@
 ** caching with pure python?
 * Refactor/Tests/Document/Readme/Changelog
 
--> v0.7
+-> v0.8
 
 ----------------
 
