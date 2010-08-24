@@ -20,7 +20,7 @@ def test_slug_normalizing():
     assert_equal(helpers.normalize('The house'), 'the-house')
     assert_equal(helpers.normalize('The  house'), 'the-house')
     assert_equal(helpers.normalize(' 123-name '), '123-name')
-    # TODO: test special symbols like ? & = <> /
+    assert_equal(helpers.normalize('a?b&c>d<e=f/g'), 'a-b-c-d-e-f-g')
     
     
 def test_tags_normalizing():
