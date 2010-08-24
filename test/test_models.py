@@ -10,6 +10,7 @@
 """
 import datetime
 
+from simblin import signals
 from simblin.extensions import db
 from simblin.models import Post, Tag, Category, post_tags, post_categories
 
@@ -44,7 +45,7 @@ class TestPosts(TestCase):
         # Add another post
         db.session.add(Post(title=title, markup=markup))
         db.session.commit()
-        assert_equal(len(Post.query.all()), 2)
+        assert_equal(Post.query.count(), 2)
     
     def test_slug_uniqueness(self):
         """Test if posts with the same title result in different slugs"""
@@ -93,3 +94,101 @@ class TestPosts(TestCase):
         assert_equal(months[2]['year'], 2000)
         assert_equal(months[2]['index'], 1)
         assert_equal(months[2]['count'], 2)
+        
+        
+class TestTags(TestCase):
+    
+    def test_tag_creation(self):
+        """Test if tags are created and saved properly to the database"""
+        self.clear_db()
+        db.session.add(Tag('cool'))
+        db.session.commit()
+        assert_equal(Tag.query.get(1).name, 'cool')
+    
+    def test_tag_associations(self):
+        """Test if tags and posts are correctly associated with each other"""
+        self.clear_db()
+        db.session.add(Tag('cool'))
+        db.session.add(Tag('cooler'))
+        db.session.commit()
+        post1 = Post(title='t', markup='')
+        post1.tags = ['cool']
+        post2 = Post(title='t2', markup='')
+        post2.tags = ['cool', 'cooler']
+        db.session.add(post1)
+        db.session.add(post2)
+        db.session.commit()
+        
+        assert_equal(Tag.query.get(1).posts.count(), 2) # cool
+        assert_equal(Tag.query.get(2).posts.count(), 1) # cooler
+        assert_equal(len(post1.tags), 1)
+        assert_equal(post1.tags[0].name, 'cool')
+        assert_equal(len(post2.tags), 2)
+        assert_equal(post2.tags[0].name, 'cool')
+        assert_equal(post2.tags[1].name, 'cooler')
+    
+    def test_tag_uniqueness(self):
+        """Test if no duplicate tags are saved in the database"""
+        self.clear_db()
+        db.session.add(Tag.get_or_create('cool'))
+        db.session.commit()
+        tag = Tag.get_or_create('cool')
+        db.session.add(tag)
+        db.session.commit()
+        
+        assert_equal(Tag.query.count(), 1)
+    
+    def test_tag_tidying(self):
+        """Test if tags are automatically deleted when a post is deleted
+        and there are no tag associations after that"""
+        self.clear_db()
+        db.session.add(Tag('cool'))
+        db.session.add(Tag('cooler'))
+        db.session.commit()
+        post1 = Post(title='t', markup='')
+        post1.tags = ['cool']
+        post2 = Post(title='t2', markup='')
+        post2.tags = ['cool', 'cooler']
+        db.session.add(post1)
+        db.session.add(post2)
+        db.session.commit()
+        db.session.delete(post2)
+        db.session.commit()
+        signals.post_deleted.send(post2)
+        
+        assert_equal(Tag.query.count(), 1)
+        assert_equal(Tag.query.first().name, 'cool')
+    
+
+class TestCategories(TestCase):
+    
+    def test_category_creation(self):
+        """Test if categories are created and saved properly to the database"""
+        self.clear_db()
+        db.session.add(Category('cool'))
+        db.session.commit()
+        assert_equal(Category.query.get(1).name, 'cool')
+    
+    def test_tag_associations(self):
+        """Test if categories and posts are correctly associated with 
+        each other"""
+        self.clear_db()
+        db.session.add(Category('cool'))
+        db.session.add(Category('cooler'))
+        db.session.commit()
+        post1 = Post(title='t', markup='')
+        post1.categories = [1]
+        post2 = Post(title='t2', markup='')
+        post2.categories = [1, 2]
+        db.session.add(post1)
+        db.session.add(post2)
+        db.session.commit()
+        
+        assert_equal(Category.query.get(1).posts.count(), 2) # cool
+        assert_equal(Category.query.get(2).posts.count(), 1) # cooler
+        assert_equal(len(post1.categories), 1)
+        assert_equal(post1.categories[0].name, 'cool')
+        assert_equal(len(post2.categories), 2)
+        assert_equal(post2.categories[0].name, 'cool')
+        assert_equal(post2.categories[1].name, 'cooler')
+    

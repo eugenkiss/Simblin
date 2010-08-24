@@ -139,7 +139,8 @@ class Post(db.Model):
         return ', '.join([tag.name for tag in self._tags])
     
     def _set_categories(self, category_ids):
-        """Associate categories with this entry"""
+        """Associate categories with this entry by committing a list of
+        category ids"""
         self._categories = []
         # Use set to prevent duplicate mappings
         for id in set(category_ids):

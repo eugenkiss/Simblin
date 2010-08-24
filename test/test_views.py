@@ -20,6 +20,8 @@ from nose.tools import assert_equal
 from test import TestCase
 
 # TODO: Test archive view, Test month view 
+# TODO: Make this leaner and put Model specific tests to test_models
+#       Also look at danjac what he tests in test_views
 
 class ViewTestCase(TestCase):
     """Base TestClass for views"""
@@ -280,7 +282,6 @@ class TestDeletion(ViewTestCase):
         assert_equal(len(tags), 1)
         
         rv = self.delete_post(slug='idontexist')
-        print rv.data
         assert 'No such post' in rv.data
         rv = self.delete_post(slug='title')
         assert 'Post deleted' in rv.data

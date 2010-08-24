@@ -25,6 +25,7 @@
 * .ico icon
 * robots.txt?
 * Add to config sqlalchemy pw and username for other db engines than sqlite
+* Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * Proper Logging (read flask logging docs) (maybe)
 * Refactor/Tests/Document/Readme/Changelog
 
