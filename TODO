@@ -74,6 +74,13 @@
 
 ----------------
 
+* error pages (403...), style them read flask doc howto
+* Refactor/Tests/Document/Readme/Changelog
+
+-> v0.9
+
+----------------
+
 * Update markdown2 lib
 * Refactor/Tests/Document/Readme/Changelog
 * Wait a little
