@@ -14,7 +14,7 @@ import flask
 
 from simblin import create_app
 from simblin.extensions import db
-from simblin.models import Post, Tag, Category, post_tags, post_categories
+from simblin.models import Post, Tag, Category, post_tags, post_categories, Admin
 
 from nose.tools import assert_equal
 from test import TestCase
@@ -99,23 +99,39 @@ class ViewTestCase(TestCase):
 
 class TestRegistration(ViewTestCase):
     
-    def test_registering(self):
-        """Test form validation and successful registering"""
+    def test_validation(self):
+        """Test form validation"""
+        self.clear_db()
         rv = self.register('', 'password')
         assert 'You have to enter a username' in rv.data
         rv = self.register('britney spears', '')
         assert 'You have to enter a password' in rv.data
         rv = self.register('barney', 'abv', 'abc')
         assert 'Passwords must match' in rv.data
+    
+    def test_registration(self):
+        """Test successful registration and automatic login"""
+        self.clear_db()
         with self.client:
             rv = self.register('barney', 'abc', 'abc')
             assert 'You are the new master of this blog' in rv.data
             assert flask.session['logged_in']
+    
+    def test_reregistration(self):
+        """Test that only one admin can exist at a time and reregistration
+        with new credentials only works when logged in"""
+        self.clear_db()
+        rv = self.register('barney', 'abc', 'abc')
         self.logout()            
         rv = self.register('barney', 'abc', 'abc')
         assert 'There can only be one admin' in rv.data
+        self.login('barney', 'abc')
+        rv = self.register('moe', 'ugly', 'ugly') # clears the admin
+        rv = self.register('moe', 'ugly', 'ugly')
+        assert 'You are the new master of this blog' in rv.data
+        assert_equal(Admin.query.count(), 1)
         
-
+        
 class TestLogin(ViewTestCase):
     
     def test_login(self):
