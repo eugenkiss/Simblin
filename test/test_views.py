@@ -134,12 +134,19 @@ class TestRegistration(ViewTestCase):
         
 class TestLogin(ViewTestCase):
     
-    def test_login(self):
+    def test_validation(self):
+        """Test form validation"""
+        self.clear_db()
         self.register('barney', 'abc', 'abc')
         rv = self.login('borney', 'abc')
         assert 'Invalid username' in rv.data
         rv = self.login('barney', 'abd')
         assert 'Invalid password' in rv.data
+        
+    def test_login_logout(self):
+        """Test logging in and out"""
+        self.clear_db()
+        self.register('barney', 'abc', 'abc')
         with self.client:   
             rv = self.login('barney', 'abc')
             assert 'You have been successfully logged in' in rv.data
