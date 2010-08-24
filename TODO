@@ -66,6 +66,7 @@
 * improve performance
 ** profiling (with google profiling tools) in order to improve performance (archives view esp.)
 ** caching with pure python?
+*** http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
 * Refactor/Tests/Document/Readme/Changelog
 
 -> v0.8
