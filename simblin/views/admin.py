@@ -114,7 +114,6 @@ def add_category():
 @login_required
 def delete_category():
     """Delete category specified by id from database"""
-    # TODO: Add test
     category = Category.query.get(request.form['id'])
     db.session.delete(category)
     db.session.commit()

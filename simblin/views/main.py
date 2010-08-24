@@ -70,7 +70,6 @@ def show_tag(tag, page):
 @main.route('/category/<category>/<int:page>/')
 def show_category(category, page):
     """Shows all posts in a category"""
-    # TODO: Add a test for this
     if not Category.query.filter_by(name=category).first():
         flash("No such category '%s'" % category)
         return redirect(url_for('main.show_posts'))
@@ -100,7 +99,6 @@ def show_uncategorized(page):
         endpoint_func=lambda x: url_for('main.show_uncategorized', page=x))
         
         
-# TODO: Test month view
 @main.route('/<int:year>/<int:month>/', defaults={'page':1})
 @main.route('/<int:year>/<int:month>/<int:page>/')
 def show_month(year, month, page):

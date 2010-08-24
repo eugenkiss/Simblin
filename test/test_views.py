@@ -20,6 +20,7 @@ from nose.tools import assert_equal
 from test import TestCase
 
 # TODO: Test archive view, Test month view 
+# TODO: Test category view, test category deletion
 # TODO: Make this leaner and put Model specific tests to test_models
 #       Also look at danjac what he tests in test_views
 
@@ -262,7 +263,6 @@ class TestComposing(ViewTestCase):
         assert_equal(len(tags), 2)
         assert_equal(len(post_tag_mappings), 4)
         
-        # TODO: Test Get all posts by a tag
         # TODO: Make class TestEntries and split actions to
         #       * validation * creation * updating * deletion * tags * categories
 

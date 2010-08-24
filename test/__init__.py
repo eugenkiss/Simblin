@@ -35,5 +35,5 @@ class TestCase(_TestCase):
 
     def tearDown(self):
         db.session.remove()
-        self._ctx.push() # TODO: Why do I need this line?
+        self._ctx.push() # Why do I need this line?
         db.drop_all()
