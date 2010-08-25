@@ -1,13 +1,5 @@
-* grep TODOs
 * Look with epydoc where forgot comments, look with pyflakes
-* Refactor
-** how to improve test suite? see danjac (add test_models)
-** Comments/Documentation/Style of Coding ok?
-** Why
-   def tearDown(self):
-        db.session.remove()
-        self._ctx.push() # TODO: Why do I need this line?
-        db.drop_all()
+
 * Document/Readme/Changelog
 
 -> v0.2
@@ -27,21 +19,27 @@
 * Add to config sqlalchemy pw and username for other db engines than sqlite
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * Proper Logging (read flask logging docs) (maybe)
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
+* get community feedback
+** Why
+   def tearDown(self):
+        db.session.remove()
+        self._ctx.push() # TODO: Why do I need this line?
+        db.drop_all()
 
 -> v0.3
 
 ----------------
 
 * feeds
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.4
 
 ----------------
 
 * search (http://pypi.python.org/pypi/Whoosh/)
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.5
 
@@ -49,8 +47,8 @@
 
 * be able to rename categories
 * Javascript Tag suggestion
-* Put hardcoded Messages in config file
-* Refactor/Tests/Document/Readme/Changelog
+* Put hardcoded Messages in config file (localisation?)
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.6
 
@@ -58,7 +56,7 @@
 
 * statistics (or can I use google statitstsic or how that is called for that?)
 * mail notification (summary once per day of comments, or can disqus to that?)
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.7
 
@@ -68,21 +66,21 @@
 ** profiling (with google profiling tools) in order to improve performance (archives view esp.)
 ** caching with pure python?
 *** http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.8
 
 ----------------
 
 * error pages (403...), style them read flask doc howto
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.9
 
 ----------------
 
 * Update markdown2 lib
-* Refactor/Tests/Document/Readme/Changelog
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * Wait a little
 
 -> v1.0

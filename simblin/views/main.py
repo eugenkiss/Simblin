@@ -12,7 +12,7 @@
 import datetime
 
 from flask import Module, current_app, render_template, session, request, \
-                  flash, redirect, url_for, jsonify
+                  flash, redirect, url_for, jsonify, abort
 from flaskext.sqlalchemy import Pagination
 
 from simblin import signals
@@ -56,33 +56,30 @@ def show_post(slug):
 def show_tag(tag, page):
     """Shows all posts with a specific tag"""
     per_page = current_app.config['POSTS_PER_PAGE']
-    posts = Tag.query.filter_by(name=tag).first().posts.order_by(
-        Post.id.desc())
+    tag = Tag.query.filter_by(name=tag).first() or abort(404)
+    posts = tag.posts.order_by(Post.id.desc())
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
-    flash("Posts tagged with '%s'" % tag)
+    flash("Posts tagged with '%s'" % tag.name)
     return render_template('posts.html', pagination=pagination,
-        endpoint_func=lambda x: url_for('main.show_tag', tag=tag, page=x))
+        endpoint_func=lambda x: url_for('main.show_tag', tag=tag.name, page=x))
         
         
 @main.route('/category/<category>/', defaults={'page':1})
 @main.route('/category/<category>/<int:page>/')
 def show_category(category, page):
     """Shows all posts in a category"""
-    if not Category.query.filter_by(name=category).first():
-        flash("No such category '%s'" % category)
-        return redirect(url_for('main.show_posts'))
     per_page = current_app.config['POSTS_PER_PAGE']
-    posts = Category.query.filter_by(name=category).first().posts
-    posts = posts.order_by(Post.id.desc())
+    category = Category.query.filter_by(name=category).first() or abort(404)
+    posts = category.posts.order_by(Post.id.desc())
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
-    flash("Posts in category '%s'" % category)
+    flash("Posts in category '%s'" % category.name)
     return render_template('posts.html', pagination=pagination,
-        endpoint_func=lambda x: url_for('main.show_category', category=category, 
-                                        page=x))
+        endpoint_func=lambda x: url_for('main.show_category', 
+        category=category.name, page=x))
                                         
                                         
 @main.route('/uncategorized/', defaults={'page':1})
@@ -104,6 +101,7 @@ def show_uncategorized(page):
 def show_month(year, month, page):
     """Show all posts from a specific year and month"""
     from calendar import month_name
+    if month not in range(1, 13): abort(404)
     per_page = current_app.config['POSTS_PER_PAGE']
     posts = Post.query.filter(db.extract('year', Post.datetime)==year)
     posts = posts.filter(db.extract('month', Post.datetime)==month)
@@ -111,7 +109,10 @@ def show_month(year, month, page):
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
-    flash("Posts from %s %d" % (month_name[month], year))
+    if items:
+        flash("Posts from %s %d" % (month_name[month], year))
+    else:
+        flash("No entries here so far")
     return render_template('posts.html', pagination=pagination,
         endpoint_func=lambda x: url_for('main.show_month', year=year, month=month, 
         page=x))

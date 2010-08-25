@@ -77,7 +77,7 @@ class Post(db.Model):
     _categories = db.relationship('Category', secondary='post_categories',
         backref=db.backref('posts', lazy='dynamic'))
     
-    def __init__(self, title, markup, comments_allowed=True):
+    def __init__(self, title, markup='', comments_allowed=True):
         self.title = title
         self.markup = markup
         self.datetime = datetime.now()
