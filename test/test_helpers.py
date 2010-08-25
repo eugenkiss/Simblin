@@ -8,7 +8,7 @@
     :copyright: (c) 2010 by Eugen Kiss.
     :license: BSD, see LICENSE for more details.
 """
-from nose.tools import assert_equal, assert_true, assert_false, with_setup
+from nose.tools import assert_equal
 
 from simblin import helpers
     

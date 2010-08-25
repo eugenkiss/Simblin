@@ -12,7 +12,7 @@ import datetime
 
 from simblin import signals
 from simblin.extensions import db
-from simblin.models import Post, Tag, Category, post_tags, post_categories
+from simblin.models import Post, Tag, Category
 
 from nose.tools import assert_equal
 from test import TestCase

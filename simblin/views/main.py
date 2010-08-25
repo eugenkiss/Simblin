@@ -9,17 +9,12 @@
     :copyright: (c) 2010 by Eugen Kiss.
     :license: BSD, see LICENSE for more details.
 """
-import datetime
-
-from flask import Module, current_app, render_template, session, request, \
-                  flash, redirect, url_for, jsonify, abort
+from flask import Module, current_app, render_template, flash, redirect, \
+                  url_for, abort
 from flaskext.sqlalchemy import Pagination
 
-from simblin import signals
 from simblin.extensions import db
-from simblin.models import Admin, Post, Tag, Category
-from simblin.helpers import normalize_tags, convert_markup, login_required, \
-                            normalize
+from simblin.models import Post, Tag, Category
 
 
 main = Module(__name__)

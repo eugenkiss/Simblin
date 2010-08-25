@@ -12,7 +12,6 @@ from __future__ import with_statement
 import datetime
 import flask
 
-from simblin import create_app
 from simblin.extensions import db
 from simblin.models import Post, Tag, Category, post_tags, post_categories, Admin
 

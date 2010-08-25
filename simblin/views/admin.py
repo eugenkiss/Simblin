@@ -11,13 +11,12 @@
 """
 import datetime
 
-from flask import Module, current_app, render_template, session, request, \
+from flask import Module, render_template, session, request, \
                   flash, redirect, url_for, jsonify
-from flaskext.sqlalchemy import Pagination
 
 from simblin import signals
 from simblin.extensions import db
-from simblin.models import Admin, Post, Tag, Category
+from simblin.models import Admin, Post, Category
 from simblin.helpers import normalize_tags, convert_markup, login_required, \
                             normalize
 

@@ -1,11 +1,3 @@
-* Look with epydoc where forgot comments, look with pyflakes
-
-* Document/Readme/Changelog
-
--> v0.2
-
-----------------
-
 * Add checkbox `comments_allowed` on compose page
 * Add `Comments (number)` to post macro and on click scroll to comments
 * Comments (Disqus)
