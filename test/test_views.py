@@ -19,8 +19,6 @@ from simblin.models import Post, Tag, Category, post_tags, post_categories, Admi
 from nose.tools import assert_equal
 from test import TestCase
 
-# TODO: Test archive view, Test month view 
-# TODO: Test category view, test category deletion
 
 class ViewTestCase(TestCase):
     """Base TestClass for views"""
@@ -34,7 +32,6 @@ class ViewTestCase(TestCase):
             email=email,
         ), follow_redirects=True)
 
-
     def login(self, username, password):
         """Helper function to login"""
         return self.client.post('/login', data=dict(
@@ -42,17 +39,14 @@ class ViewTestCase(TestCase):
             password=password
         ), follow_redirects=True)
         
-        
     def register_and_login(self, username, password):
         """Register and login in one go"""
         self.register(username, password, password)
         self.login(username, password)
 
-
     def logout(self):
         """Helper function to logout"""
         return self.client.get('/logout', follow_redirects=True)
-
 
     def add_post(self, title, markup='', tags='', categories=[]):
         """Helper functions to create a blog post"""
@@ -66,7 +60,6 @@ class ViewTestCase(TestCase):
         for i, category_id in enumerate(categories):
             data['category-%d' % i] = category_id
         return self.client.post('/compose', data=data, follow_redirects=True)
-
 
     def update_post(self, slug, title, markup, tags=None, categories=[]):
         """Helper functions to create a blog post"""
@@ -82,19 +75,20 @@ class ViewTestCase(TestCase):
         return self.client.post('/update/%s' % slug, data=data, 
                                 follow_redirects=True)
         
-
     def delete_post(self, slug):
         """Helper function to delete a blog post"""
         return self.client.post('/_delete/%s' % slug, data=dict(next=''), 
             follow_redirects=True)
             
-            
     def add_category(self, name):
         """Register category in the database and return its id"""
         return flask.json.loads(
             self.client.post('/_add_category', data=dict(name=name)).data)['id']
+            
+    def delete_category(self, id):
+        return self.client.post('/_delete_category', data=dict(id=id))
+            
     
-
 class TestRegistration(ViewTestCase):
     
     def test_validation(self):
@@ -154,7 +148,7 @@ class TestLogin(ViewTestCase):
             assert 'logged_in' not in flask.session
         
         
-class TestPostsInteraction(ViewTestCase):
+class TestPost(ViewTestCase):
     """Tags and categories are tested alongside"""
     
     def test_validation(self):
@@ -252,6 +246,7 @@ class TestPostsInteraction(ViewTestCase):
     def test_deletion(self):
         """Test the deletion of a blog post and the accompanying deletion of
         tags"""
+        self.clear_db()
         self.register_and_login('barney', 'abc')
         
         self.add_post(title='Title', markup='', tags='cool')
@@ -272,13 +267,96 @@ class TestPostsInteraction(ViewTestCase):
         assert_equal(len(posts), 0)
         assert_equal(len(tags), 0)
     
-    
-class TestPostView(ViewTestCase):
-    
-    def test_postview(self):
+    def test_view(self):
         """Test the displaying of one blog post"""
+        self.clear_db()
         self.register_and_login('barney', 'abc')
         
         self.add_post(title='Title', markup='', tags='')
         rv = self.client.get('/post/title')
+        self.assert_200(rv)
         assert 'Title' in rv.data
+    
+
+class TestArchives(ViewTestCase):
+    
+    def test_archives_page(self):
+        """Test the displaying of the archives page"""
+        self.clear_db()
+        rv = self.client.get('/archives/')
+        self.assert_200(rv)
+        
+    def test_month_view(self):
+        """Test the displaying of the month view"""
+        self.clear_db()
+        post = Post('the chronic 2001')
+        post.datetime = datetime.datetime(1999, 11, 16)
+        db.session.add(post)
+        db.session.commit()
+        rv = self.client.get('/1999/11/')
+        self.assert_200(rv)
+        assert 'the chronic 2001' in rv.data
+        rv = self.client.get('/7777/12/')
+        assert 'No entries here so far' in rv.data
+        rv = self.client.get('/1999/14/')
+        self.assert_404(rv)
+
+
+class TestTag(ViewTestCase):
+    
+    def test_view(self):
+        """Test the displaying of the tag view"""
+        self.clear_db()
+        tag = Tag('drdre')
+        db.session.add(tag)
+        db.session.commit()
+        post = Post('the chronic 2001')
+        post._tags = [tag]
+        db.session.add(post)
+        db.session.commit()
+        rv = self.client.get('/tag/drdre/')
+        self.assert_200(rv)
+        assert 'the chronic 2001' in rv.data
+        rv = self.client.get('/tag/bobbybrown/')
+        self.assert_404(rv)
+        
+        
+class TestCategory(ViewTestCase):
+    
+    def test_view(self):
+        """Test the displaying of the category view"""
+        self.clear_db()
+        category = Category('drdre')
+        db.session.add(category)
+        db.session.commit()
+        post = Post('the chronic')
+        post._categories = [category]
+        db.session.add(post)
+        db.session.commit()
+        rv = self.client.get('/category/drdre/')
+        self.assert_200(rv)
+        assert 'the chronic' in rv.data
+        rv = self.client.get('/category/sugeknight/')
+        self.assert_404(rv)
+        
+        rv = self.client.get('/uncategorized/')
+        self.assert_200(rv)
+        assert 'Uncategorized posts' in rv.data
+        post2 = Post('dancing in the moonlight')
+        db.session.add(post2)
+        db.session.commit()
+        rv = self.client.get('/uncategorized/')
+        self.assert_200(rv)
+        assert 'dancing in the moonlight' in rv.data
+    
+    def test_deletion_view(self):
+        """Test if deletion works properly"""
+        self.clear_db()
+        self.register_and_login('barney', 'abc')
+        category = Category('drdre')
+        db.session.add(category)
+        db.session.commit()
+        assert_equal(Category.query.count(), 1)
+        rv = self.delete_category(1)
+        print rv
+        assert_equal(Category.query.count(), 0)
