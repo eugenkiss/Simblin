@@ -1,3 +1,4 @@
+* javascript confirmation when deleting category
 * Add checkbox `comments_allowed` on compose page
 * Add `Comments (number)` to post macro and on click scroll to comments
 * Comments (Disqus)

@@ -1,7 +1,7 @@
 Simblin
 =======
 
-*Sim*ple *B*log Eng*in*e - A blog engine written with [Flask][] and 
+*Sim*ple *Bl*og Eng*in*e - A blog engine written with [Flask][] and 
 [SQLAlchemy][].
 
 Simblin is built to be used by only one author. Simblin has no dashboard, no
