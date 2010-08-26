@@ -69,23 +69,25 @@
     // Delete Category
     $(".delete-category").live('click', function(e) {
       e.preventDefault();
-      var id = $(this).attr('category-id');
-      //: The parent list item that contains the link to the category, delete link, count
-      var li = $(this).closest('li');
-      $.ajax({
-        type: "POST",
-        url: "/_delete_category",
-        data: {'id':id},
-        success: function() {
-          li.fadeTo('fast', 0, function() {
-            $(this).remove();
-            location.reload();
-          });
-        },
-        error: function() {
-          alert('Could not delete category');
-        }
-      });
+      if (confirm("Really delete this post?")) {
+        var id = $(this).attr('category-id');
+        //: The parent list item that contains the link to the category, delete link, count
+        var li = $(this).closest('li');
+        $.ajax({
+          type: "POST",
+          url: "/_delete_category",
+          data: {'id':id},
+          success: function() {
+            li.fadeTo('fast', 0, function() {
+              $(this).remove();
+              location.reload();
+            });
+          },
+          error: function() {
+            alert('Could not delete category');
+          }
+        });
+      }
       return false;
     });
   });
