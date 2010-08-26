@@ -36,6 +36,11 @@
     </td>
     </tr>
     </table>
+    <div style="margin-top: 0.5em"></div>
+    
+    <!-- Comments allowed -->
+    Comments allowed? <input type="checkbox" name="comments_allowed" value="allowed" 
+    {% if post and not post.comments_allowed %}{% else %}Checked{% endif %}/> 
     
     <!-- Buttons -->
     <div style="margin-top:1em; text-align:right;">
