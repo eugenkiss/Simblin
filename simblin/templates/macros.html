@@ -1,4 +1,4 @@
-{% macro render_post(post, is_preview=False, full_view=False) %}
+{% macro render_post(post, is_preview=False, full_view=False, next=None, prev=None) %}
 <div class="post">
   <h1 class="post-title">
   {% if not is_preview %}
@@ -54,6 +54,21 @@
       <a class="delete-post-link" href="{{ url_for('admin.delete_post', slug=post.slug, next=request.url) }}">Delete</a>
     </div>
   {% endif %}
+  </div>
+  
+  <div id=adjacent-posts>
+    <div id="prev-post">
+    {% if prev %}
+      <a href="{{ url_for('main.show_post', slug=prev.slug) }}">&laquo; {{ prev.title }}</a>
+    {% endif %}
+    </div>
+    <div id="next-post">
+    {% if next %}
+      <a href="{{ url_for('main.show_post', slug=next.slug) }}">{{ next.title }} &raquo;</a>
+    {% endif %}
+    </div>
+    <div style='clear:both'></div>
+  </div>
   
   {% if post.comments_allowed and not is_preview and full_view %}
     <div style="margin-top: 5em"></div>
@@ -69,8 +84,6 @@
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript={{ config['DISQUS_SHORTNAME'] }}">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
   {% endif %}
-  
-  </div>
 </div>
 {% endmacro %}
 

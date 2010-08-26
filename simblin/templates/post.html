@@ -2,19 +2,6 @@
 {% extends "base.html" %}
 {% block body %}
   {% if post %}
-    {{ render_post(post, full_view=True) }}
+    {{ render_post(post, full_view=True, next=next, prev=prev) }}
   {% endif %}
-  <div id=adjacent-posts>
-    <div id="prev-post">
-    {% if prev %}
-      <a href="{{ url_for('main.show_post', slug=prev.slug) }}">&laquo; {{ prev.title }}</a>
-    {% endif %}
-    </div>
-    <div id="next-post">
-    {% if next %}
-      <a href="{{ url_for('main.show_post', slug=next.slug) }}">{{ next.title }} &raquo;</a>
-    {% endif %}
-    </div>
-    <div style='clear:both'></div>
-  </div>
 {% endblock %}
