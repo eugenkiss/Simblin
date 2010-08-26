@@ -12,7 +12,7 @@
 import datetime
 
 from flask import Module, render_template, session, request, \
-                  flash, redirect, url_for, jsonify
+                  flash, redirect, url_for, jsonify, abort
 
 from simblin import signals
 from simblin.extensions import db
@@ -22,6 +22,12 @@ from simblin.helpers import normalize_tags, convert_markup, login_required, \
 
 
 admin = Module(__name__)
+
+
+@admin.route('/does-not-exist')
+def disqus():
+    """Specifically needed for disqus"""
+    abort(404)
 
 
 @admin.route('/compose', methods=['GET', 'POST'], defaults={'slug':None})

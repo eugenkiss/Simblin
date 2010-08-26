@@ -1,16 +1,17 @@
-* Add `Comments (number)` to post macro and on click scroll to comments
-* Comments (Disqus)
-** Pingback/Traceback (or does Disqus already do that?)
-** respect `comments_allowed`
 * Images / File Attachments (or use dropbox? or use ftp.eugenkiss.com/blog/? is that a good idea?)
 ** Write Q&A that images/files should be just uploaded to a folder and linked in a blog post
+* Write Q&A about disqus
+** Set disqus_shortname, javascript from disqus is already embedded
+** Link to website, you have to create account and register your domain
 * Tab key does indent in compose editor / embed bespin
 * .ico icon
 * robots.txt?
 * Add to config sqlalchemy pw and username for other db engines than sqlite
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
-* Proper Logging (read flask logging docs) (maybe)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
+* Pingback/Traceback (or does Disqus already do that?)
+** inform yourself what that is at all and how to link automatically to linked
+   posts in a post
 * get community feedback
 ** Why
    def tearDown(self):

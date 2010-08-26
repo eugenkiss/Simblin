@@ -1,4 +1,4 @@
-{% macro render_post(post, is_preview=False) %}
+{% macro render_post(post, is_preview=False, full_view=False) %}
 <div class="post">
   <h1 class="post-title">
   {% if not is_preview %}
@@ -12,6 +12,12 @@
   <div class="body">{{ post.html|safe }}</div>
   <div class="info">
     <span class="date">{{ post.datetime.strftime("%A %d. %B %Y") }}</span>
+    
+    {% if post.comments_allowed and not is_preview and not full_view %}
+      <div class="comments-link">
+      <a href="{{ url_for('main.show_post', slug=post.slug) }}#disqus_thread">Comments</a>
+      </div>
+    {% endif %}
     
     {% if post.categories %}
       in
@@ -49,6 +55,21 @@
     </div>
   {% endif %}
   
+  {% if post.comments_allowed and not is_preview and full_view %}
+    <div style="margin-top: 5em"></div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_identifier = {{ post.id }}; 
+      (function() {
+       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+       dsq.src = 'http://{{ config["DISQUS_SHORTNAME"] }}.disqus.com/embed.js';
+       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript={{ config['DISQUS_SHORTNAME'] }}">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+  {% endif %}
+  
   </div>
 </div>
 {% endmacro %}
@@ -68,3 +89,4 @@
   {%- endfor %}
   </div>
 {% endmacro %}
+<!-- kate: tab-width 2; -->

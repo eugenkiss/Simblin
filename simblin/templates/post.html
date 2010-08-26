@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 {% block body %}
   {% if post %}
-    {{ render_post(post) }}
+    {{ render_post(post, full_view=True) }}
   {% endif %}
   <div id=adjacent-posts>
     <div id="prev-post">

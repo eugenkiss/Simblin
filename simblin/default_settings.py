@@ -8,3 +8,4 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///%s/simblin.db' % os.path.dirname(__file__)
 SQLALCHEMY_ECHO = False
 DEBUG = True
 PORT = 5000
+DISQUS_SHORTNAME = ''
