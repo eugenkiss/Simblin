@@ -7,6 +7,8 @@ body {
     padding: 0;
     font-family: Georgia, serif;
     font-size: 1.15em;
+    background: white;
+    
 }
 
 img {
@@ -14,16 +16,22 @@ img {
 
 a {
     text-decoration: none;
-    color: black;
-    border-bottom: 1px dotted #ff8cb5;
+    color: #333;
+    -webkit-transition: color .25s ease;
+    transition: color .25s linear;
+    /*border-bottom: 1px dotted #ff8cb5;*/
+    /*text-shadow: #ff8cb5 0px 1px 0px;*/
 }
 
 a:hover {
     color: #9a355a;
+    -webkit-transition: color .25s ease;
+    transition: color .25s linear;
 }
 
 h1,h2,h3,h4,h5,h6 {
     font-weight: normal;
+    text-shadow: #ff8cb5 0px 1px 0px;
 }
 
 /* Forms */
@@ -89,17 +97,22 @@ label {
 #wrapper {
     max-width: 44em;
     margin: 0 auto;
-    margin-top: 2em;
+    padding: 3em;
 }
 
 #header {
     font-size: 4.5em;
     text-align: right;
+    margin-top: 0;
 }
 
 #header a {
     color: #333;
     border: none;
+}
+
+#header a:hover {
+    color: #9a355a;
 }
 
 #navigation {
@@ -112,6 +125,7 @@ label {
     color: #080000;
     color: #333;
     border: none;
+    text-shadow: #ff8cb5 0px 1px 0px;
 }
 
 #navigation a:hover {
@@ -181,19 +195,26 @@ label {
     color: #9a355a;
 }
 
-.post a {
-    /*color: #333;*/
-}
-
-.post a:hover {
-    color: inherit;
-}
-
 .post .body {
     font-family: Georgia;
     color: #111;
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+.post .body a, .post .info a {
+    color: #66233c;
+    text-shadow: none;
+    /*border-bottom: 1px dotted #ff8cb5;
+    border-bottom: 1px dotted black;*/
+}
+
+.post .body a {
+    border-bottom: 1px dotted #ff8cb5;
+}
+
+.post a:hover {
+    color: #9a355a;
 }
 
 .post .info {
@@ -213,6 +234,10 @@ label {
 }
 
 .post .body h2 {
+}
+
+#next-post, #prev-post {
+    text-shadow: #ff8cb5 0px 1px 0px;
 }
 
 /* Archives */
@@ -243,7 +268,7 @@ ul.archives li {
 }
 
 .codehilite {
-    background: ghostwhite;
+    background: #ghostwhite;
     padding: 0.25em 0.5em;
     font-size: 0.8em;
 }
