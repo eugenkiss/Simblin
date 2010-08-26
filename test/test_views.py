@@ -15,7 +15,7 @@ import flask
 from simblin.extensions import db
 from simblin.models import Post, Tag, Category, post_tags, post_categories, Admin
 
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_true, assert_false
 from test import TestCase
 
 
@@ -47,7 +47,8 @@ class ViewTestCase(TestCase):
         """Helper function to logout"""
         return self.client.get('/logout', follow_redirects=True)
 
-    def add_post(self, title, markup='', tags='', categories=[]):
+    def add_post(self, title, markup='', comments_allowed=None, tags='', 
+        categories=[]):
         """Helper functions to create a blog post"""
         data=dict(
             title=title,
@@ -55,12 +56,15 @@ class ViewTestCase(TestCase):
             tags=tags,
             action='Publish',
         )
+        if comments_allowed is not None: 
+            data['comments_allowed'] = comments_allowed
         # Mimic select form fields
         for i, category_id in enumerate(categories):
             data['category-%d' % i] = category_id
         return self.client.post('/compose', data=data, follow_redirects=True)
 
-    def update_post(self, slug, title, markup, tags=None, categories=[]):
+    def update_post(self, slug, title, markup, comments_allowed=None, tags=None, 
+        categories=[]):
         """Helper functions to create a blog post"""
         data=dict(
             title=title,
@@ -68,6 +72,8 @@ class ViewTestCase(TestCase):
             tags=tags,
             action='Update',
         )
+        if comments_allowed is not None: 
+            data['comments_allowed'] = comments_allowed
         # Mimic select form fields
         for i, category_id in enumerate(categories):
             data['category-%d' % i] = category_id
@@ -182,6 +188,7 @@ class TestPost(ViewTestCase):
         assert_equal(post.id, 1)
         assert_equal(post.title, title)
         assert_equal(post.markup, markup)
+        assert_false(post.comments_allowed)
         assert_equal(post.slug, 'my-post')
         assert '<h1>Title</h1>' in post.html
         assert_equal(post.datetime.date(), datetime.date.today())
@@ -197,10 +204,11 @@ class TestPost(ViewTestCase):
         assert_equal(db.session.query(post_categories).count(), 2)
         
         # Add another post
-        self.add_post(title=post.title, tags=['django'])
+        self.add_post(title=post.title, tags=['django'], comments_allowed=True)
         post2 = Post.query.get(2)
         
         assert_equal(post2.title, post.title) 
+        assert_true(post2.comments_allowed)
         assert_equal(post2.slug, post.slug + '-2')
         assert_equal(post2.categories, [])
         assert_equal(Tag.query.count(), 3)
@@ -215,11 +223,12 @@ class TestPost(ViewTestCase):
         datetime = post.datetime
         
         self.update_post(title='cool', markup='## Title', slug=post.slug, 
-            tags=['django'])
+            tags=['django'], comments_allowed=True)
         updated_post = Post.query.get(1)
         
         assert_equal(updated_post.title, 'cool')
         assert_equal(updated_post.markup, '## Title')
+        assert_true(updated_post.comments_allowed)
         assert_equal(updated_post.slug, 'cool')
         assert '<h2>Title</h2>' in updated_post.html
         assert_equal(updated_post.datetime, datetime)

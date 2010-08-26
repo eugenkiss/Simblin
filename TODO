@@ -1,4 +1,3 @@
-* Add checkbox `comments_allowed` on compose page
 * Add `Comments (number)` to post macro and on click scroll to comments
 * Comments (Disqus)
 ** Pingback/Traceback (or does Disqus already do that?)

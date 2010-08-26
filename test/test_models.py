@@ -14,13 +14,14 @@ from simblin import signals
 from simblin.extensions import db
 from simblin.models import Post, Tag, Category
 
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_true, assert_false
 from test import TestCase
 
 
 class TestPosts(TestCase):
     
     def test_post_creation(self):
+        """Test if posts are created and saved properly to the database"""
         self.clear_db()
         title = "My post"
         markup = "# Title"
@@ -36,6 +37,7 @@ class TestPosts(TestCase):
         
         assert_equal(post.title, title)
         assert_equal(post.markup, markup)
+        assert_true(post.comments_allowed)
         assert_equal(post.slug, expected_slug)
         assert expected_html in post.html
         assert_equal(post.datetime.date(), expected_date)
@@ -43,8 +45,9 @@ class TestPosts(TestCase):
         assert_equal([], post.categories)
         
         # Add another post
-        db.session.add(Post(title=title, markup=markup))
+        db.session.add(Post(title=title, markup=markup, comments_allowed=False))
         db.session.commit()
+        assert_false(Post.query.get(2).comments_allowed)
         assert_equal(Post.query.count(), 2)
     
     def test_slug_uniqueness(self):
