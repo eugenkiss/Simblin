@@ -139,7 +139,7 @@ label {
 
 #navigation li {
     list-style-type: none;
-    text-transform: uppercase;
+    text-transform: lowercase;
     border-bottom: 1px dotted #ff8cb5;
     font-size: 1em;
     margin-bottom: 0.2em;
@@ -181,13 +181,10 @@ label {
 
 .post h1.post-title {
     text-align: left;
-    /*font-size: 1.5em;*/
-    letter-spacing: 0.05em;
 }
 
 .post h1.post-title a {
     color: #333;
-    /*color: #080000;*/
     font-weight: normal;
 }
 
@@ -197,9 +194,20 @@ label {
 
 .post .body {
     font-family: Georgia;
+    font-size: 0.8em;
     color: #111;
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+.post .body h1,h2,h3,h4,h5,h6 {
+    text-shadow: none;
+    color: #333;
+    margin-bottom: 0em;
+}
+
+.post .body h3,h4,h5,h6 {
+    margin-bottom: -0.5em;
 }
 
 .post .body a, .post .info a {
@@ -270,5 +278,5 @@ ul.archives li {
 .codehilite {
     background: #ghostwhite;
     padding: 0.25em 0.5em;
-    font-size: 0.8em;
+    font-size: 1em;
 }
