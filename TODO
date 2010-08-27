@@ -1,12 +1,9 @@
-* Tab key does indent in compose editor / embed bespin
 * .ico icon
-* robots.txt?
-* Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
-* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
-* Pingback/Traceback (or does Disqus already do that?)
 * create fab backup directive (just downloads db and puts it in backup folder, gitignore backup folder)
+* Pingback/Traceback (or does Disqus already do that?)
 ** inform yourself what that is at all and how to link automatically to linked
    posts in a post
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * get community feedback
 ** Why
    def tearDown(self):
@@ -19,6 +16,7 @@
 ----------------
 
 * feeds
+* Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.4

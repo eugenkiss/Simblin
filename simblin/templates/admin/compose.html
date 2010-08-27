@@ -1,5 +1,8 @@
 {% from 'macros.html' import render_post with context %}
 {% extends "base.html" %}
+{% block head %}
+<script type=text/javascript src="{{ url_for('.static', filename='taboverride.js') }}"></script>
+{% endblock %}
 {% block body %}
   <h3>Compose</h3>
   <form action="{{ request.url }}" method="post" class="compose">
@@ -59,6 +62,11 @@
 {% block bottom %}
 <script type=text/javascript>
   $(function() {
+    // Tabs should work correctly in textarea
+    $("textarea").tabOverride();
+    // set the tab size to 4 spaces for all textareas
+    $.fn.tabOverride.setTabSize(4);
+    
     // Ajax Preview
     $("#preview-button").bind('click', function(e) {
       e.preventDefault();
