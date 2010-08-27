@@ -7,7 +7,7 @@ Simblin
 Simblin is built to be used by only one author. Simblin has no dashboard, no
 plugin support and no theme support although the templates and css can be
 modified by hand, of course. Simblin does not provide its own comment system
-but has support for Disqus.
+but has support for [Disqus][].
 
 On the other hand Simblin delivers most features that are needed to provide a
 good blogging experience. Simblin has 
@@ -166,6 +166,22 @@ to register with new credentials anybody who visits the blog can register as
 the admin.
 
 
+### How to supply images/files with a blog post?
+
+There is not integrated way in Simblin. I would suggest that you upload your
+files/images somewhere, for instance http://files.yourdomain.com/ or dropbox
+etc., and link to them appropriatly in your blog post.
+
+
+### How to use comments?
+
+Comments are provided by [Disqus][]. Head over to their website to learn more.
+Basically you create an account and set the `DISQUS_SHORTNAME` option in your
+`settings.py` accordingly. For further convenience you should specifiy the
+`Cross-domain Receiver URL` on the Disqus settings page. Just put there
+`http://yoursubdomain.yourdomain.com/does-not-exist`.
+
+
 ### Why another blog engine?
 
 1. Learn about web programming in general
@@ -198,3 +214,4 @@ Used libraries/frameworks
   [flask testing]: http://packages.python.org/Flask-Testing/
   [blinker]: http://discorporate.us/projects/Blinker/
   [pygments]: http://pygments.org/
+  [disqus]: http://www.disqus.com/
