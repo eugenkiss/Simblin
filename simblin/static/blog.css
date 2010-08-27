@@ -1,5 +1,5 @@
 html {
-    min-width: 500px;
+    min-width: 44em;
 }
 
 body {
@@ -8,7 +8,6 @@ body {
     font-family: Georgia, serif;
     font-size: 1.15em;
     background: white;
-    
 }
 
 img {
@@ -200,7 +199,7 @@ label {
     margin-bottom: 1em;
 }
 
-.post .body h1,h2,h3,h4,h5,h6 {
+.post .body h1,.post .body h2,.post .body h3,.post .body h4,.post .body h5,.post .body h6 {
     text-shadow: none;
     color: #333;
     margin-bottom: 0em;
@@ -213,12 +212,18 @@ label {
 .post .body a, .post .info a {
     color: #66233c;
     text-shadow: none;
-    /*border-bottom: 1px dotted #ff8cb5;
-    border-bottom: 1px dotted black;*/
 }
 
 .post .body a {
     border-bottom: 1px dotted #ff8cb5;
+}
+
+.post ul {
+    list-style-type: none;
+}
+
+ul li:before {
+	content: "\00BB \0020";
 }
 
 .post a:hover {
