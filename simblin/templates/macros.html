@@ -23,13 +23,7 @@
       in
       <span class="categories">
       {% for category in post.categories %}
-        {% if not is_preview %}
-          <a href="{{ url_for('main.show_category', category=category.name) }}">
-        {% else %}
-          <a href=#>
-        {% endif %}
-        {{ category.name }}
-        </a>{% if not loop.last %}, {% endif %} 
+          <a href="{% if not is_preview %}{{ url_for('main.show_category', category=category.name) }}{% else %}#{% endif %}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
       {% endfor %}
       </span>
     {% endif %}
@@ -37,13 +31,7 @@
     {% if post.tags %}
       <div class="tags">Tags: 
       {% for tag in post.tags %}
-        {% if not is_preview %}
-          <a href="{{ url_for('main.show_tag', tag=tag.name) }}">
-        {% else %}
-          <a href=#>
-        {% endif %}
-        {{ tag.name }}
-        </a>{% if not loop.last %}, {% endif %} 
+        <a href="{% if not is_preview %}{{ url_for('main.show_tag', tag=tag.name) }}{% else %}#{% endif %}">{{ tag.name }}</a>{% if not loop.last %}, {% endif %}
       {% endfor %}
       </div>
     {% endif %}
