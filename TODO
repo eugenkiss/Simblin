@@ -1,5 +1,5 @@
 * .ico icon
-* create fab backup directive (just downloads db and puts it in backup folder, gitignore backup folder)
+* create fab backup directive (just downloads db and puts it in backup folder, gitignore backup folder) (update exemplary fabfile in readme)
 * Pingback/Traceback (or does Disqus already do that?)
 ** inform yourself what that is at all and how to link automatically to linked
    posts in a post
