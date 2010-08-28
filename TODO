@@ -3,6 +3,10 @@
 * Pingback/Traceback (or does Disqus already do that?)
 ** inform yourself what that is at all and how to link automatically to linked
    posts in a post
+* static file serving with apache
+** how can I make apache serve the static files instead of flask?
+** caching of static files. how can i ensure that when updating cached files,
+   not the old ones are used (like tornado, append timestamp to cached file?)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * get community feedback
 ** Why
@@ -16,6 +20,10 @@
 ----------------
 
 * feeds
+* On archives page:
+    * show 5 latest post titles (below even tagcloud).
+    * Be there a link `more` when clicked ajaxingly loads e.g. the last
+      20 blog titles and a pagination for even older blog posts.
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -40,7 +48,6 @@
 ----------------
 
 * statistics (or can I use google statitstsic or how that is called for that?)
-* mail notification (summary once per day of comments, or can disqus to that?)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.7
@@ -49,7 +56,7 @@
 
 * improve performance
 ** profiling (with google profiling tools) in order to improve performance (archives view esp.)
-** caching with pure python?
+** caching queries with pure python?
 *** http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -64,7 +71,7 @@
 
 ----------------
 
-* Update markdown2 lib
+* Update markdown2 lib (maybe smartypants? I love real quotation marks)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * Wait a little
 

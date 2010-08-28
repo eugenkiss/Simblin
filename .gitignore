@@ -3,6 +3,7 @@ dist/
 simblin.egg-info/
 *.db
 disqus_settings.py
+favicon.ico
 settings.py
 fabfile.py
 distribute-0.6.10.tar.gz
