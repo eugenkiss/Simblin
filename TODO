@@ -1,4 +1,13 @@
-* .ico icon
+* serving static media files
+** http://docs.djangoproject.com/en/dev/howto/deployment/modwsgi/
+** how to do that with flask? 
+*** how to stop flask from serving static files?
+*** how about proper caching with timestamp?
+*** does it buy me anything at all if i make apache serve static files instead
+    of flask when i only have one vserver anyway? ASK MAILINGLIST
+*** change fabfile to put static files in /var/www/blog/static/ ???
+** Add q&a how to serve static files to readme and link to http://docs.djangoproject.com/en/dev/howto/deployment/modwsgi/
+* apache file compression gzip and mod_deflate http://nadeausoftware.com/node/33
 * create fab backup directive (just downloads db and puts it in backup folder, gitignore backup folder) (update exemplary fabfile in readme)
 * Pingback/Traceback (or does Disqus already do that?)
 ** inform yourself what that is at all and how to link automatically to linked
@@ -65,6 +74,9 @@
 ----------------
 
 * error pages (403...), style them read flask doc howto
+* use css3 spalten to make archives page more effectively use horizontal space
+  (e.g. 3 columns for months, 3 columns for categories, tag cloud and then
+  recent posts)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.9
