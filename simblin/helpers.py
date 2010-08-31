@@ -24,7 +24,7 @@ def static(filename):
     timestamp to the url"""
     filepath = os.path.join(os.path.dirname(__file__), 'static', filename)
     last_modification = '%d' % os.path.getmtime(filepath)
-    return url_for('.static', filename='blog.css') + '?' + last_modification
+    return url_for('.static', filename=filename) + '?' + last_modification
 
 
 def login_required(f):
