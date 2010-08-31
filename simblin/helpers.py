@@ -23,7 +23,7 @@ def static(filename):
     """Adds content versioning to static files by appending a last modification
     timestamp to the url"""
     filepath = os.path.join(os.path.dirname(__file__), 'static', filename)
-    last_modification = str(os.path.getmtime(filepath))
+    last_modification = '%d' % os.path.getmtime(filepath)
     return url_for('.static', filename='blog.css') + '?' + last_modification
 
 
