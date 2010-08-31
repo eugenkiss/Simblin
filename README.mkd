@@ -110,6 +110,21 @@ If you want to learn more about deployment and configuration of flask apps head
 over to the [Flask Documentation](http://flask.pocoo.org/docs/).
 
 
+### Cherokee 1.0.8 + uWSGI 0.9.6
+
+Inside cherokee-admin go to `Sources` and create a new one. For Example
+
+    Nick: uWSGI 1
+    Connection: 127.0.0.1:34340
+    Interpreter: /usr/bin/uwsgi -s 127.0.0.1:34340 -t 10 -M -p 1 -C  --wsgi-file /your/path/simblin.wsgi
+    
+Create a new uWSGI Handler in your virtual server and add `uWSGI 1` as an
+information source. Save and restart the server. Now everything should work. If
+not try to restart the server from the command line 
+
+    /etc/init.d/cherokee restart
+
+
 Q&A
 ---
 
