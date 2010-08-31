@@ -208,9 +208,9 @@ the admin.
 
 ### How to supply images/files with a blog post?
 
-There is not integrated way in Simblin. I would suggest that you upload your
+There is no integrated way in Simblin. I would suggest that you upload your
 files/images somewhere, for instance http://files.yourdomain.com/ or dropbox
-etc., and link to them appropriatly in your blog post.
+etc., and link to them in your blog post.
 
 
 ### How to use comments?
