@@ -119,6 +119,13 @@ over to the [Flask Documentation](http://flask.pocoo.org/docs/).
 
 ### Cherokee 1.0.8 + uWSGI 0.9.6
 
+This is a short instruction on how to configure the [cherokee][] webserver to
+host Simblin simply because it's the setup I use. Besides cherokee you need of
+course [uWSGI][].
+
+  [uwsgi]: http://projects.unbit.it/uwsgi/
+  [cherokee]: http://www.cherokee-project.com/
+
 Inside cherokee-admin go to `Sources` and create a new one. For Example
 
     Nick: uWSGI 1
@@ -130,6 +137,12 @@ information source. Save and restart the server. Now everything should work. If
 not try to restart the server from the command line 
 
     /etc/init.d/cherokee restart
+    
+In order to utilize caching add or configure the static content handler of your
+virtual server by creating a directory match rule and entering `/static/` as the
+web directory. On the time tab set the expiration to `Do not expire until 2038`.
+This is ok because the static files are versionend by their last modification
+date so that when a static file is modified the cache will be updated.
 
 
 Q&A
