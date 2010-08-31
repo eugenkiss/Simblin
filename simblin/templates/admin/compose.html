@@ -1,7 +1,7 @@
 {% from 'macros.html' import render_post with context %}
 {% extends "base.html" %}
 {% block head %}
-<script type=text/javascript src="{{ url_for('.static', filename='taboverride.js') }}"></script>
+<script type=text/javascript src="{{ static(filename='taboverride.js') }}"></script>
 {% endblock %}
 {% block body %}
   <h3>Compose</h3>

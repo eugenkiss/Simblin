@@ -11,11 +11,20 @@
 from __future__ import with_statement
 import unicodedata
 import re
+import os.path
 
 from functools import wraps
 from flask import session, url_for, redirect, request, flash
 
 from simblin.lib import markdown2
+
+
+def static(filename):
+    """Adds content versioning to static files by appending a last modification
+    timestamp to the url"""
+    filepath = os.path.join(os.path.dirname(__file__), 'static', filename)
+    last_modification = str(os.path.getmtime(filepath))
+    return url_for('.static', filename='blog.css') + '?' + last_modification
 
 
 def login_required(f):

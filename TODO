@@ -1,10 +1,4 @@
-* look at cherokee and consider http://www.cherokee-project.com/screencasts.html
-** install cherokee with backports on server
-* serving static media files
-** Add q&a how to serve static files to readme and link to http://docs.djangoproject.com/en/dev/howto/deployment/modwsgi/
-** update documented fabfile with static directive
-** add exemplamry virtualhosts file to readme
-* apache file compression gzip and mod_deflate http://nadeausoftware.com/node/33
+** add explanation how to deploy with cherokee and latest uwsgi
 * create fab backup directive (just downloads db and puts it in backup folder, gitignore backup folder) (update exemplary fabfile in readme)
 * Pingback/Traceback (or does Disqus already do that?)
 ** inform yourself what that is at all and how to link automatically to linked

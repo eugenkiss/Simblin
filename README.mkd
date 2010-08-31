@@ -91,6 +91,11 @@ exemplary fabfile can look like this:
             project_dir+'env/bin/python '+project_dir+'initdb.py')
         # so that the database is writable!!
         run('chmod -R g+w %s*' % project_dir)
+        ### Static files ###
+        # upload the static files separately so that you can use a web server
+        # to serve static files
+        run('mkdir -p '+project_dir+'static')
+        put('simblin/static/*', project_dir+'static')
         
         # finally touch the .wsgi file so that mod_wsgi triggers
         # a reload of the application
