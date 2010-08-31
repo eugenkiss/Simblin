@@ -1,21 +1,14 @@
+* look at cherokee and consider http://www.cherokee-project.com/screencasts.html
+** install cherokee with backports on server
 * serving static media files
-** http://docs.djangoproject.com/en/dev/howto/deployment/modwsgi/
-** how to do that with flask? 
-*** how to stop flask from serving static files?
-*** how about proper caching with timestamp?
-*** does it buy me anything at all if i make apache serve static files instead
-    of flask when i only have one vserver anyway? ASK MAILINGLIST
-*** change fabfile to put static files in /var/www/blog/static/ ???
 ** Add q&a how to serve static files to readme and link to http://docs.djangoproject.com/en/dev/howto/deployment/modwsgi/
+** update documented fabfile with static directive
+** add exemplamry virtualhosts file to readme
 * apache file compression gzip and mod_deflate http://nadeausoftware.com/node/33
 * create fab backup directive (just downloads db and puts it in backup folder, gitignore backup folder) (update exemplary fabfile in readme)
 * Pingback/Traceback (or does Disqus already do that?)
 ** inform yourself what that is at all and how to link automatically to linked
    posts in a post
-* static file serving with apache
-** how can I make apache serve the static files instead of flask?
-** caching of static files. how can i ensure that when updating cached files,
-   not the old ones are used (like tornado, append timestamp to cached file?)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * get community feedback
 ** Why
@@ -29,33 +22,38 @@
 ----------------
 
 * feeds
-* On archives page:
-    * show 5 latest post titles (below even tagcloud).
-    * Be there a link `more` when clicked ajaxingly loads e.g. the last
-      20 blog titles and a pagination for even older blog posts.
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.4
 
-----------------
-
-* search (http://pypi.python.org/pypi/Whoosh/)
-* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
-
--> v0.5
 
 ----------------
 
 * be able to rename categories
 * Javascript Tag suggestion
 * Put hardcoded Messages in config file (localisation?)
+* add "visible" field to blog posts to allow drafts
+* make datetime field explicitly settable, both in the model
+  and on the compose page through a datetime widget
+  * set default to now but when updating load saved date
+* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
+
+-> v0.5
+
+----------------
+
+* search (http://pypi.python.org/pypi/Whoosh/)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.6
 
 ----------------
 
+* On archives page:
+    * show 5 latest post titles (below even tagcloud).
+    * Be there a link `more` when clicked ajaxingly loads e.g. the last
+      20 blog titles and a pagination for even older blog posts.
 * statistics (or can I use google statitstsic or how that is called for that?)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -66,6 +64,7 @@
 * improve performance
 ** profiling (with google profiling tools) in order to improve performance (archives view esp.)
 ** caching queries with pure python?
+** http://github.com/thadeusb/flask-cache Flask Cache
 *** http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
