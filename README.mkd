@@ -100,9 +100,16 @@ exemplary fabfile can look like this:
         # finally touch the .wsgi file so that mod_wsgi triggers
         # a reload of the application
         run('touch '+project_dir+'simblin.wsgi')
+        
+        
+        def backup():
+        """Back up the database"""
+        import time
+        get(project_dir+'simblin.db', 'backup/simblin-%d.db' % time.time())
 
-Run `fab pack deploy` to deploy Simblin on your server. Of course you can do it
-manually, too, so you don't need to hassle with fabric.
+Run `fab pack deploy` to deploy Simblin on your server. Run `fab backup` to
+obtain a backup of the databse. Of course you can do it manually, too, so you
+don't need to hassle with fabric.
 
 Use `nosetests test` to run tests.
 

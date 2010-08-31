@@ -1,14 +1,8 @@
-* create fab backup directive (just downloads db and puts it in backup folder, gitignore backup folder) (update exemplary fabfile in readme)
 * Pingback/Traceback (or does Disqus already do that?)
 ** inform yourself what that is at all and how to link automatically to linked
    posts in a post
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * get community feedback
-** Why
-   def tearDown(self):
-        db.session.remove()
-        self._ctx.push() # TODO: Why do I need this line?
-        db.drop_all()
 
 -> v0.3
 
