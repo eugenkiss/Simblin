@@ -97,9 +97,12 @@ exemplary fabfile can look like this:
         run('mkdir -p '+project_dir+'static')
         put('simblin/static/*', project_dir+'static')
         
-        # finally touch the .wsgi file so that mod_wsgi triggers
-        # a reload of the application
+        ### Apache mod_wsgi ###
+        # touch the .wsgi file so that mod_wsgi triggers a reload of the application
         run('touch '+project_dir+'simblin.wsgi')
+        ### uwsgi ###
+        # restart uwsgi processes by killing them thus reloading the application
+        run('killall uwsgi')
         
         
         def backup():
