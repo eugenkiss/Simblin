@@ -38,6 +38,7 @@ class TestPosts(TestCase):
         assert_equal(post.title, title)
         assert_equal(post.markup, markup)
         assert_true(post.comments_allowed)
+        assert_true(post.visible)
         assert_equal(post.slug, expected_slug)
         assert expected_html in post.html
         assert_equal(post.datetime.date(), expected_date)
@@ -45,9 +46,11 @@ class TestPosts(TestCase):
         assert_equal([], post.categories)
         
         # Add another post
-        db.session.add(Post(title=title, markup=markup, comments_allowed=False))
+        db.session.add(Post(title=title, markup=markup, comments_allowed=False,
+            visible=False))
         db.session.commit()
         assert_false(Post.query.get(2).comments_allowed)
+        assert_false(Post.query.get(2).visible)
         assert_equal(Post.query.count(), 2)
     
     def test_slug_uniqueness(self):

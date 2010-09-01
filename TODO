@@ -1,6 +1,6 @@
-* Pingback/Traceback (or does Disqus already do that?)
-** inform yourself what that is at all and how to link automatically to linked
-   posts in a post
+* add "visible" field to blog posts to allow drafts
+* Posts in Category "Pages" are not shown on normal views
+    * update documentation
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * get community feedback
 
@@ -20,7 +20,6 @@
 * be able to rename categories
 * Javascript Tag suggestion
 * Put hardcoded Messages in config file (localisation?)
-* add "visible" field to blog posts to allow drafts
 * make datetime field explicitly settable, both in the model
   and on the compose page through a datetime widget
   * set default to now but when updating load saved date
@@ -63,6 +62,7 @@
 * use css3 spalten to make archives page more effectively use horizontal space
   (e.g. 3 columns for months, 3 columns for categories, tag cloud and then
   recent posts)
+* Pingback/Traceback (or does Disqus already do that?) / Look at Zine
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.9

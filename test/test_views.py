@@ -47,8 +47,8 @@ class ViewTestCase(TestCase):
         """Helper function to logout"""
         return self.client.get('/logout', follow_redirects=True)
 
-    def add_post(self, title, markup='', comments_allowed=None, tags='', 
-        categories=[]):
+    def add_post(self, title, markup='', comments_allowed=None, visible=None,
+        tags='', categories=[]):
         """Helper functions to create a blog post"""
         data=dict(
             title=title,
@@ -57,14 +57,16 @@ class ViewTestCase(TestCase):
             action='Publish',
         )
         if comments_allowed is not None: 
-            data['comments_allowed'] = comments_allowed
+            data['comments_allowed'] = True
+        if visible is not None: 
+            data['visible'] = True
         # Mimic select form fields
         for i, category_id in enumerate(categories):
             data['category-%d' % i] = category_id
         return self.client.post('/compose', data=data, follow_redirects=True)
 
-    def update_post(self, slug, title, markup, comments_allowed=None, tags=None, 
-        categories=[]):
+    def update_post(self, slug, title, markup='', comments_allowed=None, 
+        visible=None, tags=None, categories=[]):
         """Helper functions to create a blog post"""
         data=dict(
             title=title,
@@ -73,7 +75,9 @@ class ViewTestCase(TestCase):
             action='Update',
         )
         if comments_allowed is not None: 
-            data['comments_allowed'] = comments_allowed
+            data['comments_allowed'] = True
+        if visible is not None: 
+            data['visible'] = True
         # Mimic select form fields
         for i, category_id in enumerate(categories):
             data['category-%d' % i] = category_id
@@ -189,6 +193,7 @@ class TestPost(ViewTestCase):
         assert_equal(post.title, title)
         assert_equal(post.markup, markup)
         assert_false(post.comments_allowed)
+        assert_false(post.visible)
         assert_equal(post.slug, 'my-post')
         assert '<h1>Title</h1>' in post.html
         assert_equal(post.datetime.date(), datetime.date.today())
@@ -204,11 +209,13 @@ class TestPost(ViewTestCase):
         assert_equal(db.session.query(post_categories).count(), 2)
         
         # Add another post
-        self.add_post(title=post.title, tags=['django'], comments_allowed=True)
+        self.add_post(title=post.title, tags=['django'], comments_allowed=True,
+            visible=True)
         post2 = Post.query.get(2)
         
         assert_equal(post2.title, post.title) 
         assert_true(post2.comments_allowed)
+        assert_true(post2.visible)
         assert_equal(post2.slug, post.slug + '-2')
         assert_equal(post2.categories, [])
         assert_equal(Tag.query.count(), 3)
@@ -223,12 +230,13 @@ class TestPost(ViewTestCase):
         datetime = post.datetime
         
         self.update_post(title='cool', markup='## Title', slug=post.slug, 
-            tags=['django'], comments_allowed=True)
+            tags=['django'], comments_allowed=True, visible=True)
         updated_post = Post.query.get(1)
         
         assert_equal(updated_post.title, 'cool')
         assert_equal(updated_post.markup, '## Title')
         assert_true(updated_post.comments_allowed)
+        assert_true(updated_post.visible)
         assert_equal(updated_post.slug, 'cool')
         assert '<h2>Title</h2>' in updated_post.html
         assert_equal(updated_post.datetime, datetime)
@@ -275,15 +283,44 @@ class TestPost(ViewTestCase):
         assert_equal(len(posts), 0)
         assert_equal(len(tags), 0)
     
-    def test_view(self):
+    def test_singleview(self):
         """Test the displaying of one blog post"""
         self.clear_db()
         self.register_and_login('barney', 'abc')
         
-        self.add_post(title='Title', markup='', tags='')
+        self.add_post(title='Title', markup='', visible=True)
         rv = self.client.get('/post/title')
         self.assert_200(rv)
         assert 'Title' in rv.data
+        
+        self.add_post(title='Title2', visible=None)
+        rv = self.client.get('/post/title2')
+        self.assert_200(rv)
+        assert 'Title2' in rv.data
+        
+        self.logout()
+        
+        rv = self.client.get('/post/title')
+        self.assert_200(rv)
+        assert 'Title' in rv.data
+        
+        rv = self.client.get('/post/title2')
+        self.assert_404(rv)
+    
+    def test_multipleview(self):
+        """Test the displaying of multiple blog posts on home page"""
+        self.clear_db()
+        self.register_and_login('barney', 'abc')
+        
+        self.add_post(title='Title', markup='', visible=True)
+        self.add_post(title='Title2', visible=None)
+        
+        self.logout()
+        
+        rv = self.client.get('/')
+        self.assert_200(rv)
+        assert 'Title' in rv.data
+        assert 'Title2' not in rv.data
     
 
 class TestArchives(ViewTestCase):
@@ -297,7 +334,8 @@ class TestArchives(ViewTestCase):
     def test_month_view(self):
         """Test the displaying of the month view"""
         self.clear_db()
-        post = Post('the chronic 2001')
+        self.register_and_login('barney', 'abc')
+        post = Post('the chronic 2001', visible=False)
         post.datetime = datetime.datetime(1999, 11, 16)
         db.session.add(post)
         db.session.commit()
@@ -308,6 +346,11 @@ class TestArchives(ViewTestCase):
         assert 'No entries here so far' in rv.data
         rv = self.client.get('/1999/14/')
         self.assert_404(rv)
+        
+        self.logout()
+        rv = self.client.get('/1999/11/')
+        self.assert_200(rv)
+        assert 'No entries here so far' in rv.data
 
 
 class TestTag(ViewTestCase):
@@ -315,12 +358,16 @@ class TestTag(ViewTestCase):
     def test_view(self):
         """Test the displaying of the tag view"""
         self.clear_db()
+        self.register_and_login('barney', 'abc')
         tag = Tag('drdre')
         db.session.add(tag)
         db.session.commit()
-        post = Post('the chronic 2001')
+        post = Post('the chronic 2001', visible=True)
+        post2 = Post('the chronic 2002', visible=False)
         post._tags = [tag]
+        post2._tags = [tag]
         db.session.add(post)
+        db.session.add(post2)
         db.session.commit()
         rv = self.client.get('/tag/drdre/')
         self.assert_200(rv)
@@ -328,24 +375,40 @@ class TestTag(ViewTestCase):
         rv = self.client.get('/tag/bobbybrown/')
         self.assert_404(rv)
         
+        self.logout()
+        rv = self.client.get('/tag/drdre/')
+        self.assert_200(rv)
+        assert 'the chronic 2001' in rv.data
+        assert 'the chronic 2002' not in rv.data
+        
         
 class TestCategory(ViewTestCase):
     
     def test_view(self):
         """Test the displaying of the category view"""
         self.clear_db()
+        self.register_and_login('barney', 'abc')
         category = Category('drdre')
         db.session.add(category)
         db.session.commit()
-        post = Post('the chronic')
+        post = Post('the chronic', visible=True)
+        post2 = Post('the chrinoc', visible=False)
         post._categories = [category]
+        post2._categories = [category]
         db.session.add(post)
+        db.session.add(post2)
         db.session.commit()
         rv = self.client.get('/category/drdre/')
         self.assert_200(rv)
         assert 'the chronic' in rv.data
         rv = self.client.get('/category/sugeknight/')
         self.assert_404(rv)
+        
+        self.logout()
+        rv = self.client.get('/category/drdre/')
+        self.assert_200(rv)
+        assert 'the chronic' in rv.data
+        assert 'the chrinoc' not in rv.data
         
         rv = self.client.get('/uncategorized/')
         self.assert_200(rv)

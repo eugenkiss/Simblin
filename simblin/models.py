@@ -67,6 +67,7 @@ class Post(db.Model):
     _markup = db.Column(db.Text)
     _html = db.Column(db.Text)
     comments_allowed = db.Column(db.Boolean)
+    visible = db.Column(db.Boolean)
     datetime = db.Column(db.DateTime)
     
     # Many to many Post <-> Tag
@@ -77,11 +78,12 @@ class Post(db.Model):
     _categories = db.relationship('Category', secondary='post_categories',
         backref=db.backref('posts', lazy='dynamic'))
     
-    def __init__(self, title, markup='', comments_allowed=True):
+    def __init__(self, title, markup='', comments_allowed=True, visible=True):
         self.title = title
         self.markup = markup
         self.datetime = datetime.now()
         self.comments_allowed = comments_allowed;
+        self.visible = visible;
     
     def _set_title(self, title):
         """Constrain title with slug so slug is never set directly"""
