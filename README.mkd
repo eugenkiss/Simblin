@@ -12,7 +12,8 @@ but has support for [Disqus][].
 On the other hand Simblin delivers most features that are needed to provide a
 good blogging experience. Simblin has 
 
-* tags and categories 
+* tags and categories
+* post visibility (for drafts)
 * markdown support
 * archives
 * source code highlighting
@@ -223,6 +224,12 @@ Basically you create an account and set the `DISQUS_SHORTNAME` option in your
 `settings.py` accordingly. For further convenience you should specifiy the
 `Cross-domain Receiver URL` on the Disqus settings page. Just put there
 `http://yoursubdomain.yourdomain.com/does-not-exist`.
+
+
+### How to create drafts?
+
+When creating a post just uncheck `Visible?`. Doing so will hide the post from
+all visitors but the admin. TODO: Be able to manually set the date.
 
 
 ### Why another blog engine?

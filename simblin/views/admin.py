@@ -139,6 +139,7 @@ def preview():
         slug=normalize(args['title']), 
         title=args['title'],
         markup=args['markup'],
+        visible=True,
         html=convert_markup(args['markup']),
         datetime=datetime.datetime.now(),
         # Mimic the tag relationship field of post

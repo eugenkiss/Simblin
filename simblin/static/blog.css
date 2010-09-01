@@ -184,7 +184,10 @@ label {
 
 .post h1.post-title a {
     color: #333;
-    font-weight: normal;
+}
+
+.post h1.invisible a {
+    color: grey;
 }
 
 .post h1.post-title a:hover {

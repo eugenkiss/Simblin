@@ -41,9 +41,13 @@
     </table>
     <div style="margin-top: 0.5em"></div>
     
-    <!-- Comments allowed -->
+    <!-- Comments allowed? -->
     Comments allowed? <input type="checkbox" name="comments_allowed" value="True" 
     {% if post and not post.comments_allowed %}{% else %}Checked{% endif %}/> 
+    
+    <!-- Visible? -->
+    Visible? <input type="checkbox" name="visible" value="True" 
+    {% if post and not post.visible %}{% else %}Checked{% endif %}/> 
     
     <!-- Buttons -->
     <div style="margin-top:1em; text-align:right;">

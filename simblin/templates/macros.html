@@ -1,6 +1,6 @@
 {% macro render_post(post, is_preview=False, full_view=False, next=None, prev=None) %}
 <div class="post">
-  <h1 class="post-title">
+  <h1 class="post-title {% if not post.visible %}invisible{% endif %}">
   {% if not is_preview %}
     <a href="{{ url_for('main.show_post', slug=post.slug) }}">
   {% else %}
@@ -40,6 +40,7 @@
     <div class="admin">
       <a class="edit-post-link" href="{{ url_for('admin.create_post', slug=post.slug, next=request.url) }}">Edit</a>
       <a class="delete-post-link" href="{{ url_for('admin.delete_post', slug=post.slug, next=request.url) }}">Delete</a>
+      {% if not post.visible %}(invisible){% endif %}
     </div>
   {% endif %}
   </div>
