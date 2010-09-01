@@ -1,4 +1,6 @@
 * add "visible" field to blog posts to allow drafts
+    * consider considering visibility when counting posts associated with a tag
+      etc.
 * Posts in Category "Pages" are not shown on normal views
     * update documentation
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog

@@ -10,7 +10,7 @@
     :license: BSD, see LICENSE for more details.
 """
 from flask import Module, current_app, render_template, flash, redirect, \
-                  url_for, abort
+                  url_for, abort, session
 from flaskext.sqlalchemy import Pagination
 
 from simblin.extensions import db
@@ -24,7 +24,11 @@ main = Module(__name__)
 @main.route('/<int:page>')
 def show_posts(page):
     """Show the latest x blog posts"""
-    pagination = Post.query.order_by(Post.id.desc()).paginate(page=page, 
+    if not session.get('logged_in'):
+        posts = Post.query.filter_by(visible=True)
+    else:
+        posts = Post.query
+    pagination = posts.order_by(Post.id.desc()).paginate(page=page, 
         per_page=current_app.config['POSTS_PER_PAGE'])
     if not pagination.total: flash("No posts so far")
     return render_template('posts.html', pagination=pagination,
@@ -36,11 +40,11 @@ def show_post(slug):
     """Show a specific blog post alone"""
     post = Post.query.filter_by(slug=slug).first()
     if post:
+        if not session.get('logged_in') and not post.visible: abort(404)
         prev_post = Post.query.filter_by(id=post.id-1).first()
         next_post = Post.query.filter_by(id=post.id+1).first()
     if not post:
-        flash("No such post")
-        return redirect(url_for('main.show_posts'))
+        abort(404)
     else:
         return render_template('post.html', post=post, prev=prev_post,
                                next=next_post)
@@ -53,6 +57,7 @@ def show_tag(tag, page):
     per_page = current_app.config['POSTS_PER_PAGE']
     tag = Tag.query.filter_by(name=tag).first() or abort(404)
     posts = tag.posts.order_by(Post.id.desc())
+    if not session.get('logged_in'): posts = posts.filter_by(visible=True)
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
@@ -68,6 +73,7 @@ def show_category(category, page):
     per_page = current_app.config['POSTS_PER_PAGE']
     category = Category.query.filter_by(name=category).first() or abort(404)
     posts = category.posts.order_by(Post.id.desc())
+    if not session.get('logged_in'): posts = posts.filter_by(visible=True)
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
@@ -83,6 +89,7 @@ def show_uncategorized(page):
     """Shows all posts which aren't in any category"""
     per_page = current_app.config['POSTS_PER_PAGE']
     posts = Post.query.filter(Post.categories==None)
+    if not session.get('logged_in'): posts = posts.filter_by(visible=True)
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
@@ -101,6 +108,7 @@ def show_month(year, month, page):
     posts = Post.query.filter(db.extract('year', Post.datetime)==year)
     posts = posts.filter(db.extract('month', Post.datetime)==month)
     posts = posts.order_by(Post.id.desc()) 
+    if not session.get('logged_in'): posts = posts.filter_by(visible=True)
     items = posts.limit(per_page).offset((page - 1) * per_page).all()
     pagination = Pagination(posts, page=page, per_page=per_page, 
         total=posts.count(), items=items)
@@ -116,7 +124,11 @@ def show_month(year, month, page):
 @main.route('/archives/')
 def show_archives():
     """Show the archive. That is recent posts, posts by category etc."""
-    latest = Post.query.order_by(Post.id.desc()).limit(5)
+    if not session.get('logged_in'): 
+        latest = Post.query.filter_by(visible=True)
+    else:
+        latest = Post.query
+    latest = latest.order_by(Post.id.desc()).limit(5)
     months = Post.query.get_months()
     tags = Tag.query.all()
     #: Needed for calculation of tag cloud

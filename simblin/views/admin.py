@@ -55,6 +55,7 @@ def create_post(slug):
         markup = request.form['markup']
         tags = normalize_tags(request.form['tags'])
         comments_allowed = bool(request.values.get('comments_allowed', False))
+        visible = bool(request.values.get('visible', False))
         #: Contains the ids of the categories
         categories = []
         for name, id in request.form.iteritems():
@@ -65,7 +66,7 @@ def create_post(slug):
             flash('You must provide a title', 'error')
             return render_template('admin/compose.html')
         elif request.form['action'] == 'Publish':
-            post = Post(title, markup, comments_allowed)
+            post = Post(title, markup, comments_allowed, visible)
             post.tags = tags
             post.categories = categories
             db.session.add(post)
@@ -77,6 +78,7 @@ def create_post(slug):
             post.title = title
             post.markup = markup
             post.comments_allowed = comments_allowed
+            post.visible = visible
             post.tags = tags
             post.categories = categories
             db.session.commit()
