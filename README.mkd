@@ -102,7 +102,7 @@ exemplary fabfile can look like this:
         run('touch '+project_dir+'simblin.wsgi')
         ### uwsgi ###
         # restart uwsgi processes by killing them thus reloading the application
-        run('killall uwsgi')
+        run('killall -9 uwsgi')
         
         
         def backup():
