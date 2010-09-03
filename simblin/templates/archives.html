@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-<h3>Months</h3>
+<h1>Months</h1>
 <ul class=archives id="months">
 {% for month in months %}
 <li>
@@ -11,7 +11,7 @@
 </ul>
 <div class=spacer></div>
 
-<h3>Categories</h3>
+<h1>Categories</h1>
 <ul class=archives id="categories">
 {% if uncategorized_count %}
 <li>
@@ -34,7 +34,7 @@
 {% endif %}
 <div class=spacer></div>
 
-<h3>Tags</h3>
+<h1>Tags</h1>
 <div class=archives id="tag-cloud">
 {% for tag in tags %}
 <a href="{{ url_for('main.show_tag', tag=tag.name) }}" 

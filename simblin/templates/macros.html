@@ -79,6 +79,7 @@
 {% endmacro %}
 
 {% macro render_pagination(pagination, endpoint_func) %}
+  {% if pagination.pages > 1 %}
   <div class=pagination>
   {%- for page in pagination.iter_pages() %}
     {% if page %}
@@ -92,5 +93,6 @@
     {% endif %}
   {%- endfor %}
   </div>
+  {% endif %}
 {% endmacro %}
 <!-- kate: tab-width 2; -->

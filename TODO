@@ -4,8 +4,7 @@
       invisible
     * consider considering visibility when counting posts associated with a tag
       etc.
-* Posts in Category "Pages" are not shown on normal views
-    * update documentation
+* make setup.py 0.3
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * get community feedback
 
@@ -13,8 +12,8 @@
 
 ----------------
 
+* be able to rename categories
 * feeds
-* Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.4
@@ -22,18 +21,22 @@
 
 ----------------
 
-* be able to rename categories
 * Javascript Tag suggestion
 * Put hardcoded Messages in config file (localisation?)
 * make datetime field explicitly settable, both in the model
   and on the compose page through a datetime widget
-  * set default to now but when updating load saved date
+    * set default to now but when updating load saved date
+    * This has a lot of implications especially the id of the posts 
+      cannot be used as a relative time measurement. Views that rely on
+      that should be rewritten to rely on the date. Test should be added
+      before that, where id and date give different relative time measurement.
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.5
 
 ----------------
 
+* Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * search (http://pypi.python.org/pypi/Whoosh/)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -42,10 +45,11 @@
 ----------------
 
 * On archives page:
-    * show 5 latest post titles (below even tagcloud).
-    * Be there a link `more` when clicked ajaxingly loads e.g. the last
-      20 blog titles and a pagination for even older blog posts.
+    * show 10 latest post titles (the first on archives page).
+      with pagination that ajaxingly loads
+    * get rid of month view on archives page (though keep it in the source)
 * statistics (or can I use google statitstsic or how that is called for that?)
+    * or use cherokee logger? add to documentation
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.7
@@ -53,10 +57,10 @@
 ----------------
 
 * improve performance
-** profiling (with google profiling tools) in order to improve performance (archives view esp.)
-** caching queries with pure python?
-** http://github.com/thadeusb/flask-cache Flask Cache
-*** http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
+    * profiling (with google profiling tools) in order to improve performance (archives view esp.)
+    * caching queries with pure python?
+        * http://github.com/thadeusb/flask-cache Flask Cache
+        * http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.8
@@ -76,6 +80,6 @@
 
 * Update markdown2 lib (maybe smartypants? I love real quotation marks)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
-* Wait a little
+* Wait a little, maybe bugs appear
 
 -> v1.0
