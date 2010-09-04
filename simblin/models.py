@@ -10,6 +10,7 @@
 """
 from datetime import datetime
 from werkzeug import check_password_hash, generate_password_hash
+from flask import session
 from flaskext.sqlalchemy import BaseQuery
 
 from simblin.helpers import normalize, convert_markup
@@ -44,6 +45,8 @@ class PostQuery(BaseQuery):
         from calendar import month_name
         months = []
         ordered_posts = self.order_by(Post.id.desc())
+        if not session.get('logged_in'): 
+            ordered_posts = ordered_posts.filter_by(visible=True)
         def group_key(item): 
             return item.datetime.year, item.datetime.month
         for ((year, month), items) in groupby(ordered_posts, group_key):
@@ -184,7 +187,7 @@ class TagQuery(BaseQuery):
     def get_maxcount(self):
         """Return the most used tag's number of associations. This is needed
         for the calculation of the tag cloud"""
-        return max(tag.posts.count() for tag in self) if self.count() else 0
+        return max(tag.post_count for tag in self) if self.count() else 0
 
 
 class Tag(db.Model):
@@ -208,9 +211,11 @@ class Tag(db.Model):
         self.name = name
     
     @property
-    def num_associations(self):
+    def post_count(self):
         """Return the number of posts with this tag"""
-        return len(self.posts)
+        if not session.get('logged_in'):
+            return self.posts.filter_by(visible=True).count()
+        return self.posts.count()
     
     def __repr__(self):
         return '<Tag: %s>' % self.name
@@ -227,9 +232,11 @@ class Category(db.Model):
         self.name = name
     
     @property
-    def num_associations(self):
+    def post_count(self):
         """Return the number of posts in this category"""
-        return len(self.posts)
+        if not session.get('logged_in'):
+            return self.posts.filter_by(visible=True).count()
+        return self.posts.count()
     
     def __repr__(self):
         return '<Category: %s>' % self.name

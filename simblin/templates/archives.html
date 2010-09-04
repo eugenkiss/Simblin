@@ -22,7 +22,7 @@
 {% for category in categories %}
 <li>
   <a href="{{ url_for('main.show_category', category=category.name) }}">{{ category.name }}</a>
-  <div class="post-count">({{ category.posts.count() }})</div>
+  <div class="post-count">({{ category.post_count }})</div>
   {% if session.logged_in %}
   <a class="delete-category" href=# category-id="{{ category.id }}">delete</a>
   {% endif %}
@@ -37,9 +37,11 @@
 <h1>Tags</h1>
 <div class=archives id="tag-cloud">
 {% for tag in tags %}
+{% if tag.post_count > 0 %}
 <a href="{{ url_for('main.show_tag', tag=tag.name) }}" 
-   title="{{ tag.posts.count() }} tagged in {{ tag.name }}"
-   style="font-size:{{ 50 + 150 * tag.posts.count() / max_count }}%; margin-right:1em;">{{ tag.name }}</a>
+   title="{{ tag.post_count }} tagged in {{ tag.name }}"
+   style="font-size:{{ 50 + 150 * tag.post_count / max_count }}%; margin-right:1em;">{{ tag.name }}</a>
+{% endif %}
 {% endfor %}
 </div>
 {% endblock %}

@@ -145,12 +145,12 @@ def show_archives():
         latest = Post.query.filter_by(visible=True)
     else:
         latest = Post.query
-    latest = latest.order_by(Post.id.desc()).limit(5)
+    latest = latest.order_by(Post.id.desc()).limit(10)
     months = Post.query.get_months()
     tags = Tag.query.all()
     #: Needed for calculation of tag cloud
     max_count = Tag.query.get_maxcount()
-    categories = sorted(Category.query.all(), key=lambda x: -x.posts.count())
+    categories = sorted(Category.query.all(), key=lambda x: -x.post_count)
     uncategorized_count = Post.query.filter(Post.categories==None).count()
     return render_template('archives.html', latest=latest, tags=tags,
         categories=categories, uncategorized_count=uncategorized_count, 
