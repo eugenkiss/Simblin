@@ -10,7 +10,7 @@ from setuptools import setup
 
 setup(
     name='simblin',
-    version='0.1',
+    version='0.3',
     packages=['simblin'],
     zip_safe=False,
     install_requires=[

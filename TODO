@@ -1,17 +1,4 @@
-* consider visibility on archives view
-    * change models to distinguish between visible posts so that when not 
-      logger in, e.g. the number of posts in a category is without the 
-      invisible
-    * consider considering visibility when counting posts associated with a tag
-      etc.
-* make setup.py 0.3
-* Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * get community feedback
-
--> v0.3
-
-----------------
-
 * be able to rename categories
 * feeds
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
