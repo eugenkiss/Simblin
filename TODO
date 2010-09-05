@@ -1,4 +1,5 @@
-* write simblin blog post and finish about/projects/impressum
+* test proper redirection after post deletion
+* install traffic logger in cherokee
 * get community feedback
 * submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
 * When previewing an existing Page, show the date of the page, not just now()!

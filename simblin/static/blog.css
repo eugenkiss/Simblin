@@ -12,34 +12,33 @@ body {
     background: #f5f5f5;
     background: #d9ddde url('checkboard.png') repeat right top;
     height: 100%;
-    text-shadow: white 0px 1px 0px;
     text-shadow: rgba(255, 255, 255, 0.7) 0px 1px 0px;
+    color: #424242;
 }
 
 img {
 }
 
 a {
-    color: #66233C;
+    color: #99345a;
     text-decoration: none;
     -webkit-transition: color .25s ease;
     transition: color .25s linear;
 }
 
 a:hover {
-    color: #9a355a;
+    color: #bf4270;
     -webkit-transition: color .25s ease;
     transition: color .25s linear;
 }
 
 h1,h2,h3,h4,h5,h6 {
     font-weight: normal;
-    color: #333;
-    color: #787878;
+    color: #424242;
 }
 
 h1 a {
-    color: #787878;
+    color: #424242;
 }
 
 ul li:before {
@@ -49,22 +48,17 @@ ul li:before {
 /* Forms */
 
 input, textarea, select {
+    color: #424242;
     border: 1px solid #AAA;
-    padding: 1px 0px;
+    padding: 1px 1px;
     background: #EEEFFF;
-    -webkit-box-shadow: #666 1px 1px 1px;
-    -moz-box-shadow: #666 1px 1px 1px;
-    box-shadow: #666 1px 1px 1px;
+    background: rgba(255,255,255,0.2);
 }
 
 .submit {
     border: 1px solid #AAA;
+    background: rgba(255,255,255,0.2);
     padding: 1px 6px;
-    color: #080000;
-    background: rgba(255, 170, 200, 0.6);
-    -webkit-box-shadow: #666 1px 1px 1px;
-    -moz-box-shadow: #666 1px 1px 1px;
-    box-shadow: #666 1px 1px 1px;
     font-size: inherit;
 }
 
@@ -76,14 +70,6 @@ label {
 /* Message Flashing */
 
 .flashes {
-    text-align: left;
-    font-style: italic;
-    font-family: Georgia, serif;
-    color: #66233C;
-    /*background: rgba(245, 170, 190, 0.1);
-    -webkit-box-shadow: #666 1px 1px 1px;
-    -moz-box-shadow: #666 1px 1px 1px;
-    box-shadow: #666 1px 1px 1px;*/
 }
 
 .error {
@@ -97,7 +83,7 @@ label {
 /* Between blog posts */
 
 .spacer {
-    height: 1em;
+    /*height: 1em;*/
 }
 
 #metanav {
@@ -121,7 +107,7 @@ label {
     margin: 0 auto;
     padding: 2em;
     padding-top: 0;
-    /*background: rgba(255, 255, 255, 0.1);*/
+    background: rgba(255, 255, 255, 0.0);
 }
 
 #header {
@@ -137,20 +123,19 @@ label {
 }
 
 #header a:hover {
-    color: #9a355a;
+    color: #bf4270;
 }
 
 #navigation {
 }
 
 #navigation a {
-    color: #080000;
-    color: #333;
+    color: #424242;
     border: none;
 }
 
 #navigation a:hover {
-    color: #9a355a;
+    color: #bf4270;
 }
 
 #navigation ul {
@@ -168,12 +153,6 @@ label {
     list-style-type: none;
     display: inline;
     margin-right: 1em;
-    padding: 0.2em;
-    background: #f5e5e5;
-    background: rgba(255, 170, 200, 0.6);
-    -webkit-box-shadow: #666 1px 1px 1px;
-    -moz-box-shadow: #666 1px 1px 1px;
-    box-shadow: #666 1px 1px 1px;
 }
 
 #navigation li:last-child {
@@ -197,7 +176,7 @@ label {
 }
 
 #search {
-    text-align: center;
+    /*text-align: center;*/
 }
 
 #search-field {
@@ -213,7 +192,6 @@ label {
 
 .post h1.post-title {
     text-align: left;
-    border-bottom: 1px dashed #bbb;
 }
 
 .post h1.post-title a {
@@ -226,7 +204,7 @@ label {
 }
 
 .post .body {
-    font-family: Georgia;
+    /*font-family: Georgia;*/
     font-size: 0.8em;
     /*color: #222;*/
     margin-top: 1em;
@@ -237,19 +215,15 @@ label {
 .post .body h1,.post .body h2,.post .body h3,.post .body h4,.post .body h5,.post .body h6 {
     margin-bottom: 0em;
     font-family: Arial, Helvetica, sans-serif;
-    /*color: #333;*/
+    color: #787878;
 }
 
 .post .body h3,h4,h5,h6 {
     margin-bottom: -0.5em;
 }
 
-.post .body a, .post .info a {
-    color: #66233c;
-}
-
 .post .body a {
-    border-bottom: 1px dotted #ff8cb5;
+    border-bottom: 1px dotted #bbb;
 }
 
 .post p {
@@ -261,7 +235,7 @@ label {
 }
 
 .post a:hover {
-    color: #9a355a;
+    color: #bf4270;
 }
 
 .post .info {
