@@ -1,4 +1,7 @@
+* write simblin blog post and finish about/projects/impressum
 * get community feedback
+* submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
+* When previewing an existing Page, show the date of the page, not just now()!
 * be able to rename categories
 * feeds
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog

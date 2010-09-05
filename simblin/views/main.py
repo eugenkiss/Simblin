@@ -147,7 +147,7 @@ def show_archives():
         latest = Post.query
     latest = latest.order_by(Post.id.desc()).limit(10)
     months = Post.query.get_months()
-    tags = Tag.query.all()
+    tags = Tag.query.order_by(Tag.name).all()
     #: Needed for calculation of tag cloud
     max_count = Tag.query.get_maxcount()
     categories = sorted(Category.query.all(), key=lambda x: -x.post_count)
