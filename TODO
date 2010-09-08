@@ -1,5 +1,16 @@
-* test proper redirection after post deletion
 * install traffic logger in cherokee
+    * how to automatically stop server after specific amount of traffic is reached? (rrdtool can be supposedly used for that)
+* create e-mail adress blog@eugenkiss.com
+    * ispconfig, webmin (usermin), kloxo
+* create contact page
+    * erecht-24 ask in forum what to put there (international audience) and in
+      which language (german, because I am in germany and servers are?)
+        * does it have to be called "impressum" or ist "contact" enough?
+* BUG: Before implementation add test for that.
+       next and prev does not work with simply adding/removing 1 to current id,
+       simply because you can delete posts and ids can show nowhere. Better 
+       order posts by date and get the first post after/before the current
+       Order by date too on archives page latest posts.
 * get community feedback
 * submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
 * When previewing an existing Page, show the date of the page, not just now()!
