@@ -28,7 +28,7 @@ def show_posts(page):
         posts = Post.query.filter_by(visible=True)
     else:
         posts = Post.query
-    pagination = posts.order_by(Post.id.desc()).paginate(page=page, 
+    pagination = posts.order_by(Post.datetime.desc()).paginate(page=page, 
         per_page=current_app.config['POSTS_PER_PAGE'])
     if not pagination.total: flash("No posts so far")
     return render_template('posts.html', pagination=pagination,
