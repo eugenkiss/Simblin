@@ -1,4 +1,4 @@
-{% macro render_post(post, is_preview=False, full_view=False, next=None, prev=None) %}
+{% macro render_post(post, is_preview=False, full_view=False) %}
 <div class="post">
   <h1 class="post-title {% if not post.visible %}invisible{% endif %}">
   {% if not is_preview %}
@@ -45,22 +45,6 @@
   {% endif %}
   </div>
   
-  {% if full_view %}
-  <div id=adjacent-posts>
-    <div id="prev-post">
-    {% if prev %}
-      <a href="{{ url_for('main.show_post', slug=prev.slug) }}">&laquo; {{ prev.title }}</a>
-    {% endif %}
-    </div>
-    <div id="next-post">
-    {% if next %}
-      <a href="{{ url_for('main.show_post', slug=next.slug) }}">{{ next.title }} &raquo;</a>
-    {% endif %}
-    </div>
-    <div style='clear:both'></div>
-  </div>
-  {% endif %}
-  
   {% if post.comments_allowed and not is_preview and full_view %}
     <div style="margin-top: 5em"></div>
     <div id="disqus_thread"></div>
@@ -76,6 +60,29 @@
     <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
   {% endif %}
 </div>
+{% endmacro %}
+
+{% macro render_post_minimal(post) %}
+<li class="post"><a class="post-title {% if not post.visible %}invisible{% endif %}" href="{{ url_for('main.show_post', slug=post.slug) }}">{{ post.title }}</a>
+  <div class="info">
+    <span class="date">{{ post.datetime.strftime("%A %d. %B %Y") }}</span>
+    
+    {% if post.comments_allowed %}
+      <div class="comments-link">
+      <a href="{{ url_for('main.show_post', slug=post.slug) }}#disqus_thread">Comments</a>
+      </div>
+    {% endif %}
+    
+    {% if session.logged_in and not is_preview %}
+    <div class="admin">
+      <a class="edit-post-link" href="{{ url_for('admin.create_post', slug=post.slug, next=request.url) }}">Edit</a>
+      <a class="delete-post-link" href="{{ url_for('admin.delete_post', slug=post.slug, next=request.url) }}">Delete</a>
+      {% if not post.visible %}(invisible){% endif %}
+    </div>
+    {% endif %}
+    
+  </div>
+</li>
 {% endmacro %}
 
 {% macro render_pagination(pagination, endpoint_func) %}

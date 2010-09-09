@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-<h1>Months</h1>
+<h3>Months</h3>
 <ul class=archives id="months">
 {% for month in months %}
 <li>
@@ -11,7 +11,7 @@
 </ul>
 <div class=spacer></div>
 
-<h1>Categories</h1>
+<h3>Categories</h3>
 <ul class=archives id="categories">
 {% if uncategorized_count %}
 <li>
@@ -34,7 +34,7 @@
 {% endif %}
 <div class=spacer></div>
 
-<h1>Tags</h1>
+<h3>Tags</h3>
 <div class=archives id="tag-cloud">
 {% for tag in tags %}
 {% if tag.post_count > 0 %}

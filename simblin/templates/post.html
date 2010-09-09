@@ -2,6 +2,6 @@
 {% extends "base.html" %}
 {% block body %}
   {% if post %}
-    {{ render_post(post, full_view=True, next=next, prev=prev) }}
+    {{ render_post(post, full_view=True) }}
   {% endif %}
 {% endblock %}

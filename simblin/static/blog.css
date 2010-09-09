@@ -64,6 +64,7 @@ label {
 
 .flashes {
     color: grey;
+    margin-bottom: 2em;
 }
 
 .error {
@@ -131,7 +132,7 @@ label {
     padding: 0;
     padding-top: 1em;
     padding-bottom: 1em;
-    border-bottom: 2px solid #eee;
+    /*border-bottom: 2px solid #ddd;*/
 }
 
 #navigation ul li:before {
@@ -176,23 +177,36 @@ label {
     color:black;
 }
 
+/* Posts */
+
+ul.posts {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 1em;
+}
+
+ul.posts li:before {
+	content: "";
+}
+
 .post {
-    margin-bottom: 3em;
 }
 
 .post h1.post-title {
     text-align: left;
 }
 
-.post h1.post-title a {
+.post .post-title a {
+    color: black;
+}
+
+.post .post-title {
     color: black;
 }
 
 .post h1.invisible a {
     color: #ccc;
-}
-
-.post h1.post-title a:hover {
 }
 
 .post .body {

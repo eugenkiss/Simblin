@@ -1,10 +1,11 @@
 {% from 'macros.html' import render_pagination %}
-{% from 'macros.html' import render_post with context %}
+{% from 'macros.html' import render_post_minimal with context %}
 {% extends "base.html" %}
 {% block body %}
+  <ul class=posts>
   {% for post in pagination.items %}
-    {{ render_post(post) }}
-    <div class=spacer></div>
+    {{ render_post_minimal(post) }}
   {% endfor %}
+  </ul>
   {{ render_pagination(pagination, endpoint_func) }}
 {% endblock %}
