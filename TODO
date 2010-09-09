@@ -1,10 +1,9 @@
-* install traffic logger in cherokee
-    * how to automatically stop server after specific amount of traffic is reached? (rrdtool can be supposedly used for that)
-* create e-mail adress blog@eugenkiss.com
-    * ispconfig, webmin (usermin), kloxo
+* only show title on posts view but like 10 per page! look at this mercurial guy
 * create contact page
     * erecht-24 ask in forum what to put there (international audience) and in
-      which language (german, because I am in germany and servers are?)
+      which language (german, because I am in germany and servers are?) Also reicht es aus, wenn es deutsch ist,
+      da ich mich eh an deutsches recht halten muss, obwohl die seite sonst auf englisch ist?
+    * Welche Informationen sollte ich angeben?
         * does it have to be called "impressum" or ist "contact" enough?
 * BUG: Before implementation add test for that.
        next and prev does not work with simply adding/removing 1 to current id,
@@ -16,6 +15,8 @@
 * When previewing an existing Page, show the date of the page, not just now()!
 * be able to rename categories
 * feeds
+    * feedburner?
+* rename in setup.py to v0.4
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.4
@@ -32,6 +33,7 @@
       cannot be used as a relative time measurement. Views that rely on
       that should be rewritten to rely on the date. Test should be added
       before that, where id and date give different relative time measurement.
+* rename in setup.py to v0.5
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.5
@@ -40,6 +42,7 @@
 
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * search (http://pypi.python.org/pypi/Whoosh/)
+* rename in setup.py to v0.6
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.6
@@ -52,6 +55,7 @@
     * get rid of month view on archives page (though keep it in the source)
 * statistics (or can I use google statitstsic or how that is called for that?)
     * or use cherokee logger? add to documentation
+* rename in setup.py to v0.7
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.7
@@ -63,6 +67,7 @@
     * caching queries with pure python?
         * http://github.com/thadeusb/flask-cache Flask Cache
         * http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
+* rename in setup.py to v0.8
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.8
@@ -74,6 +79,7 @@
   (e.g. 3 columns for months, 3 columns for categories, tag cloud and then
   recent posts)
 * Pingback/Traceback (or does Disqus already do that?) / Look at Zine
+* rename in setup.py to v0.9
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.9
@@ -83,5 +89,6 @@
 * Update markdown2 lib (maybe smartypants? I love real quotation marks)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * Wait a little, maybe bugs appear
+* rename in setup.py to v1.0
 
 -> v1.0
