@@ -4,7 +4,8 @@
       da ich mich eh an deutsches recht halten muss, obwohl die seite sonst auf englisch ist?
     * Welche Informationen sollte ich angeben?
         * does it have to be called "impressum" or ist "contact" enough?
-* When previewing an existing Page, show the date of the page, not just now()!
+* BUG: When previewing an existing Page, show the date of the page, not just now()!
+* BUG: When updating the title and clicking on update redirect to updated page not old!
 * be able to rename categories
 * feeds
     * feedburner?
