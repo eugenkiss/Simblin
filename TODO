@@ -1,17 +1,9 @@
-* only show title on posts view but like 10 per page! look at this mercurial guy
 * create contact page
     * erecht-24 ask in forum what to put there (international audience) and in
       which language (german, because I am in germany and servers are?) Also reicht es aus, wenn es deutsch ist,
       da ich mich eh an deutsches recht halten muss, obwohl die seite sonst auf englisch ist?
     * Welche Informationen sollte ich angeben?
         * does it have to be called "impressum" or ist "contact" enough?
-* BUG: Before implementation add test for that.
-       next and prev does not work with simply adding/removing 1 to current id,
-       simply because you can delete posts and ids can show nowhere. Better 
-       order posts by date and get the first post after/before the current
-       Order by date too on archives page latest posts.
-* get community feedback
-* submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
 * When previewing an existing Page, show the date of the page, not just now()!
 * be able to rename categories
 * feeds
@@ -20,6 +12,9 @@
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.4
+
+* get community feedback
+* submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
 
 
 ----------------
@@ -49,10 +44,6 @@
 
 ----------------
 
-* On archives page:
-    * show 10 latest post titles (the first on archives page).
-      with pagination that ajaxingly loads
-    * get rid of month view on archives page (though keep it in the source)
 * statistics (or can I use google statitstsic or how that is called for that?)
     * or use cherokee logger? add to documentation
 * rename in setup.py to v0.7
