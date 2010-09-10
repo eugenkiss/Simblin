@@ -65,6 +65,8 @@ label {
 .flashes {
     color: grey;
     margin-bottom: 2em;
+    font-size: 0.8em;
+    font-style: italic;
 }
 
 .error {
@@ -124,15 +126,16 @@ label {
 }
 
 #navigation li a {
-    color: black;
+    /*color: black;*/
 }
 
 #navigation ul {
+    font-size: 0.8em;
     margin: 0;
     padding: 0;
     padding-top: 1em;
     padding-bottom: 1em;
-    /*border-bottom: 2px solid #ddd;*/
+    border-bottom: 2px solid #eee;
 }
 
 #navigation ul li:before {
@@ -300,4 +303,10 @@ ul.archives li {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px inset, rgba(255, 255, 255, 0.4) 0px -1px 1px inset;*/
     padding: 0.25em 0.5em;
     font-size: 0.8em;
+}
+
+.snippet {
+    color: #bbb;
+    font-size: 0.7em;
+    font-style: italic;
 }

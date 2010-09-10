@@ -1,14 +1,9 @@
-* create contact page
-    * erecht-24 ask in forum what to put there (international audience) and in
-      which language (german, because I am in germany and servers are?) Also reicht es aus, wenn es deutsch ist,
-      da ich mich eh an deutsches recht halten muss, obwohl die seite sonst auf englisch ist?
-    * Welche Informationen sollte ich angeben?
-        * does it have to be called "impressum" or ist "contact" enough?
 * BUG: When previewing an existing Page, show the date of the page, not just now()!
 * BUG: When updating the title and clicking on update redirect to updated page not old!
 * be able to rename categories
 * feeds
     * feedburner?
+* replace html comments in Templates with Jinja Comments {# comment #}
 * rename in setup.py to v0.4
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -47,6 +42,7 @@
 
 * statistics (or can I use google statitstsic or how that is called for that?)
     * or use cherokee logger? add to documentation
+* clean css
 * rename in setup.py to v0.7
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 

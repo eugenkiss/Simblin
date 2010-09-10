@@ -59,14 +59,37 @@
 
 {% macro render_post_minimal(post) %}
 <li class="post"><a class="post-title {% if not post.visible %}invisible{% endif %}" href="{{ url_for('main.show_post', slug=post.slug) }}">{{ post.title }}</a>
+  <div class="snippet">{{ post.html|striptags|truncate }}</div>
   <div class="info">
+  
+    <div class="comments-link">
+    {% if post.comments_allowed %}
+      <a href="{{ url_for('main.show_post', slug=post.slug) }}#disqus_thread">Comments</a>
+    {% else %}
+      No comments allowed
+    {% endif %}
+    </div>
     <span class="date">{{ post.datetime.strftime("%A %d. %B %Y") }}</span>
     
-    {% if post.comments_allowed %}
-      <div class="comments-link">
-      <a href="{{ url_for('main.show_post', slug=post.slug) }}#disqus_thread">Comments</a>
-      </div>
+    {% if post.categories %}
+      in
+      <span class="categories">
+      {% for category in post.categories %}
+          <a href="{% if not is_preview %}{{ url_for('main.show_category', category=category.name) }}{% else %}#{% endif %}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+      {% endfor %}
+      </span>
     {% endif %}
+    
+    <div class="tags">
+    {% if post.tags %}
+      Tags: 
+      {% for tag in post.tags %}
+        <a href="{% if not is_preview %}{{ url_for('main.show_tag', tag=tag.name) }}{% else %}#{% endif %}">{{ tag.name }}</a>{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    {% else %}
+      No Tags
+    {% endif %}
+    </div>
     
     {% if session.logged_in and not is_preview %}
     <div class="admin">
@@ -75,7 +98,6 @@
       {% if not post.visible %}(invisible){% endif %}
     </div>
     {% endif %}
-    
   </div>
 </li>
 {% endmacro %}
