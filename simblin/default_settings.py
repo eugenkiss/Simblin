@@ -9,3 +9,7 @@ SQLALCHEMY_ECHO = False
 DEBUG = True
 PORT = 5000
 DISQUS_SHORTNAME = ''
+
+# For Feed
+AUTHOR = "Batman"
+BLOG_URL = "http://blog.batcave.net"

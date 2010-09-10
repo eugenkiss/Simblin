@@ -1,8 +1,5 @@
-* feeds
-    * pyRSS2Gen
-    * feedburner?
-* make feed settings customizable (put in settings.py instead of directly into atom.xml)
 * add rfc3339.py to used libraries in redme http://henry.precheur.org/projects/rfc3339
+    * add feed support to readme as features
 * rename in setup.py to v0.4
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
