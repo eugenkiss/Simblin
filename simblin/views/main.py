@@ -10,7 +10,7 @@
     :license: BSD, see LICENSE for more details.
 """
 from flask import Module, current_app, render_template, flash, redirect, \
-                  url_for, abort, session
+                  url_for, abort, session, make_response
 from flaskext.sqlalchemy import Pagination
 
 from simblin.extensions import db
@@ -19,6 +19,17 @@ from simblin.models import Post, Tag, Category
 
 main = Module(__name__)
 
+
+@main.route('/atom')
+def atom_feed():
+    """Create an atom feed from the posts"""
+    from simblin.lib.rfc3339 import rfc3339
+    posts = Post.query.filter_by(visible=True).order_by(Post.datetime.desc())
+    updated = posts.first().datetime
+    response = make_response(render_template('atom.xml', posts=posts, 
+        updated=updated, rfc3339=rfc3339))
+    response.mimetype = "application/atom+xml"
+    return response
 
 @main.route('/', defaults={'page':1})
 @main.route('/<int:page>')

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <author>
+        <name>Eugen Kiss</name>
+    </author>
+    <title>{{ config['BLOG_TITLE'] }}</title>
+    <link href="http://blog.eugenkiss.com/atom" rel="self" />
+    <link href="http://blog.eugenkiss.com/" />
+    <id>http://blog.eugenkiss.com/</id>
+    <updated>{{ rfc3339(updated) }}</updated>
+    
+    {% for post in posts %}
+    <entry>
+        <id>http://blog.eugenkiss.com{{ url_for('main.show_post', slug=post.slug) }}</id>
+        <updated>{{ rfc3339(post.datetime) }}</updated>
+        <title>{{ post.title }}</title>
+        <link href="{{ url_for('main.show_post', slug=post.slug) }}"/>
+        <summary>{{ post.html|striptags|truncate }}</summary>
+        <content type="html">{{ post.html }}</content>
+    </entry>
+    {% endfor %}
+</feed>

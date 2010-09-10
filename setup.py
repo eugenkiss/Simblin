@@ -11,7 +11,7 @@ from setuptools import setup
 setup(
     name='simblin',
     version='0.3',
-    packages=['simblin'],
+    packages=['simblin', 'simblin.lib'],
     zip_safe=False,
     install_requires=[
         'Flask',

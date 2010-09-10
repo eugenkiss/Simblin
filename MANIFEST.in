@@ -1,6 +1,5 @@
 recursive-include simblin/templates *
 recursive-include simblin/static *
-include simblin/default-settings.cfg
 prune test
 exclude initdb.py
 exclude run.py
