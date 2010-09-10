@@ -28,7 +28,7 @@ def show_posts(page):
         posts = Post.query.filter_by(visible=True)
     else:
         posts = Post.query
-    pagination = posts.order_by(Post.id.desc()).paginate(page=page, 
+    pagination = posts.order_by(Post.datetime.desc()).paginate(page=page, 
         per_page=current_app.config['POSTS_PER_PAGE'])
     if not pagination.total: flash("No posts so far")
     return render_template('posts.html', pagination=pagination,
@@ -41,27 +41,7 @@ def show_post(slug):
     post = Post.query.filter_by(slug=slug).first()
     if not post: abort(404)
     if not session.get('logged_in') and not post.visible: abort(404)
-    # TODO: If the date of a post can be set manually then the order of
-    #       posts should not be resolved by their id, but by their 
-    #       timestamp. This needs to be adressed in other places, too.
-    prev_post = None
-    next_post = None
-    prev_id = post.id-1
-    next_id = post.id+1
-    if not session.get('logged_in'):
-        while True:
-            prev_post = Post.query.filter_by(id=prev_id).first()
-            if not prev_post or prev_post.visible: break
-            prev_id -= 1
-        while True:
-            next_post = Post.query.filter_by(id=next_id).first()
-            if not next_post or next_post.visible: break
-            next_id += 1
-    else:
-        prev_post = Post.query.filter_by(id=prev_id).first()
-        next_post = Post.query.filter_by(id=next_id).first()
-    return render_template('post.html', post=post, prev=prev_post,
-        next=next_post)
+    return render_template('post.html', post=post)
         
 
 @main.route('/tag/<tag>/', defaults={'page':1})

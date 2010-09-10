@@ -24,11 +24,12 @@
       <!-- Navigation -->
       <div id="navigation">
         <ul>
+          <li>{{ config['BLOG_TITLE'] }}</li>
           <li><a href="{{ url_for('main.show_posts') }}">Home</a></li>
           <li><a href="{{ url_for('main.show_archives') }}">Archives</a></li>
-          <li><a href="{{ url_for('main.show_post', slug='about') }}">About</a></li>
           <li><a href="{{ url_for('main.show_post', slug='projects') }}">Projects</a></li>
-          <li><a href="http://github.com/eugenkiss/">Code</a></li>
+          <li><a href="{{ url_for('main.show_post', slug='about') }}">About</a></li>
+          <li><a href="{{ url_for('main.show_post', slug='contact') }}">Contact</a></li>
         </ul>
         <!-- Message Flashing -->
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -45,14 +46,6 @@
       <div id="content">
         {% block body %}{% endblock %}
       </div>
-      <!-- Search Block -->
-      {% block search %}
-      <div id="search">
-        <input id="search-field" name="search" type="text"/> 
-        <a id="search-button" class="submit" href='#'>Search</a>
-      </div>
-      {% endblock %}
-      
   </div>
   <!-- For Javascript -->
   <script type=text/javascript>

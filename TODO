@@ -1,24 +1,16 @@
-* install traffic logger in cherokee
-    * how to automatically stop server after specific amount of traffic is reached? (rrdtool can be supposedly used for that)
-* create e-mail adress blog@eugenkiss.com
-    * ispconfig, webmin (usermin), kloxo
-* create contact page
-    * erecht-24 ask in forum what to put there (international audience) and in
-      which language (german, because I am in germany and servers are?)
-        * does it have to be called "impressum" or ist "contact" enough?
-* BUG: Before implementation add test for that.
-       next and prev does not work with simply adding/removing 1 to current id,
-       simply because you can delete posts and ids can show nowhere. Better 
-       order posts by date and get the first post after/before the current
-       Order by date too on archives page latest posts.
-* get community feedback
-* submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
-* When previewing an existing Page, show the date of the page, not just now()!
+* BUG: When previewing an existing Page, show the date of the page, not just now()!
+* BUG: When updating the title and clicking on update redirect to updated page not old!
 * be able to rename categories
 * feeds
+    * feedburner?
+* replace html comments in Templates with Jinja Comments {# comment #}
+* rename in setup.py to v0.4
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.4
+
+* get community feedback
+* submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
 
 
 ----------------
@@ -32,6 +24,7 @@
       cannot be used as a relative time measurement. Views that rely on
       that should be rewritten to rely on the date. Test should be added
       before that, where id and date give different relative time measurement.
+* rename in setup.py to v0.5
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.5
@@ -40,18 +33,17 @@
 
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * search (http://pypi.python.org/pypi/Whoosh/)
+* rename in setup.py to v0.6
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.6
 
 ----------------
 
-* On archives page:
-    * show 10 latest post titles (the first on archives page).
-      with pagination that ajaxingly loads
-    * get rid of month view on archives page (though keep it in the source)
 * statistics (or can I use google statitstsic or how that is called for that?)
     * or use cherokee logger? add to documentation
+* clean css
+* rename in setup.py to v0.7
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.7
@@ -63,6 +55,7 @@
     * caching queries with pure python?
         * http://github.com/thadeusb/flask-cache Flask Cache
         * http://beaker.groovie.org/ http://www.sqlalchemy.org/docs/examples.html#examples-caching
+* rename in setup.py to v0.8
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.8
@@ -74,6 +67,7 @@
   (e.g. 3 columns for months, 3 columns for categories, tag cloud and then
   recent posts)
 * Pingback/Traceback (or does Disqus already do that?) / Look at Zine
+* rename in setup.py to v0.9
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
 -> v0.9
@@ -83,5 +77,6 @@
 * Update markdown2 lib (maybe smartypants? I love real quotation marks)
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 * Wait a little, maybe bugs appear
+* rename in setup.py to v1.0
 
 -> v1.0

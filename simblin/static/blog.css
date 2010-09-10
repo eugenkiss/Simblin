@@ -20,25 +20,17 @@ img {
 }
 
 a {
-    color: #99345a;
+    color: #bf4270;
     text-decoration: none;
-    -webkit-transition: color .25s ease;
-    transition: color .25s linear;
 }
 
 a:hover {
-    color: #bf4270;
-    -webkit-transition: color .25s ease;
-    transition: color .25s linear;
+    border-bottom: 1px dotted #bbb;
 }
 
 h1,h2,h3,h4,h5,h6 {
     font-weight: normal;
     color: black;
-}
-
-h1 a {
-    color: #424242;
 }
 
 ul li:before {
@@ -72,6 +64,9 @@ label {
 
 .flashes {
     color: grey;
+    margin-bottom: 2em;
+    font-size: 0.8em;
+    font-style: italic;
 }
 
 .error {
@@ -120,31 +115,27 @@ label {
 }
 
 #header a {
-    color: black;
     border: none;
 }
 
 #header a:hover {
-    color: #bf4270;
+    
 }
 
 #navigation {
 }
 
-#navigation a {
-    color: black;
-    border: none;
-}
-
-#navigation a:hover {
-    color: #bf4270;
+#navigation li a {
+    /*color: black;*/
 }
 
 #navigation ul {
+    font-size: 0.8em;
     margin: 0;
     padding: 0;
     padding-top: 1em;
     padding-bottom: 1em;
+    border-bottom: 2px solid #eee;
 }
 
 #navigation ul li:before {
@@ -189,26 +180,36 @@ label {
     color:black;
 }
 
+/* Posts */
+
+ul.posts {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 1em;
+}
+
+ul.posts li:before {
+	content: "";
+}
+
 .post {
-    margin-bottom: 3em;
 }
 
 .post h1.post-title {
     text-align: left;
 }
 
-.post h1.post-title a {
+.post .post-title a {
+    color: black;
+}
+
+.post .post-title {
     color: black;
 }
 
 .post h1.invisible a {
     color: #ccc;
-}
-
-.post h1.post-title a:hover {
-    color: #bf4270;
-    -webkit-transition: color .25s ease;
-    transition: color .25s linear;
 }
 
 .post .body {
@@ -231,7 +232,7 @@ label {
 }
 
 .post .body a {
-    border-bottom: 1px dotted #bbb;
+    /*border-bottom: 1px dotted #bbb;*/
 }
 
 .post p {
@@ -302,4 +303,10 @@ ul.archives li {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px inset, rgba(255, 255, 255, 0.4) 0px -1px 1px inset;*/
     padding: 0.25em 0.5em;
     font-size: 0.8em;
+}
+
+.snippet {
+    color: #bbb;
+    font-size: 0.7em;
+    font-style: italic;
 }
