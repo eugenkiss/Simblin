@@ -17,6 +17,7 @@ good blogging experience. Simblin has
 * markdown support
 * archives
 * source code highlighting
+* feeds
 
 See the changelog to see what featueres a specific version provides.
 
@@ -256,6 +257,7 @@ Used libraries/frameworks
 * [SQLAlchemy][]
 * [Markdown2][]
     * [Pygments][]
+* [rfc3339.py][]
 * [JQuery][]
     * [Tab Override Plugin](http://plugins.jquery.com/project/tab-override)
 
@@ -268,3 +270,4 @@ Used libraries/frameworks
   [pygments]: http://pygments.org/
   [disqus]: http://www.disqus.com/
   [jquery]: http://jquery.com/
+  [rfc3339.py]: http://henry.precheur.org/projects/rfc3339
