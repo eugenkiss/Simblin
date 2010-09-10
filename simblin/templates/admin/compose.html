@@ -47,7 +47,10 @@
     
     <!-- Visible? -->
     Visible? <input type="checkbox" name="visible" value="True" 
-    {% if post and not post.visible %}{% else %}Checked{% endif %}/> 
+    {% if post and not post.visible %}{% else %}Checked{% endif %}/>
+    
+    <!-- Date -->
+    <input type="hidden" name="datetime" value="{{ post.datetime.strftime('%s') if post else -1 }}"/>
     
     <!-- Buttons -->
     <div style="margin-top:1em; text-align:right;">
@@ -78,6 +81,7 @@
         'title': $("input[name$='title']").val(),
         'markup': $("textarea[name$='markup']").val(),
         'tags': $("input[name$='tags']").val(),
+        'datetime': $("input[name$='datetime']").val(),
         // Get all the names of the categories as a comma separated list
         'categories': $("#categories div select option:selected").map(
           function() { return $(this).text(); }).get().join(',')

@@ -141,12 +141,12 @@ def preview():
         markup=args['markup'],
         visible=True,
         html=convert_markup(args['markup']),
-        datetime=datetime.datetime.now(),
+        datetime=datetime.datetime.fromtimestamp(int(args['datetime'])),
         # Mimic the tag relationship field of post
         tags=[dict(name=tag) for tag in normalize_tags(args['tags'])],
         # Mimic the category relationship field of post
         categories=[dict(name=name) for name in 
-            set(args['categories'].split(','))],
+            filter(lambda x: x != '', set(args['categories'].split(',')))],
     )
     return render_template('admin/_preview.html', post=post)
 
