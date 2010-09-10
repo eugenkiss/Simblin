@@ -1,5 +1,4 @@
 * BUG: When previewing an existing Page, show the date of the page, not just now()!
-* BUG: When updating the title and clicking on update redirect to updated page not old!
 * be able to rename categories
 * feeds
     * feedburner?
@@ -33,6 +32,7 @@
 
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * search (http://pypi.python.org/pypi/Whoosh/)
+    * put search field on archives page
 * rename in setup.py to v0.6
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 

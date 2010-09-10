@@ -84,7 +84,7 @@ def create_post(slug):
             db.session.commit()
             signals.post_updated.send(post)
             flash('Post was successfully updated')
-            return redirect(next or url_for('main.show_post', slug=post.slug))
+            return redirect(url_for('main.show_post', slug=post.slug))
         
 
 @admin.route('/_delete/<slug>', methods=['GET', 'POST'])
