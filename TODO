@@ -1,4 +1,3 @@
-* replace html comments in Templates with Jinja Comments {# comment #} (git grep <!--)
 * feeds
     * feedburner?
 * rename in setup.py to v0.4

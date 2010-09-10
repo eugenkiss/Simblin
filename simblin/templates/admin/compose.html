@@ -7,18 +7,18 @@
   <h3>Compose</h3>
   <form action="{{ request.url }}" method="post" class="compose">
   <div>
-    <!-- Title -->
+    {# Title #}
     <div style="margin-bottom:5px">
       <input name="title" size=50 type="text" class="title" value="{{ post.title if post else '' }}"/>
     </div>
     
-    <!-- Markup -->
+    {# Markup #}
     <div style="margin-bottom:5px">
       <textarea name="markup" rows="40" 
       style="width:100%; font-size:12px;" class="markup">{{ post.markup|safe if post else "" }}</textarea>
     </div>
     
-    <!-- Tags -->
+    {# Tags #}
     <div>
       <label for=tags>Tags:</label> 
       <input name="tags" type="text" size=50 
@@ -26,7 +26,7 @@
     </div>
     <div style="margin-top: 0.5em"></div>
     
-    <!-- Categories -->
+    {# Categories #}
     <table style="margin:0; padding:0; border-spacing:0;">
     <tr>
     <td style="vertical-align:top;">
@@ -41,18 +41,18 @@
     </table>
     <div style="margin-top: 0.5em"></div>
     
-    <!-- Comments allowed? -->
+    {# Comments allowed? #}
     Comments allowed? <input type="checkbox" name="comments_allowed" value="True" 
     {% if post and not post.comments_allowed %}{% else %}Checked{% endif %}/> 
     
-    <!-- Visible? -->
+    {# Visible? #}
     Visible? <input type="checkbox" name="visible" value="True" 
     {% if post and not post.visible %}{% else %}Checked{% endif %}/>
     
-    <!-- Date -->
+    {# Date #}
     <input type="hidden" name="datetime" value="{{ post.datetime.strftime('%s') if post else -1 }}"/>
     
-    <!-- Buttons -->
+    {# Buttons #}
     <div style="margin-top:1em; text-align:right;">
       <input type="submit" name="action" value="{{ 'Update' if post and post.slug else 'Publish' }}" class="submit"/>&nbsp;
       <input id='preview-button' type="submit" name="action" value="Preview" class="submit"/>&nbsp;
@@ -62,7 +62,7 @@
   </div>
   </form>
   
-  <!-- Preview Area -->
+  {# Preview Area #}
   <div id=preview></div>
 {% endblock %}
 {% block search %}{% endblock %}

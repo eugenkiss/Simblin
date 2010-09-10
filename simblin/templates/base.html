@@ -9,7 +9,7 @@
     {% block head %}{% endblock %}
   </head>
   <body>
-    <!-- Login'n'stuff -->
+    {# Login'n'stuff #}
     <div id="metanav">
     {% if not session.logged_in %}
       <a href="{{ url_for('admin.login', next=request.url) }}">log in</a>
@@ -19,9 +19,9 @@
     {% endif %}
     </div>
     <div id="wrapper">
-      <!-- Header -->
+      {# Header #}
       <h1 id=header><a href="{{ url_for('main.show_posts') }}">{{ config['BLOG_TITLE'] }}</a></h1>
-      <!-- Navigation -->
+      {# Navigation #}
       <div id="navigation">
         <ul>
           <li>{{ config['BLOG_TITLE'] }}</li>
@@ -31,7 +31,7 @@
           <li><a href="{{ url_for('main.show_post', slug='about') }}">About</a></li>
           <li><a href="{{ url_for('main.show_post', slug='contact') }}">Contact</a></li>
         </ul>
-        <!-- Message Flashing -->
+        {# Message Flashing #}
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             <div class=flashes>
@@ -42,12 +42,12 @@
           {% endif %}
         {% endwith %}
       </div>
-      <!-- Main Content -->
+      {# Main Content #}
       <div id="content">
         {% block body %}{% endblock %}
       </div>
   </div>
-  <!-- For Javascript -->
+  {# For Javascript #}
   <script type=text/javascript>
       $(function() {
         // Show login etc. only on mouseover
