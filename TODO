@@ -4,7 +4,6 @@
 ----------------
 
 * Javascript Tag suggestion
-* Put hardcoded Messages in config file (localisation?)
 * make datetime field explicitly settable, both in the model
   and on the compose page through a datetime widget
     * set default to now but when updating load saved date
@@ -19,9 +18,11 @@
 
 ----------------
 
-* Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * search (http://pypi.python.org/pypi/Whoosh/)
-    * put search field on archives page
+    * create dedicated page for search
+        * put there instructions like "in:category [tags]"
+    * use render_post_minimal or similar to list posts
+        * look at flask search page how it is done (bold findings, ajax...)
 * rename in setup.py to v0.6
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -31,8 +32,10 @@
 
 * statistics (or can I use google statitstsic or how that is called for that?)
     * or use cherokee logger? add to documentation
+* * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * clean css
 * be able to rename categories
+* Put hardcoded Messages in config file (localisation?)
 * rename in setup.py to v0.7
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 

@@ -310,3 +310,7 @@ ul.archives li {
     font-size: 0.7em;
     font-style: italic;
 }
+
+.pagination {
+    text-align: right;
+}
