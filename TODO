@@ -1,9 +1,4 @@
-* get community feedback
-* submit: http://flask.poweredsites.org/ or http://flask.pocoo.org/community/poweredby/
-
-----------------
-
-* Javascript Tag suggestion
+* BUG: If post doesn't exist yet, preview shows 1970!
 * make datetime field explicitly settable, both in the model
   and on the compose page through a datetime widget
     * set default to now but when updating load saved date
@@ -11,6 +6,7 @@
       cannot be used as a relative time measurement. Views that rely on
       that should be rewritten to rely on the date. Test should be added
       before that, where id and date give different relative time measurement.
+* Javascript Tag suggestion
 * rename in setup.py to v0.5
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -32,7 +28,7 @@
 
 * statistics (or can I use google statitstsic or how that is called for that?)
     * or use cherokee logger? add to documentation
-* * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
+* Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * clean css
 * be able to rename categories
 * Put hardcoded Messages in config file (localisation?)

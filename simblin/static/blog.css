@@ -33,8 +33,12 @@ h1,h2,h3,h4,h5,h6 {
     color: black;
 }
 
-ul li:before {
-	content: "\00BB \0020";
+ul {
+	list-style-type: none;
+}
+
+blockquote {
+    font-style: italic;
 }
 
 /* Forms */
@@ -183,14 +187,10 @@ label {
 /* Posts */
 
 ul.posts {
-    list-style-type: none;
+    /*list-style-type: none;*/
     padding: 0;
     margin: 0;
     margin-top: 1em;
-}
-
-ul.posts li:before {
-	content: "";
 }
 
 .post {
@@ -208,7 +208,7 @@ ul.posts li:before {
     color: black;
 }
 
-.post h1.invisible a {
+.post h1.invisible a, .invisible {
     color: #ccc;
 }
 
@@ -240,7 +240,7 @@ ul.posts li:before {
 }
 
 .post ul {
-    list-style-type: none;
+    list-style-type: circle;
 }
 
 .post a:hover {
@@ -272,7 +272,6 @@ ul.posts li:before {
 /* Archives */
 
 ul.archives {
-    list-style-type: none;
     padding: 0;
     margin: 0;
 }
