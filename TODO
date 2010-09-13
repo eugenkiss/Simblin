@@ -1,3 +1,6 @@
+* Style Archives page (make font 13px)
+    * Use css3 spalten to make use of the horizontal space both on months and categories
+    * make pagination smaller 1em
 * BUG: If post doesn't exist yet, preview shows 1970!
 * make datetime field explicitly settable, both in the model
   and on the compose page through a datetime widget
@@ -19,6 +22,8 @@
         * put there instructions like "in:category [tags]"
     * use render_post_minimal or similar to list posts
         * look at flask search page how it is done (bold findings, ajax...)
+* think about replacing cherokee with nginx?
+    * http://www.westphahl.net/blog/2010/4/8/running-django-nginx-and-uwsgi/
 * rename in setup.py to v0.6
 * Refactor(pyflakes/epydoc)/Tests/Document/Readme/Changelog
 
@@ -26,10 +31,17 @@
 
 ----------------
 
+* Restyle archives page
+    * remove months, instead show 20 latest blog posts titles with date
+      and pagination
+    * below that show categories in 3 columns
+    * the last thing is the tag cloud
 * statistics (or can I use google statitstsic or how that is called for that?)
     * or use cherokee logger? add to documentation
 * Update to Flask-SQLAlchemy 0.10 and rewrite tidy_tags to use model_committed event
 * clean css
+* put something like "Eugen Kiss * Contact * Powered by Flask" at the bottom"
+    * Add setting-option: OWNER
 * be able to rename categories
 * Put hardcoded Messages in config file (localisation?)
 * rename in setup.py to v0.7

@@ -2,10 +2,9 @@
 {% from 'macros.html' import render_post_minimal with context %}
 {% extends "base.html" %}
 {% block body %}
-  <ul class=posts>
   {% for post in pagination.items %}
     {{ render_post_minimal(post) }}
+  {% if not loop.last %}<hr class="post-separator" />{% endif %}
   {% endfor %}
-  </ul>
   {{ render_pagination(pagination, endpoint_func) }}
 {% endblock %}

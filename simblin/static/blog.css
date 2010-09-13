@@ -6,11 +6,14 @@ html {
 body {
     margin: 0;
     padding: 0;
-    font-family: Georgia, serif;
+    font-family: 'Arial', sans-serif;
     /*font-family: Arial, Helvetica, sans-serif;*/
-    font-size: 1.3em;
-    /*background: #d9ddde url('checkboard.png') repeat right top;*/
-    background: white;
+    font-size: 1em;
+    background: #e7e7e2;
+    background: #ebebeb;
+    background: #F6F6F6;
+    background: #F7F5E9;
+    background: #ffffff;
     height: 100%;
     /*text-shadow: rgba(255, 255, 255, 0.7) 0px 1px 0px;*/
     color: black;
@@ -47,8 +50,13 @@ input, textarea, select {
     color: black;
     border: 1px solid #AAA;
     padding: 1px 1px;
+    font-size: 12px;
     /*background: #EEEFFF;*/
     /*background: rgba(255,255,255,0.2);*/
+}
+
+textarea {
+    font-size: 11px;
 }
 
 .submit {
@@ -66,11 +74,17 @@ label {
 
 /* Message Flashing */
 
+.message {
+    margin: 0;
+}
+
 .flashes {
-    color: grey;
-    margin-bottom: 2em;
-    font-size: 0.8em;
+    color: #424242;
+    /*color: #bf4270;*/
+    padding: 0.5em 0;
+    font-size: 12px;
     font-style: italic;
+    text-align: center;
 }
 
 .error {
@@ -104,22 +118,32 @@ label {
 }
 
 #wrapper {
-    max-width: 30em;
+    max-width: 32em;
     margin: 0 auto;
     padding: 2em;
     padding-top: 0;
-    background: rgba(255, 255, 255, 0.0);
+    /*background: rgba(255, 255, 255, 0.5);*/
+    /*-moz-box-shadow: 0px 0px 4px #666;
+	-webkit-box-shadow: 0px 0px 4px #aaa;
+	box-shadow: 0px 0px 4px #666;*/
 }
 
 #header {
-    font-size: 4.5em;
-    text-align: right;
-    margin-top: 0;
-    display: none;
+    font-size: 1em;
+    text-align: center;
+    /*background: #E5E3CD;*/
+    padding: 1em 0;
+    /*display: none;*/
 }
 
+#header h1 {
+    margin: 0;
+}
+
+
 #header a {
-    border: none;
+    color: #424242;
+    color: black;
 }
 
 #header a:hover {
@@ -127,19 +151,34 @@ label {
 }
 
 #navigation {
+    background: #F7F5E9;
+    /*background: #D8D4C1;*/
 }
 
-#navigation li a {
-    /*color: black;*/
+#navigation ul li a {
+    color: #424242;
 }
 
 #navigation ul {
     font-size: 0.8em;
+    padding: 0.5em 1em;
     margin: 0;
-    padding: 0;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    border-bottom: 2px solid #eee;
+    text-align: center;
+    /*border-bottom: 1px solid #e7e7e2;*/
+    /*border-bottom: 3px solid #f6f6f6;*/
+    /*background: white;*/
+    /*background: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.25, rgba(255,255,255,0.0)),
+    color-stop(0.63, rgba(255,255,255,0.5))
+);
+    background: -moz-linear-gradient(
+    center bottom,
+    rgb(238,238,238) 25%,
+    rgb(245,245,245) 63%
+);*/
 }
 
 #navigation ul li:before {
@@ -152,13 +191,18 @@ label {
     margin-right: 1em;
 }
 
+#navigation li a {
+    /*color: black;*/
+}
+
 #navigation li:last-child {
     clear: both;
+    color: #bbb;
 }
 
 #content {
     /*margin-top: 1em;*/
-    padding-bottom: 3em;
+    /*padding-bottom: 3em;*/
 }
 
 #adjacent-posts {
@@ -193,11 +237,20 @@ ul.posts {
     margin-top: 1em;
 }
 
+.post-separator {
+    border: none;
+    /*border-bottom: 1px solid #e7e7e2;*/
+    margin: 3em auto;
+    width: 50%;
+}
+
 .post {
 }
 
 .post h1.post-title {
     text-align: left;
+    margin-bottom: 0.5em;
+    font-size: 1em;
 }
 
 .post .post-title a {
@@ -208,13 +261,14 @@ ul.posts {
     color: black;
 }
 
-.post h1.invisible a, .invisible {
-    color: #ccc;
+.post .invisible, .post .invisible a {
+    color: #ccc; 
 }
 
 .post .body {
     /*font-family: Georgia;*/
-    font-size: 0.8em;
+    font-size: 12px;
+    line-height: 20px;
     /*color: #222;*/
     margin-top: 1em;
     margin-bottom: 1em;
@@ -249,12 +303,12 @@ ul.posts {
 
 .post .info {
     color: gray;
-    font-size: small;
-    margin-bottom: 2em;
+    font-size: 12px;
+    /*margin-bottom: 2em;*/
 }
 
 .post .comments-link {
-    float: right;
+    /*float: right;*/
 }
 
 .post .date {
@@ -296,18 +350,22 @@ ul.archives li {
 }
 
 .codehilite {
-    background: whitesmoke;
-    /*-webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px inset, rgba(255, 255, 255, 0.4) 0px -1px 1px inset;
-    -moz-box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px inset, rgba(255, 255, 255, 0.4) 0px -1px 1px inset;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px inset, rgba(255, 255, 255, 0.4) 0px -1px 1px inset;*/
-    padding: 0.25em 0.5em;
+    /*background: whitesmoke;*/
+    padding: 0.25em 1em;
     font-size: 0.8em;
 }
 
 .snippet {
-    color: #bbb;
+    /*color: #333;*/
     font-size: 0.7em;
-    font-style: italic;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+    /*margin-left: 1em;*/
+    /*font-style: italic;*/
+}
+
+.snippet + .info {
+    /*margin-left: 1em;*/
 }
 
 .pagination {

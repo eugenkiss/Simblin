@@ -18,31 +18,32 @@
       <a href="{{ url_for('admin.logout', next=request.url) }}">log out</a>
     {% endif %}
     </div>
+    {# Navigation #}
+    <div id="navigation">
+      <ul>
+        {#<li><a href="{{ url_for('main.show_posts') }}">Home</a></li>#}
+        <li><a href="{{ url_for('main.show_archives') }}">Archives</a></li>
+        <li><a href="{{ url_for('main.show_post', slug='projects') }}">Projects</a></li>
+        <li><a href="{{ url_for('main.show_post', slug='about') }}">About</a></li>
+        <li><a href="{{ url_for('main.show_post', slug='contact') }}">Contact</a></li>
+        <li><a href="{{ url_for('main.atom_feed') }}">Feed</a></li>
+      </ul>
+    </div>
+    {# Header #}
+    <div id="header">
+      <h1><a href="{{ url_for('main.show_posts') }}">{{ config['BLOG_TITLE'] }}</a></h1>
+    </div>
+    {# Message Flashing #}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class=flashes>
+          {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+          {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
     <div id="wrapper">
-      {# Header #}
-      <h1 id=header><a href="{{ url_for('main.show_posts') }}">{{ config['BLOG_TITLE'] }}</a></h1>
-      {# Navigation #}
-      <div id="navigation">
-        <ul>
-          <li>{{ config['BLOG_TITLE'] }}</li>
-          <li><a href="{{ url_for('main.show_posts') }}">Home</a></li>
-          <li><a href="{{ url_for('main.show_archives') }}">Archives</a></li>
-          <li><a href="{{ url_for('main.show_post', slug='projects') }}">Projects</a></li>
-          <li><a href="{{ url_for('main.show_post', slug='about') }}">About</a></li>
-          <li><a href="{{ url_for('main.show_post', slug='contact') }}">Contact</a></li>
-          <li><a href="{{ url_for('main.atom_feed') }}">Feed</a></li>
-        </ul>
-        {# Message Flashing #}
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <div class=flashes>
-            {% for category, message in messages %}
-              <p class="{{ category }}">{{ message }}</p>
-            {% endfor %}
-            </div>
-          {% endif %}
-        {% endwith %}
-      </div>
       {# Main Content #}
       <div id="content">
         {% block body %}{% endblock %}
